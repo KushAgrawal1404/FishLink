@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
-import 'signup_page.dart';
-import 'login_page.dart';
+import 'package:fish_link/screens/login_page.dart';
+import 'package:fish_link/screens/signup_landing_page.dart';
+import 'package:fish_link/screens/buyer_signup_page.dart';
+import 'package:fish_link/screens/seller_signup_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FishLink',
+      title: 'FishLink App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/login',
+      initialRoute: '/',
       routes: {
-        '/login': (context) => const LoginPage(),
-        '/signup': (context) => const SignUpPage(),
+        '/': (context) => const LoginPage(),
+        '/signup_landing': (context) => const SignupLandingPage(),
+        '/buyer_signup': (context) => const BuyerSignupPage(),
+        '/seller_signup': (context) => const SellerSignupPage(),
       },
     );
   }
