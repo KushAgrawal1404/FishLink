@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -38,14 +40,23 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
         }),
         headers: {'Content-Type': 'application/json'},
       );
-
+      var responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
+        String msg = responseBody['msg'];
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(msg), // Use the value of 'msg' here
+          ),
+        );
         // Signup successful, navigate to login page
         Navigator.pushReplacementNamed(context, '/');
       } else {
         // Signup failed, show error message
+        String msg = responseBody['msg'];
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signup failed')),
+          SnackBar(
+            content: Text(msg), // Use the value of 'msg' here
+          ),
         );
       }
     } catch (e) {

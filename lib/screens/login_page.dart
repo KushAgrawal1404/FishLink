@@ -1,7 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fish_link/utils/api.dart'; // Update with your actual project name
+import 'package:fish_link/utils/api.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,20 +20,37 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
+    // Your login API endpoint
+    String apiUrl = Api.loginUrl;
+
     try {
       final response = await http.post(
-        Uri.parse(Api.loginUrl), // Using the login URL from api.dart
+        Uri.parse(apiUrl),
         body: jsonEncode({'email': email, 'password': password}),
         headers: {'Content-Type': 'application/json'},
       );
+      // Decode the response body
+      var responseBody = json.decode(response.body);
+      print(responseBody);
 
       if (response.statusCode == 200) {
-        // Login successful, navigate to next screen
-        Navigator.pushReplacementNamed(context, '/home');
+        // Check the userType
+        String userType = responseBody['userType'];
+
+        // Navigate to different pages based on userType
+        if (userType == 'buyer') {
+          Navigator.pushReplacementNamed(context, '/buyer_home');
+        } else if (userType == 'seller') {
+          Navigator.pushReplacementNamed(context, '/seller_home');
+        }
+        // Add more conditions for other user types if needed
       } else {
         // Login failed, show error message
+        String msg = responseBody['msg'];
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login failed')),
+          SnackBar(
+            content: Text(msg), // Use the value of 'msg' here
+          ),
         );
       }
     } catch (e) {
