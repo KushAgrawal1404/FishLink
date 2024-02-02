@@ -69,7 +69,7 @@ class _AuthCheckerState extends State<AuthChecker> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return CircularProgressIndicator(); // Show loading indicator
+      return const CircularProgressIndicator(); // Show loading indicator
     } else {
       if (_userType != null) {
         // User is logged in, navigate to respective page based on userType
