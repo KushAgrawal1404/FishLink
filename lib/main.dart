@@ -19,8 +19,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FishLink App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.cyan,
+        elevation: 5.0,
+        shadowColor: Colors.black87,
+        foregroundColor: Colors.white,
+      )),
       home: const AuthChecker(),
       routes: {
         '/login': (context) => const LoginPage(),
