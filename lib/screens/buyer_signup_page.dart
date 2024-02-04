@@ -49,7 +49,6 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
             content: Text(msg), // Use the value of 'msg' here
           ),
         );
-        Navigator.pushReplacementNamed(context, '/');
       } else {
         // Signup failed, show error message
         String msg = responseBody['msg'];
@@ -110,6 +109,12 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
               ElevatedButton(
                 onPressed: _signup,
                 child: const Text('Sign Up'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                },
+                child: const Text('Login'),
               ),
             ],
           ),

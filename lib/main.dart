@@ -19,20 +19,45 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FishLink App',
       theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.cyan,
-        elevation: 5.0,
-        shadowColor: Colors.black87,
-        foregroundColor: Colors.white,
-      )),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.cyan,
+          elevation: 5.0,
+          shadowColor: Colors.black87,
+          foregroundColor: Colors.white,
+        ),
+      ),
       home: const AuthChecker(),
-      routes: {
-        '/login': (context) => const LoginPage(),
-        '/signup_landing': (context) => const SignupLandingPage(),
-        '/buyer_signup': (context) => const BuyerSignupPage(),
-        '/seller_signup': (context) => const SellerSignupPage(),
-        '/buyer_home': (context) => const BuyerHomePage(),
-        '/seller_home': (context) => const SellerHomePage(),
+      onGenerateRoute: (settings) {
+        return PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            // Replace with the appropriate page based on route name
+            switch (settings.name) {
+              case '/login':
+                return const LoginPage();
+              case '/signup_landing':
+                return const SignupLandingPage();
+              case '/buyer_signup':
+                return const BuyerSignupPage();
+              case '/seller_signup':
+                return const SellerSignupPage();
+              case '/buyer_home':
+                return const BuyerHomePage();
+              case '/seller_home':
+                return const SellerHomePage();
+              default:
+                return const LoginPage();
+            }
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        );
       },
     );
   }
