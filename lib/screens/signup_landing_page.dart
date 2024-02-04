@@ -7,7 +7,7 @@ class SignupLandingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Signup Landing'),
+        title: const Text('Signup'),
       ),
       body: Center(
         child: Column(
