@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false; // Track password visibility
   late SharedPreferences _prefs;
 
   @override
@@ -85,8 +86,35 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
+      appBar: PreferredSize(
+        preferredSize:
+            const Size.fromHeight(155), // Set the preferred height here
+        child: AppBar(
+          title: const Text(
+            'Welcome to \nFishLink',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          titleTextStyle:
+              const TextStyle(fontSize: 45, fontFamily: 'Times New Roman'),
+          toolbarHeight: 100,
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 10, left: 20),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Sign in To Your Account',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontFamily: 'Times New Roman',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -96,25 +124,78 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(_isPasswordVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                ),
+              ),
+              obscureText: !_isPasswordVisible, // Toggle password visibility
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 5),
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+              TextButton(
+                onPressed: () {
+                  // Handle forgot password
+                },
+                child: const Text(
+                  'Forgot Password?',
+                  style: TextStyle(color: Color(0xFFbae162)),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 5),
             ElevatedButton(
               onPressed: _login,
-              child: const Text('Login'),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all(const Color(0xFFbae162)),
+                elevation: MaterialStateProperty.all(8.0),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+                minimumSize: MaterialStateProperty.all(const Size(400, 55)),
+              ),
+              child: const Text(
+                'Login',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
             ),
-            const SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/signup_landing');
-              },
-              child: const Text('Sign Up'),
+            const SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text('Don\'t have an account?'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/signup_landing');
+                  },
+                  child: const Text('Register',
+                      style: TextStyle(color: Color(0xFFbae162))),
+                ),
+              ],
             ),
           ],
         ),

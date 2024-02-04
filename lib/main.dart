@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'FishLink App',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.cyan,
+          backgroundColor: Color(0xff0f1f30),
           elevation: 5.0,
           shadowColor: Colors.black87,
           foregroundColor: Colors.white,
