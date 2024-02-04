@@ -140,16 +140,38 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
                 ),
                 obscureText: !_isPasswordVisible,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: _signup,
-                child: const Text('Sign Up'),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(const Color(0xFFbae162)),
+                  elevation: MaterialStateProperty.all(8.0),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  ),
+                  minimumSize: MaterialStateProperty.all(const Size(400, 55)),
+                ),
+                child: const Text(
+                  'Signup',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
-                },
-                child: const Text('Login'),
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text('Already have an account?'),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: const Text('Login',
+                        style: TextStyle(color: Color(0xFFbae162))),
+                  ),
+                ],
               ),
             ],
           ),
