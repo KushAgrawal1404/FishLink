@@ -71,7 +71,7 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Seller Signup'),
+        title: const Text('Registering as Seller'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
