@@ -166,7 +166,7 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
                   const Text('Already have an account?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/');
+                      Navigator.popUntil(context, ModalRoute.withName('/'));
                     },
                     child: const Text('Login',
                         style: TextStyle(color: Color(0xFFbae162))),
