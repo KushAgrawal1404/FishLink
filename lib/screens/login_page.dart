@@ -75,6 +75,49 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _forgotPassword() async {
+    String email = _emailController.text.trim();
+
+    // Your forgot password API endpoint
+    String apiUrl = Api.forgotPasswordUrl;
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        body: jsonEncode({'email': email}),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      var responseBody = json.decode(response.body);
+      print(responseBody);
+
+      if (response.statusCode == 200) {
+        // Reset password email sent successfully
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseBody['msg']), // Show success message
+          ),
+        );
+      } else {
+        // Show error message if reset password email failed to send
+        String errorMsg = responseBody['msg'];
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMsg),
+          ),
+        );
+      }
+    } catch (e) {
+      // Handle network errors or other exceptions
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An error occurred'),
+        ),
+      );
+    }
+  }
+
   void _redirectToHome(String userType) {
     if (userType == 'buyer') {
       Navigator.pushReplacementNamed(context, '/buyer_home');
@@ -156,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Handle forgot password
+                  _forgotPassword(); // Call the forgot password method
                 },
                 child: const Text(
                   'Forgot Password?',
