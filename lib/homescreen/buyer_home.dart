@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fish_link/components/BuyerHomeMenu.dart';
 
 class BuyerHomePage extends StatelessWidget {
   const BuyerHomePage({super.key});
@@ -12,6 +13,7 @@ class BuyerHomePage extends StatelessWidget {
       body: const Center(
         child: Text('Welcome to Buyer Home'),
       ),
+      drawer: const BuyerHomeMenu(), // Integrate the buyer menu panel here
     );
   }
 }
