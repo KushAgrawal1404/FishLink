@@ -32,7 +32,11 @@ class SellerHomeMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Home'),
+            leading: const Icon(Icons.home),
+            title: const Text(
+              'Home',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             onTap: () {
               // Handle navigation to home screen
               Navigator.pop(context); // Close the drawer
@@ -40,7 +44,11 @@ class SellerHomeMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('My Products'),
+            leading: const Icon(Icons.history),
+            title: const Text(
+              'My Catches',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             onTap: () {
               // Handle navigation to my products screen
               Navigator.pop(context); // Close the drawer

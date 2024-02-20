@@ -32,7 +32,11 @@ class BuyerHomeMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Home'),
+            leading: const Icon(Icons.home),
+            title: const Text(
+              'Home',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             onTap: () {
               // Handle navigation to home screen
               Navigator.pop(context); // Close the drawer
@@ -40,7 +44,11 @@ class BuyerHomeMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('My Orders'),
+            leading: const Icon(Icons.checklist),
+            title: const Text(
+              'My Bids',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             onTap: () {
               // Handle navigation to my orders screen
               Navigator.pop(context); // Close the drawer

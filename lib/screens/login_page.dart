@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
         // Save login information
         _prefs.setString('email', email);
         _prefs.setString('userType', responseBody['userType']);
+        _prefs.setString('token', responseBody['token']);
         // Redirect to home
         _redirectToHome(responseBody['userType']);
       } else {
