@@ -53,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         // Save login information
+        _prefs.setString('name', responseBody['name']);
         _prefs.setString('email', email);
         _prefs.setString('userType', responseBody['userType']);
         _prefs.setString('token', responseBody['token']);
