@@ -56,6 +56,18 @@ class SellerHomeMenu extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.history),
+            title: const Text(
+              'Add Catches',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              // Handle navigation to my products screen
+              Navigator.pop(context); // Close the drawer
+              Navigator.pushNamed(context, '/add_catch');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text(
               'Logout',

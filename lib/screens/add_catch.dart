@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddCatchPage extends StatefulWidget {
   const AddCatchPage({Key? key}) : super(key: key);
@@ -16,10 +17,10 @@ class _AddCatchPageState extends State<AddCatchPage> {
   final TextEditingController _basePriceController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
 
-  DateTime _startTime = DateTime.now();
-  DateTime _endTime = DateTime.now();
+  final DateTime _startTime = DateTime.now();
+  final DateTime _endTime = DateTime.now();
 
-  Future<void> _addCatch() async {
+  Future<void> _addCatch(String email) async {
     String name = _nameController.text.trim();
     String location = _locationController.text.trim();
     double basePrice = double.parse(_basePriceController.text.trim());
@@ -33,6 +34,10 @@ class _AddCatchPageState extends State<AddCatchPage> {
         Uri.parse(apiUrl),
         body: jsonEncode({
           'name': name,
+          'email': email,
+          'location': location,
+          'basePrice': basePrice,
+          'quantity': quantity,
           // Add other fields here
         }),
         headers: {'Content-Type': 'application/json'},
@@ -93,15 +98,31 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 decoration: const InputDecoration(labelText: 'Quantity'),
               ),
               const SizedBox(height: 16),
-              // Add more fields as needed
-              ElevatedButton(
-                onPressed: _addCatch,
-                child: const Text('Add Catch'),
+              // Fetch email from SharedPreferences
+              FutureBuilder<String>(
+                future: _loadEmail(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        _addCatch(snapshot.data!);
+                      },
+                      child: const Text('Add Catch'),
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<String> _loadEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email') ?? '';
   }
 }
