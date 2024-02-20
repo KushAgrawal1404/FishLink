@@ -6,6 +6,7 @@ import 'package:fish_link/screens/buyer_signup_page.dart';
 import 'package:fish_link/screens/seller_signup_page.dart';
 import 'package:fish_link/homescreen/buyer_home.dart';
 import 'package:fish_link/homescreen/seller_home.dart';
+import 'package:fish_link/screens/add_catch.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,6 +45,8 @@ class MyApp extends StatelessWidget {
                 return const BuyerHomePage();
               case '/seller_home':
                 return const SellerHomePage();
+              case '/add_catch':
+                return const AddCatchPage();
               default:
                 return const LoginPage();
             }
