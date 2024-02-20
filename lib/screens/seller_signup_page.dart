@@ -47,6 +47,7 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(msg), // Use the value of 'msg' here
+            backgroundColor: Colors.green,
           ),
         );
       } else {
@@ -55,6 +56,7 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(msg), // Use the value of 'msg' here
+            backgroundColor: Colors.red,
           ),
         );
       }
@@ -62,7 +64,8 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
       // Error occurred during signup process
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('An error occurred')),
+        const SnackBar(
+            content: Text('Network error'), backgroundColor: Colors.red),
       );
     }
   }

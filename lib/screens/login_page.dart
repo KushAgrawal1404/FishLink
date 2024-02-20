@@ -63,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(msg), // Use the value of 'msg' here
+            backgroundColor: Colors.red,
           ),
         );
       }
@@ -70,7 +71,10 @@ class _LoginPageState extends State<LoginPage> {
       // Error occurred during login process
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('An error occurred')),
+        const SnackBar(
+          content: Text('An error occurred'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -96,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(responseBody['msg']), // Show success message
+            backgroundColor: Colors.green,
           ),
         );
       } else {
@@ -104,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMsg),
+            backgroundColor: Colors.red,
           ),
         );
       }
@@ -112,7 +118,8 @@ class _LoginPageState extends State<LoginPage> {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('An error occurred'),
+          content: Text('Network error'),
+          backgroundColor: Colors.red,
         ),
       );
     }
