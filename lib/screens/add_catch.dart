@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AddCatchPage extends StatefulWidget {
   const AddCatchPage({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
 
   DateTime? _startTime;
   DateTime? _endTime;
+  List<Asset> images = <Asset>[];
 
   Future<void> _addCatch(String email) async {
     String name = _nameController.text.trim();
@@ -50,6 +54,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
           'quantity': quantity,
           'startTime': _startTime!.toIso8601String(),
           'endTime': _endTime!.toIso8601String(),
+          'images': await _getImages(), // Convert images to base64 strings
           // Add other fields here
         }),
         headers: {'Content-Type': 'application/json'},
@@ -122,6 +127,54 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
+  Future<String> _loadEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email') ?? '';
+  }
+
+  Future<List<String>> _getImages() async {
+    List<String> imageList = [];
+
+    for (var asset in images) {
+      ByteData byteData = await asset.getByteData();
+      List<int> imageData = byteData.buffer.asUint8List();
+      String base64Image = base64Encode(imageData);
+      imageList.add(base64Image);
+    }
+
+    return imageList;
+  }
+
+  Future<void> loadAssets() async {
+    List<Asset> resultList = <Asset>[];
+    String error = '';
+
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 300,
+        enableCamera: true,
+        selectedAssets: images,
+        cupertinoOptions: const CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: const MaterialOptions(
+          actionBarColor: "#abcdef",
+          actionBarTitle: "Pick Image",
+          allViewTitle: "All Photos",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#000000",
+        ),
+      );
+    } on Exception catch (e) {
+      error = e.toString();
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      images = resultList;
+      if (error == '') error = 'No Error Dectected';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,6 +223,12 @@ class _AddCatchPageState extends State<AddCatchPage> {
               ),
               if (_endTime != null) Text('End Time: $_endTime'),
               const SizedBox(height: 16),
+              // Image Picker
+              ElevatedButton(
+                onPressed: loadAssets,
+                child: const Text('Pick Images'),
+              ),
+              const SizedBox(height: 16),
               // Fetch email from SharedPreferences
               FutureBuilder<String>(
                 future: _loadEmail(),
@@ -191,10 +250,5 @@ class _AddCatchPageState extends State<AddCatchPage> {
         ),
       ),
     );
-  }
-
-  Future<String> _loadEmail() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('email') ?? '';
   }
 }
