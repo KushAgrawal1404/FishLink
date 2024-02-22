@@ -56,8 +56,9 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
   Future<void> _deleteCatch(String catchId) async {
     // Replace with your API endpoint for deleting a catch
     String apiUrl = Api.deleteCatchUrl;
+    print(catchId);
     try {
-      final response = await http.delete(
+      final response = await http.get(
         Uri.parse('$apiUrl/$catchId'),
         headers: {'Content-Type': 'application/json'},
       );
@@ -139,7 +140,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                           icon: const Icon(Icons.delete),
                           onPressed: () {
                             // Implement delete catch logic
-                            _deleteCatch(catchDetails['id']);
+                            _deleteCatch(catchDetails['_id']);
                           },
                         ),
                       ],
