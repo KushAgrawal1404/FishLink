@@ -5,4 +5,5 @@ class Api {
   static const String forgotPasswordUrl = 'http://$baseUrl/api/forgot-password';
   static const String addCatchUrl = 'http://$baseUrl/api/seller/add-catch';
   static const String sellerCatchesUrl = 'http://$baseUrl/api/seller/catches';
+  static const String catchesUrl = 'http://$baseUrl/api/catches';
 }
