@@ -52,7 +52,7 @@ class SellerHomeMenu extends StatelessWidget {
             onTap: () {
               // Handle navigation to my products screen
               Navigator.pop(context); // Close the drawer
-              // Add navigation logic here
+              Navigator.pushNamed(context, '/my_catches');
             },
           ),
           ListTile(
