@@ -6,4 +6,6 @@ class Api {
   static const String addCatchUrl = 'http://$baseUrl/api/seller/add-catch';
   static const String sellerCatchesUrl = 'http://$baseUrl/api/seller/catches';
   static const String catchesUrl = 'http://$baseUrl/api/catches';
+  static const String deleteCatchUrl =
+      'http://$baseUrl/api/seller/delete-catch';
 }
