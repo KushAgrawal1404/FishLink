@@ -3,6 +3,7 @@ import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fish_link/screens/edit_catches.dart';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
