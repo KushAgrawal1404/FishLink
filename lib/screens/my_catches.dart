@@ -53,6 +53,46 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
     }
   }
 
+  Future<void> _deleteCatch(String catchId) async {
+    // Replace with your API endpoint for deleting a catch
+    String apiUrl = Api.deleteCatchUrl;
+    try {
+      final response = await http.delete(
+        Uri.parse('$apiUrl/$catchId'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // Catch deleted successfully, you can update the UI or show a message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Catch deleted successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Refresh the list of catches after deletion
+        _fetchMyCatches();
+      } else {
+        // Failed to delete catch, show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to delete catch'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // An error occurred, show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An error occurred'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,14 +131,15 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                           icon: const Icon(Icons.edit),
                           onPressed: () {
                             // Navigate to the edit page with catchDetails
-                            // Example: Navigator.pushNamed(context, '/edit-catch', arguments: catchDetails);
+                            Navigator.pushNamed(context, '/edit-catch',
+                                arguments: catchDetails);
                           },
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () {
                             // Implement delete catch logic
-                            // Example: _deleteCatch(catchDetails['id']);
+                            _deleteCatch(catchDetails['id']);
                           },
                         ),
                       ],
