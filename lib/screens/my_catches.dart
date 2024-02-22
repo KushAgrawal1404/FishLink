@@ -139,7 +139,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                           icon: const Icon(Icons.delete),
                           onPressed: () {
                             // Implement delete catch logic
-                            _deleteCatch(catchDetails['id']);
+                            _deleteCatch(catchDetails['_id']);
                           },
                         ),
                       ],
