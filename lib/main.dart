@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            // Replace with the appropriate page based on route name
             switch (settings.name) {
               case '/login':
                 return const LoginPage();
@@ -52,10 +51,9 @@ class MyApp extends StatelessWidget {
               case '/my_catches':
                 return const MyCatchesPage();
               case '/edit_catches':
-                return const EditCatchPage(
-                  catchDetails: {},
-                );
-
+                var arguments = settings.arguments;
+                return EditCatchPage(
+                    catchDetails: arguments as Map<String, dynamic>);
               default:
                 return const LoginPage();
             }
