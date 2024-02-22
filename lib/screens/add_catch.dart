@@ -1,11 +1,9 @@
-import 'dart:typed_data';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddCatchPage extends StatefulWidget {
   const AddCatchPage({Key? key}) : super(key: key);
@@ -22,7 +20,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
 
   DateTime? _startTime;
   DateTime? _endTime;
-  List<Asset> images = <Asset>[];
+  List<XFile> images = <XFile>[];
 
   Future<void> _addCatch(String email) async {
     String name = _nameController.text.trim();
@@ -54,15 +52,13 @@ class _AddCatchPageState extends State<AddCatchPage> {
           'quantity': quantity,
           'startTime': _startTime!.toIso8601String(),
           'endTime': _endTime!.toIso8601String(),
-          'images': await _getImages(), // Convert images to base64 strings
-          // Add other fields here
+          'images': await _getImages(), // Encode images to base64
         }),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 201) {
         // Catch added successfully
-        // You can navigate to a different screen or show a success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Added catch'),
@@ -135,43 +131,21 @@ class _AddCatchPageState extends State<AddCatchPage> {
   Future<List<String>> _getImages() async {
     List<String> imageList = [];
 
-    for (var asset in images) {
-      ByteData byteData = await asset.getByteData();
-      List<int> imageData = byteData.buffer.asUint8List();
-      String base64Image = base64Encode(imageData);
+    for (var imageFile in images) {
+      final bytes = await imageFile.readAsBytes();
+      String base64Image = base64Encode(bytes);
       imageList.add(base64Image);
     }
 
     return imageList;
   }
 
-  Future<void> loadAssets() async {
-    List<Asset> resultList = <Asset>[];
-    String error = '';
-
-    try {
-      resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
-        enableCamera: true,
-        selectedAssets: images,
-        cupertinoOptions: const CupertinoOptions(takePhotoIcon: "chat"),
-        materialOptions: const MaterialOptions(
-          actionBarColor: "#abcdef",
-          actionBarTitle: "Pick Image",
-          allViewTitle: "All Photos",
-          useDetailsView: false,
-          selectCircleStrokeColor: "#000000",
-        ),
-      );
-    } on Exception catch (e) {
-      error = e.toString();
-    }
-
-    if (!mounted) return;
+  Future<void> _selectImages() async {
+    final ImagePicker picker = ImagePicker();
+    List<XFile>? imageFiles = await picker.pickMultiImage();
 
     setState(() {
-      images = resultList;
-      if (error == '') error = 'No Error Dectected';
+      images = imageFiles;
     });
   }
 
@@ -225,7 +199,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
               const SizedBox(height: 16),
               // Image Picker
               ElevatedButton(
-                onPressed: loadAssets,
+                onPressed: _selectImages,
                 child: const Text('Pick Images'),
               ),
               const SizedBox(height: 16),
