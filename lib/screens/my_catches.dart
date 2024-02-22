@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class MyCatchesPage extends StatefulWidget {
 
 class _MyCatchesPageState extends State<MyCatchesPage> {
   List<dynamic> myCatches = [];
+  String? _userId;
 
   @override
   void initState() {
@@ -22,10 +24,11 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
   Future<void> _fetchMyCatches() async {
     // Replace with your API endpoint for fetching seller's catches
     String apiUrl = Api.sellerCatchesUrl;
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
     try {
       final response = await http.get(
-        Uri.parse(apiUrl),
+        Uri.parse('$apiUrl/$userId'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -58,7 +61,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
         title: const Text('My Catches'),
       ),
       body: myCatches.isEmpty
-          ? Center(
+          ? const Center(
               child: Text('No catches found'),
             )
           : ListView.builder(
@@ -86,14 +89,14 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                           onPressed: () {
                             // Navigate to the edit page with catchDetails
                             // Example: Navigator.pushNamed(context, '/edit-catch', arguments: catchDetails);
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () {
                             // Implement delete catch logic
                             // Example: _deleteCatch(catchDetails['id']);
