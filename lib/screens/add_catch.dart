@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,6 +34,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select start time and end time'),
+          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -62,13 +64,16 @@ class _AddCatchPageState extends State<AddCatchPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Added catch'),
+            backgroundColor: Colors.green,
           ),
         );
+        Navigator.pop(context);
       } else {
         // Catch addition failed, show error message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to add catch'),
+            backgroundColor: Colors.red,
           ),
         );
       }
@@ -76,7 +81,10 @@ class _AddCatchPageState extends State<AddCatchPage> {
       // Error occurred during catch addition
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('An error occurred')),
+        const SnackBar(
+          content: Text('An error occurred'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
