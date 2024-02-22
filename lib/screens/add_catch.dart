@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fish_link/utils/api.dart';
@@ -156,6 +157,32 @@ class _AddCatchPageState extends State<AddCatchPage> {
     });
   }
 
+  void _removeImage(int index) {
+    setState(() {
+      images.removeAt(index);
+    });
+  }
+
+  // Method to move the image up in the list
+  void _moveImageUp(int index) {
+    if (index > 0) {
+      setState(() {
+        final XFile image = images.removeAt(index);
+        images.insert(index - 1, image);
+      });
+    }
+  }
+
+  // Method to move the image down in the list
+  void _moveImageDown(int index) {
+    if (index < images.length - 1) {
+      setState(() {
+        final XFile image = images.removeAt(index);
+        images.insert(index + 1, image);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,6 +236,51 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 onPressed: _selectImages,
                 child: const Text('Pick Images'),
               ),
+              // Display selected images
+              if (images.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Selected Images:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: images.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: Image.file(File(images[index].path)),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.arrow_upward),
+                                onPressed: () {
+                                  _moveImageUp(index);
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.arrow_downward),
+                                onPressed: () {
+                                  _moveImageDown(index);
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.remove_circle),
+                                onPressed: () {
+                                  _removeImage(index);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               const SizedBox(height: 16),
               // Fetch email from SharedPreferences
               FutureBuilder<String>(
