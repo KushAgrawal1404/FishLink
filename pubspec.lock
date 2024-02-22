@@ -153,7 +153,7 @@ packages:
     source: hosted
     version: "1.2.0"
   http_parser:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: http_parser
       sha256: "2aa08ce0341cc9b354a498388e30986515406668dbcc4f7c950c3e715496693b"
@@ -288,16 +288,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  multiple_images_picker:
-    dependency: "direct main"
-    description:
-      name: multiple_images_picker
-      sha256: "95f68febbe7ca6b50dbd7edce7345fc70ca0a33f2e82d766b0f79c02b04ff7e4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   path:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path
       sha256: "087ce49c3f0dc39180befefc60fdb4acd8f8620e5682fe2476afd0b3688bb4af"
