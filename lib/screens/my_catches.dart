@@ -13,7 +13,6 @@ class MyCatchesPage extends StatefulWidget {
 
 class _MyCatchesPageState extends State<MyCatchesPage> {
   List<dynamic> myCatches = [];
-  String? _userId;
 
   @override
   void initState() {
