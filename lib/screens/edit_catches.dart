@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:fish_link/utils/api.dart';
+
 import 'dart:convert';
 
 class EditCatchPage extends StatefulWidget {
@@ -45,11 +47,10 @@ class _EditCatchPageState extends State<EditCatchPage> {
       'quantity': updatedQuantity,
       'startTime': updatedStartTime,
       'endTime': updatedEndTime,
-      // Add other fields as needed
     };
 
     // Replace with your API endpoint for updating a catch
-    String apiUrl = 'your_update_catch_api_url/${widget.catchDetails['id']}';
+    String apiUrl = '${Api.editCatchUrl}/${widget.catchDetails['_id']}';
 
     try {
       final response = await http.put(

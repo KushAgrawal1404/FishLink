@@ -57,7 +57,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
     // Replace with your API endpoint for deleting a catch
     String apiUrl = Api.deleteCatchUrl;
     try {
-      final response = await http.delete(
+      final response = await http.get(
         Uri.parse('$apiUrl/$catchId'),
         headers: {'Content-Type': 'application/json'},
       );
@@ -131,7 +131,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                           icon: const Icon(Icons.edit),
                           onPressed: () {
                             // Navigate to the edit page with catchDetails
-                            Navigator.pushNamed(context, '/edit-catch',
+                            Navigator.pushNamed(context, '/edit_catches',
                                 arguments: catchDetails);
                           },
                         ),
