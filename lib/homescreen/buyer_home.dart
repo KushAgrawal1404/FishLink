@@ -70,17 +70,49 @@ class _BuyerHomePage extends State<BuyerHomePage> {
                   itemCount: Catches.length,
                   itemBuilder: (context, index) {
                     var catchDetails = Catches[index];
+                    List<dynamic> images = catchDetails['images'];
+                    String firstImageUrl = images.isNotEmpty
+                        ? Api.baseUrl + images[0]
+                        : ''; // Construct the full image URL
+
                     return Card(
-                      child: ListTile(
-                        title: Text(catchDetails['name']),
-                        subtitle: Column(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Location: ${catchDetails['location']}'),
-                            Text('Base Price: ${catchDetails['basePrice']}'),
-                            Text('Quantity: ${catchDetails['quantity']}'),
-                            Text('Start Time: ${catchDetails['startTime']}'),
-                            Text('End Time: ${catchDetails['endTime']}'),
+                            // Display the first image if available
+                            if (firstImageUrl.isNotEmpty)
+                              Image.network(
+                                firstImageUrl,
+                                width:
+                                    120, // Adjust the width of the image as needed
+                                height:
+                                    120, // Adjust the height of the image as needed
+                                fit: BoxFit
+                                    .cover, // Adjust the fit of the image as needed
+                              ),
+                            const SizedBox(
+                                width:
+                                    10), // Add some spacing between the image and catch details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(catchDetails['name'],
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  Text('Location: ${catchDetails['location']}'),
+                                  Text(
+                                      'Base Price: ${catchDetails['basePrice']}'),
+                                  Text('Quantity: ${catchDetails['quantity']}'),
+                                  Text(
+                                      'Start Time: ${catchDetails['startTime']}'),
+                                  Text('End Time: ${catchDetails['endTime']}'),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
