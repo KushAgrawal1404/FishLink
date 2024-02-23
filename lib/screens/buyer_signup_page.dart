@@ -29,8 +29,7 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
 
     try {
       final response = await http.post(
-        Uri.http(Api.baseUrl,
-            Api.signupPath), // Using Uri.http() for the API endpoint
+        Uri.parse(Api.signupPath), // Using Uri.http() for the API endpoint
         body: jsonEncode({
           'name': name,
           'email': email,
