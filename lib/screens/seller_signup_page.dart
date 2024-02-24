@@ -60,8 +60,6 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
         );
       }
     } catch (e) {
-      // Error occurred during signup process
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Network error'), backgroundColor: Colors.red),

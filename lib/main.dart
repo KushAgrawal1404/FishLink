@@ -77,7 +77,7 @@ class AuthChecker extends StatefulWidget {
   const AuthChecker({Key? key}) : super(key: key);
 
   @override
-  _AuthCheckerState createState() => _AuthCheckerState();
+  State<AuthChecker> createState() => _AuthCheckerState();
 }
 
 class _AuthCheckerState extends State<AuthChecker> {

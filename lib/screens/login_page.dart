@@ -71,8 +71,6 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      // Error occurred during login process
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred'),
@@ -96,7 +94,6 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       var responseBody = json.decode(response.body);
-      print(responseBody);
 
       if (response.statusCode == 200) {
         // Reset password email sent successfully
@@ -117,8 +114,6 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      // Handle network errors or other exceptions
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Network error'),

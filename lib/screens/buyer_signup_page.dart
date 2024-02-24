@@ -59,8 +59,6 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
         );
       }
     } catch (e) {
-      // Error occurred during signup process
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('An error occurred')),
       );
