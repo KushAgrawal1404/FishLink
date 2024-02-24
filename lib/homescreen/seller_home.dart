@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fish_link/components/SellerHomeMenu.dart';
+import 'package:fish_link/components/seller_menu.dart';
 
 class SellerHomePage extends StatelessWidget {
   const SellerHomePage({Key? key});

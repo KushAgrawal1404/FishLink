@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fish_link/components/BuyerHomeMenu.dart';
+import 'package:fish_link/components/buyer_menu.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
