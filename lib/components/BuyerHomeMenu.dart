@@ -6,8 +6,7 @@ class BuyerHomeMenu extends StatelessWidget {
   void logout(BuildContext context) async {
     // Clear the stored login state
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('email', "");
-    prefs.setString('userType', "");
+    await prefs.clear();
     // Navigate to the login screen
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
