@@ -4,6 +4,7 @@ import 'package:fish_link/components/buyer_menu.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class BuyerHomePage extends StatefulWidget {
   const BuyerHomePage({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class BuyerHomePage extends StatefulWidget {
 }
 
 class _BuyerHomePage extends State<BuyerHomePage> {
-  List<dynamic> Catches = [];
+  List<dynamic> catches = [];
   @override
   void initState() {
     super.initState();
@@ -31,7 +32,7 @@ class _BuyerHomePage extends State<BuyerHomePage> {
 
       if (response.statusCode == 200) {
         setState(() {
-          Catches = jsonDecode(response.body);
+          catches = jsonDecode(response.body);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -51,6 +52,20 @@ class _BuyerHomePage extends State<BuyerHomePage> {
     }
   }
 
+  String formatDateTime(String datetimeString) {
+    // Parse the datetime string into a DateTime object
+    DateTime datetime = DateTime.parse(datetimeString);
+
+    // Convert the DateTime object to local time
+    DateTime localDatetime = datetime.toLocal();
+
+    // Define the date and time format
+    DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');
+
+    // Format the local datetime and return the formatted string
+    return formatter.format(localDatetime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
@@ -62,14 +77,14 @@ class _BuyerHomePage extends State<BuyerHomePage> {
             title: Text(title),
           ),
           drawer: const BuyerHomeMenu(), // Integrate the buyer menu panel here
-          body: Catches.isEmpty
+          body: catches.isEmpty
               ? const Center(
                   child: Text('No catches found'),
                 )
               : ListView.builder(
-                  itemCount: Catches.length,
+                  itemCount: catches.length,
                   itemBuilder: (context, index) {
-                    var catchDetails = Catches[index];
+                    var catchDetails = catches[index];
                     List<dynamic> images = catchDetails['images'];
                     String firstImageUrl = images.isNotEmpty
                         ? Api.baseUrl + images[0]
@@ -86,9 +101,9 @@ class _BuyerHomePage extends State<BuyerHomePage> {
                               Image.network(
                                 firstImageUrl,
                                 width:
-                                    120, // Adjust the width of the image as needed
+                                    130, // Adjust the width of the image as needed
                                 height:
-                                    120, // Adjust the height of the image as needed
+                                    130, // Adjust the height of the image as needed
                                 fit: BoxFit
                                     .cover, // Adjust the fit of the image as needed
                               ),
@@ -105,11 +120,12 @@ class _BuyerHomePage extends State<BuyerHomePage> {
                                           fontWeight: FontWeight.bold)),
                                   Text('Location: ${catchDetails['location']}'),
                                   Text(
-                                      'Base Price: ${catchDetails['basePrice']}'),
+                                      'Base Price: ₹${catchDetails['basePrice']}'),
                                   Text('Quantity: ${catchDetails['quantity']}'),
                                   Text(
-                                      'Start Time: ${catchDetails['startTime']}'),
-                                  Text('End Time: ${catchDetails['endTime']}'),
+                                      'Starts: ${formatDateTime(catchDetails['startTime'])}'),
+                                  Text(
+                                      'Ends: ${formatDateTime(catchDetails['endTime'])}'),
                                 ],
                               ),
                             ),
