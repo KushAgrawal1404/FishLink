@@ -12,7 +12,7 @@ class AddCatchPage extends StatefulWidget {
   const AddCatchPage({Key? key}) : super(key: key);
 
   @override
-  _AddCatchPageState createState() => _AddCatchPageState();
+  State<AddCatchPage> createState() => _AddCatchPageState();
 }
 
 class _AddCatchPageState extends State<AddCatchPage> {

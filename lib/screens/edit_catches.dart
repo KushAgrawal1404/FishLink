@@ -10,7 +10,7 @@ class EditCatchPage extends StatefulWidget {
   const EditCatchPage({Key? key, required this.catchDetails}) : super(key: key);
 
   @override
-  _EditCatchPageState createState() => _EditCatchPageState();
+  State<EditCatchPage> createState() => _EditCatchPageState();
 }
 
 class _EditCatchPageState extends State<EditCatchPage> {

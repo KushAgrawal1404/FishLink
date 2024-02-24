@@ -9,7 +9,7 @@ class SellerSignupPage extends StatefulWidget {
   const SellerSignupPage({Key? key}) : super(key: key);
 
   @override
-  _SellerSignupPageState createState() => _SellerSignupPageState();
+  State<SellerSignupPage> createState() => _SellerSignupPageState();
 }
 
 class _SellerSignupPageState extends State<SellerSignupPage> {

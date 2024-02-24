@@ -9,7 +9,7 @@ class BuyerHomePage extends StatefulWidget {
   const BuyerHomePage({Key? key}) : super(key: key);
 
   @override
-  _BuyerHomePage createState() => _BuyerHomePage();
+  State<BuyerHomePage> createState() => _BuyerHomePage();
 }
 
 class _BuyerHomePage extends State<BuyerHomePage> {

@@ -8,7 +8,7 @@ class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
 
   @override
-  _MyCatchesPageState createState() => _MyCatchesPageState();
+  State<MyCatchesPage> createState() => _MyCatchesPageState();
 }
 
 class _MyCatchesPageState extends State<MyCatchesPage> {
