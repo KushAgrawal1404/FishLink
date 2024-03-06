@@ -32,6 +32,60 @@ class _EditCatchPageState extends State<EditCatchPage> {
     endTimeController.text = widget.catchDetails['endTime'];
   }
 
+  Future<void> _selectStartTime(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      final TimeOfDay? timePicked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (timePicked != null) {
+        final DateTime selectedDateTime = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          timePicked.hour,
+          timePicked.minute,
+        );
+        setState(() {
+          startTimeController.text = selectedDateTime.toString();
+        });
+      }
+    }
+  }
+
+  Future<void> _selectEndTime(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      final TimeOfDay? timePicked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (timePicked != null) {
+        final DateTime selectedDateTime = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          timePicked.hour,
+          timePicked.minute,
+        );
+        setState(() {
+          endTimeController.text = selectedDateTime.toString();
+        });
+      }
+    }
+  }
+
   Future<void> _saveChanges() async {
     final String updatedName = nameController.text;
     final String updatedLocation = locationController.text;
@@ -116,12 +170,22 @@ class _EditCatchPageState extends State<EditCatchPage> {
               decoration: const InputDecoration(labelText: 'Quantity'),
               keyboardType: TextInputType.number,
             ),
+            TextButton(
+              onPressed: () => _selectStartTime(context),
+              child: const Text('Select Start Time'),
+            ),
             TextFormField(
               controller: startTimeController,
+              enabled: false,
               decoration: const InputDecoration(labelText: 'Start Time'),
+            ),
+            TextButton(
+              onPressed: () => _selectEndTime(context),
+              child: const Text('Select End Time'),
             ),
             TextFormField(
               controller: endTimeController,
+              enabled: false,
               decoration: const InputDecoration(labelText: 'End Time'),
             ),
             ElevatedButton(

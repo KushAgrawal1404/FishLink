@@ -3,6 +3,7 @@ import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
@@ -51,6 +52,20 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
         ),
       );
     }
+  }
+
+  String formatDateTime(String datetimeString) {
+    // Parse the datetime string into a DateTime object
+    DateTime datetime = DateTime.parse(datetimeString);
+
+    // Convert the DateTime object to local time
+    DateTime localDatetime = datetime.toLocal();
+
+    // Define the date and time format
+    DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');
+
+    // Format the local datetime and return the formatted string
+    return formatter.format(localDatetime);
   }
 
   Future<void> _deleteCatch(String catchId) async {
@@ -116,8 +131,10 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                         Text('Location: ${catchDetails['location']}'),
                         Text('Base Price: ${catchDetails['basePrice']}'),
                         Text('Quantity: ${catchDetails['quantity']}'),
-                        Text('Start Time: ${catchDetails['startTime']}'),
-                        Text('End Time: ${catchDetails['endTime']}'),
+                        Text(
+                            'Start Time: ${formatDateTime(catchDetails['startTime'])}'),
+                        Text(
+                            'End Time: ${formatDateTime(catchDetails['endTime'])}'),
                         Text('Status: ${catchDetails['status']}'),
                         if (catchDetails['status'] == 'sold')
                           Text(
