@@ -5,16 +5,18 @@ import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:fish_link/screens/catchDetailsPage.dart';
 
 class BuyerHomePage extends StatefulWidget {
   const BuyerHomePage({Key? key}) : super(key: key);
 
   @override
-  State<BuyerHomePage> createState() => _BuyerHomePage();
+  State<BuyerHomePage> createState() => _BuyerHomePageState();
 }
 
-class _BuyerHomePage extends State<BuyerHomePage> {
+class _BuyerHomePageState extends State<BuyerHomePage> {
   List<dynamic> catches = [];
+
   @override
   void initState() {
     super.initState();
@@ -90,46 +92,60 @@ class _BuyerHomePage extends State<BuyerHomePage> {
                         ? Api.baseUrl + images[0]
                         : ''; // Construct the full image URL
 
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Display the first image if available
-                            if (firstImageUrl.isNotEmpty)
-                              Image.network(
-                                firstImageUrl,
-                                width:
-                                    130, // Adjust the width of the image as needed
-                                height:
-                                    130, // Adjust the height of the image as needed
-                                fit: BoxFit
-                                    .cover, // Adjust the fit of the image as needed
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to the CatchDetailsPage when the item is tapped
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CatchDetailsPage(catchDetails: catchDetails),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Display the first image if available
+                              if (firstImageUrl.isNotEmpty)
+                                Image.network(
+                                  firstImageUrl,
+                                  width:
+                                      130, // Adjust the width of the image as needed
+                                  height:
+                                      130, // Adjust the height of the image as needed
+                                  fit: BoxFit
+                                      .cover, // Adjust the fit of the image as needed
+                                ),
+                              const SizedBox(
+                                  width:
+                                      10), // Add some spacing between the image and catch details
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(catchDetails['name'],
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                        'Location: ${catchDetails['location']}'),
+                                    Text(
+                                        'Base Price: ₹${catchDetails['basePrice']}'),
+                                    Text(
+                                        'Quantity: ${catchDetails['quantity']}'),
+                                    Text(
+                                        'Starts: ${formatDateTime(catchDetails['startTime'])}'),
+                                    Text(
+                                        'Ends: ${formatDateTime(catchDetails['endTime'])}'),
+                                  ],
+                                ),
                               ),
-                            const SizedBox(
-                                width:
-                                    10), // Add some spacing between the image and catch details
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(catchDetails['name'],
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
-                                  Text('Location: ${catchDetails['location']}'),
-                                  Text(
-                                      'Base Price: ₹${catchDetails['basePrice']}'),
-                                  Text('Quantity: ${catchDetails['quantity']}'),
-                                  Text(
-                                      'Starts: ${formatDateTime(catchDetails['startTime'])}'),
-                                  Text(
-                                      'Ends: ${formatDateTime(catchDetails['endTime'])}'),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
