@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/services.dart';
+
 import 'package:fish_link/utils/api.dart'; // Update with your actual project name
 
 class BuyerSignupPage extends StatefulWidget {
@@ -110,6 +112,12 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
               const SizedBox(height: 16),
               TextField(
                 controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                  LengthLimitingTextInputFormatter(
+                      10), // Limit input to 10 characters
+                ],
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   border: OutlineInputBorder(
