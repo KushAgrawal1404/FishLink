@@ -5,7 +5,7 @@ import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:fish_link/screens/catchDetailsPage.dart';
+import 'package:fish_link/screens/catch_details_page.dart';
 
 class BuyerHomePage extends StatefulWidget {
   const BuyerHomePage({Key? key}) : super(key: key);
