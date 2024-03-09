@@ -1,12 +1,93 @@
+import 'dart:convert';
+
 import 'package:fish_link/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CatchDetailsPage extends StatelessWidget {
   final Map<String, dynamic> catchDetails;
 
   const CatchDetailsPage({Key? key, required this.catchDetails})
       : super(key: key);
+
+  void _postBid(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userId') ?? '';
+
+    TextEditingController bidController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Place Bid'),
+          content: TextField(
+            controller: bidController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: 'Enter Bid Amount'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                // Get the bid amount from the text field
+                String bidAmount = bidController.text.trim();
+
+                // Check if the bid amount is valid
+                if (bidAmount.isNotEmpty) {
+                  // Post the bid amount to the server
+                  try {
+                    // Replace 'YOUR_BID_API_ENDPOINT' with your actual bid API endpoint
+                    final response = await http.post(
+                      Uri.parse(Api.placeBidUrl),
+                      body: jsonEncode({
+                        'userId': userId,
+                        'bidAmount': bidAmount,
+                        'catchId': catchDetails['_id'],
+                      }),
+                      headers: {'Content-Type': 'application/json'},
+                    );
+
+                    var responseBody = json.decode(response.body);
+                    if (response.statusCode == 200) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Bid placed successfully'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      Navigator.pop(context); // Close the dialog
+                    } else {
+                      String msg = responseBody['error'];
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(msg),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    print('Error placing bid: $e');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Error placing bid')),
+                    );
+                  }
+                }
+              },
+              child: const Text('Place Bid'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +106,7 @@ class CatchDetailsPage extends StatelessWidget {
               itemCount: catchDetails['images'].length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: EdgeInsets.only(right: 8.0),
+                  padding: const EdgeInsets.only(right: 8.0),
                   child: Image.network(
                     Api.baseUrl + catchDetails['images'][index],
                     width: 200, // Adjust the width of the image as needed
@@ -47,7 +128,7 @@ class CatchDetailsPage extends StatelessWidget {
           // Add a button to place bid
           ElevatedButton(
             onPressed: () {
-              // Handle placing bid here
+              _postBid(context); // Call the function to place bid
             },
             child: const Text('Place Bid'),
           ),
