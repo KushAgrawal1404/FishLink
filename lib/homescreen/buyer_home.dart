@@ -113,16 +113,11 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                               if (firstImageUrl.isNotEmpty)
                                 Image.network(
                                   firstImageUrl,
-                                  width:
-                                      130, // Adjust the width of the image as needed
-                                  height:
-                                      130, // Adjust the height of the image as needed
-                                  fit: BoxFit
-                                      .cover, // Adjust the fit of the image as needed
+                                  width: 130,
+                                  height: 130,
+                                  fit: BoxFit.cover,
                                 ),
-                              const SizedBox(
-                                  width:
-                                      10), // Add some spacing between the image and catch details
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
