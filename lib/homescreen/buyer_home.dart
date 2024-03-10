@@ -99,7 +99,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                CatchDetailsPage(catchDetails: catchDetails),
+                                CatchDetailsPage(catchId: catchDetails['_id']),
                           ),
                         );
                       },
