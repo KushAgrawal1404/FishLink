@@ -1,5 +1,5 @@
 class Api {
-  static const String baseUrl = 'http://192.168.181.129:5000';
+  static const String baseUrl = 'http://192.168.27.250:5000';
   static const String loginUrl = '$baseUrl/api/login';
   static const String signupPath = '$baseUrl/api/signup';
   static const String forgotPasswordUrl = '$baseUrl/api/forgot-password';
@@ -10,4 +10,5 @@ class Api {
   static const String editCatchUrl = '$baseUrl/api/seller/edit-catch';
   static const String placeBidUrl = '$baseUrl/api/placeBid';
   static const String catchDetailsUrl = '$baseUrl/api/catch';
+  static const String fetchbids = '$baseUrl/api/my-bids';
 }
