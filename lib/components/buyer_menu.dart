@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fish_link/screens/mybids.dart';
 
 class BuyerHomeMenu extends StatelessWidget {
   const BuyerHomeMenu({Key? key}) : super(key: key);
@@ -49,9 +50,11 @@ class BuyerHomeMenu extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Handle navigation to my orders screen
               Navigator.pop(context); // Close the drawer
-              // Add navigation logic here
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyBidsPage()),
+              );
             },
           ),
           ListTile(
@@ -70,4 +73,5 @@ class BuyerHomeMenu extends StatelessWidget {
       ),
     );
   }
+  
 }
