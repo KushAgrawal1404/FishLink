@@ -34,6 +34,34 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> sendDeviceId(String userId, String deviceId) async {
+    final Uri loginUrl = Uri.parse('${Api.baseUrl}/api/user/login');
+    try {
+      final response = await http.post(
+        loginUrl,
+        body: jsonEncode({
+          'userId': userId,
+          'deviceId': deviceId,
+        }),
+        headers: {'Content-Type': 'application/json'},
+      );
+      var responseBody = json.decode(response.body);
+      if (response.statusCode != 200) {
+        String msg = responseBody['message'];
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(msg),
+            backgroundColor: Colors.red,
+          ),
+        ); // Close the dialog
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error Sending Device Id')),
+      );
+    }
+  }
+
   Future<void> _login() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
@@ -58,6 +86,8 @@ class _LoginPageState extends State<LoginPage> {
         _prefs.setString('userId', responseBody['userId']);
         _prefs.setString('userType', responseBody['userType']);
         _prefs.setString('token', responseBody['token']);
+        String? deviceToken = _prefs.getString('deviceToken');
+        sendDeviceId('${responseBody['userId']}', deviceToken!);
         // Redirect to home
         _redirectToHome(responseBody['userType']);
       } else {
@@ -71,6 +101,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred'),

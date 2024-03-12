@@ -9,6 +9,7 @@ import 'package:fish_link/homescreen/seller_home.dart';
 import 'package:fish_link/screens/add_catch.dart';
 import 'package:fish_link/screens/my_catches.dart';
 import 'package:fish_link/screens/edit_catches.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -87,6 +88,7 @@ class _AuthCheckerState extends State<AuthChecker> {
   @override
   void initState() {
     super.initState();
+    initOneSignal();
     _checkAuth();
   }
 
@@ -103,6 +105,26 @@ class _AuthCheckerState extends State<AuthChecker> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> initOneSignal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+
+    // OneSignal Initialization
+    OneSignal.shared.setAppId("4e0cccf9-332a-4d02-9d25-3004704064d1");
+
+    // Optional: Prompt for notification permissions
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
+
+    OneSignal.shared.getDeviceState().then((deviceState) {
+      if (deviceState == null || deviceState.userId == null) return;
+
+      final deviceToken = deviceState.userId;
+      prefs.setString('deviceToken', deviceToken!);
+    });
   }
 
   @override
