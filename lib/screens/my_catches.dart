@@ -233,6 +233,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                         Text('Status: ${catchDetails['status']}'),
                         if (catchDetails['status'] == 'sold')
                           Text('Winner: ${catchDetails['highestBidder']}'),
+                        if (catchDetails['rating'] != null)
+                          Text('Rating: ${catchDetails['rating']}'),
                       ],
                     ),
                     trailing: Row(
@@ -253,7 +255,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                               _deleteCatch(catchDetails['_id']);
                             },
                           ),
-                        if (catchDetails['status'] == 'sold')
+                        if (catchDetails['status'] == 'sold' &&
+                            catchDetails['rating'] == null)
                           IconButton(
                             icon: const Icon(Icons.star),
                             onPressed: () {
