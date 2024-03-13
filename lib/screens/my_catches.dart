@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
@@ -97,22 +98,40 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
     }
   }
 
-  void _showRatingPopup(BuildContext context, String catchId, String buyerId) {
+  void _showRatingPopup(BuildContext context, String catchId, String sellerId) {
+    double _rating = 0;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Rate Buyer'),
+          title: const Text('Rate Seller'),
           content: SingleChildScrollView(
             child: Column(
               children: [
                 const Text('Provide your rating:'),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  controller: _ratingController,
-                  decoration: const InputDecoration(
-                    labelText: 'Rating',
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RatingBar.builder(
+                      initialRating: _rating,
+                      minRating: 0,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(
+                          horizontal: 2.0), // Reduced padding
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (value) {
+                        setState(() {
+                          _rating = value;
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 TextField(
                   controller: _feedbackController,
@@ -127,8 +146,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
             ElevatedButton(
               onPressed: () {
                 String feedback = _feedbackController.text.trim();
-                int rating = int.parse(_ratingController.text.trim());
-                _submitRating(catchId, buyerId, rating, feedback);
+                _submitRating(catchId, sellerId, _rating.toInt(), feedback);
                 Navigator.of(context).pop();
               },
               child: const Text('Submit'),
@@ -228,12 +246,13 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                   arguments: catchDetails);
                             },
                           ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            _deleteCatch(catchDetails['_id']);
-                          },
-                        ),
+                        if (catchDetails['status'] == 'available')
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              _deleteCatch(catchDetails['_id']);
+                            },
+                          ),
                         if (catchDetails['status'] == 'sold')
                           IconButton(
                             icon: const Icon(Icons.star),
