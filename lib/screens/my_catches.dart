@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
@@ -14,6 +15,9 @@ class MyCatchesPage extends StatefulWidget {
 
 class _MyCatchesPageState extends State<MyCatchesPage> {
   List<dynamic> myCatches = [];
+  late final TextEditingController _feedbackController =
+      TextEditingController();
+  late final TextEditingController _ratingController = TextEditingController();
 
   @override
   void initState() {
@@ -22,7 +26,6 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
   }
 
   Future<void> _fetchMyCatches() async {
-    // Replace with your API endpoint for fetching seller's catches
     String apiUrl = Api.sellerCatchesUrl;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('userId');
@@ -55,21 +58,13 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
   }
 
   String formatDateTime(String datetimeString) {
-    // Parse the datetime string into a DateTime object
     DateTime datetime = DateTime.parse(datetimeString);
-
-    // Convert the DateTime object to local time
     DateTime localDatetime = datetime.toLocal();
-
-    // Define the date and time format
     DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');
-
-    // Format the local datetime and return the formatted string
     return formatter.format(localDatetime);
   }
 
   Future<void> _deleteCatch(String catchId) async {
-    // Replace with your API endpoint for deleting a catch
     String apiUrl = Api.deleteCatchUrl;
     try {
       final response = await http.get(
@@ -78,18 +73,14 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
       );
 
       if (response.statusCode == 200) {
-        // Catch deleted successfully, you can update the UI or show a message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Catch deleted successfully'),
             backgroundColor: Colors.green,
           ),
         );
-
-        // Refresh the list of catches after deletion
         _fetchMyCatches();
       } else {
-        // Failed to delete catch, show an error message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to delete catch'),
@@ -98,13 +89,117 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
         );
       }
     } catch (e) {
-      // An error occurred, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred'),
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  void _showRatingPopup(BuildContext context, String catchId, String sellerId) {
+    double _rating = 0;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Rate Seller'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text('Provide your rating:'),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RatingBar.builder(
+                      initialRating: _rating,
+                      minRating: 0,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(
+                          horizontal: 2.0), // Reduced padding
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (value) {
+                        setState(() {
+                          _rating = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                TextField(
+                  controller: _feedbackController,
+                  decoration: const InputDecoration(
+                    labelText: 'Feedback (Optional)',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                String feedback = _feedbackController.text.trim();
+                _submitRating(catchId, sellerId, _rating.toInt(), feedback);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Submit'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _submitRating(
+      String catchId, String buyerId, int rating, String feedback) async {
+    try {
+      // Create the rating data object
+      Map<String, dynamic> ratingData = {
+        'userId': buyerId,
+        'catchId': catchId,
+        'rating': rating,
+        'feedback': feedback,
+      };
+
+      // Convert the rating data to JSON
+      String jsonData = jsonEncode(ratingData);
+
+      // Make the POST request to the server
+      final response = await http.post(
+        Uri.parse(Api.createRatingUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonData,
+      );
+
+      // Check if the request was successful (status code 201)
+      if (response.statusCode == 201) {
+        print('Success');
+        // Rating created successfully, you can handle this as needed
+        // For example, show a success message or update the UI
+      } else {
+        // Rating creation failed, show an error message
+        print('Failed to create rating: ${response.statusCode}');
+        // You can handle this as needed, e.g., show a snackbar with an error message
+      }
+    } catch (error) {
+      // An error occurred, handle it accordingly
+      print('Error creating rating: $error');
+      // You can handle this as needed, e.g., show a snackbar with an error message
     }
   }
 
@@ -137,28 +232,38 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                             'End Time: ${formatDateTime(catchDetails['endTime'])}'),
                         Text('Status: ${catchDetails['status']}'),
                         if (catchDetails['status'] == 'sold')
-                          Text(
-                              'Winner: ${catchDetails['winner']['name']} (${catchDetails['winner']['email']})'),
+                          Text('Winner: ${catchDetails['highestBidder']}'),
+                        if (catchDetails['rating'] != null)
+                          Text('Rating: ${catchDetails['rating']}'),
                       ],
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            // Navigate to the edit page with catchDetails
-                            Navigator.pushNamed(context, '/edit_catches',
-                                arguments: catchDetails);
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            // Implement delete catch logic
-                            _deleteCatch(catchDetails['_id']);
-                          },
-                        ),
+                        if (catchDetails['status'] == 'available')
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/edit_catches',
+                                  arguments: catchDetails);
+                            },
+                          ),
+                        if (catchDetails['status'] == 'available')
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              _deleteCatch(catchDetails['_id']);
+                            },
+                          ),
+                        if (catchDetails['status'] == 'sold' &&
+                            catchDetails['rating'] == null)
+                          IconButton(
+                            icon: const Icon(Icons.star),
+                            onPressed: () {
+                              _showRatingPopup(context, catchDetails['_id'],
+                                  catchDetails['highestBidder']);
+                            },
+                          ),
                       ],
                     ),
                   ),
