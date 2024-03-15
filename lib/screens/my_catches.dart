@@ -17,7 +17,6 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
   List<dynamic> myCatches = [];
   late final TextEditingController _feedbackController =
       TextEditingController();
-  late final TextEditingController _ratingController = TextEditingController();
 
   @override
   void initState() {
@@ -119,7 +118,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       direction: Axis.horizontal,
                       allowHalfRating: true,
                       itemCount: 5,
-                      itemPadding: EdgeInsets.symmetric(
+                      itemPadding: const EdgeInsets.symmetric(
                           horizontal: 2.0), // Reduced padding
                       itemBuilder: (context, _) => const Icon(
                         Icons.star,
