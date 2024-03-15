@@ -11,8 +11,7 @@ class Api {
   static const String placeBidUrl = '$baseUrl/api/placeBid';
   static const String catchDetailsUrl = '$baseUrl/api/catch';
   static const String fetchbids = '$baseUrl/api/my-bids';
-  static const String createRatingUrl =
-      '$baseUrl/api/ratings'; // New endpoint for creating ratings
+  static const String createRatingUrl = '$baseUrl/api/ratings';
   static String getRatingsByCatchIdUrl(String catchId) =>
-      '$baseUrl/api/ratings/$catchId'; // New endpoint for getting ratings by catchId
+      '$baseUrl/api/ratings/$catchId';
 }
