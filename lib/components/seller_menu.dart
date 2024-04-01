@@ -55,7 +55,7 @@ class SellerHomeMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.history),
+            leading: const Icon(Icons.add),
             title: const Text(
               'Add Catches',
               style: TextStyle(fontWeight: FontWeight.bold),
