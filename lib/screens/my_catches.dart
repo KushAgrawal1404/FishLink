@@ -104,7 +104,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Rate Seller'),
+          title: const Text('Rate Buyer'),
           content: SingleChildScrollView(
             child: Column(
               children: [
