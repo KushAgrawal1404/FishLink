@@ -14,4 +14,5 @@ class Api {
   static const String createRatingUrl = '$baseUrl/api/ratings';
   static String getRatingsByCatchIdUrl(String catchId) =>
       '$baseUrl/api/ratings/$catchId';
+  static const String analyticsUrl = '$baseUrl/api/available';
 }
