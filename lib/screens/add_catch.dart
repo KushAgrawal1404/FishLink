@@ -35,7 +35,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
     if (_startTime == null || _endTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select start time and end time'),
+          content: Text('Please select start date and end date'),
           backgroundColor: Colors.red,
         ),
       );
@@ -86,48 +86,6 @@ class _AddCatchPageState extends State<AddCatchPage> {
           backgroundColor: Colors.red,
         ),
       );
-    }
-  }
-
-  Future<void> _selectStartTime() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      final TimeOfDay? timePicked = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
-      if (timePicked != null) {
-        setState(() {
-          _startTime = DateTime(picked.year, picked.month, picked.day,
-              timePicked.hour, timePicked.minute);
-        });
-      }
-    }
-  }
-
-  Future<void> _selectEndTime() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      final TimeOfDay? timePicked = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
-      if (timePicked != null) {
-        setState(() {
-          _endTime = DateTime(picked.year, picked.month, picked.day,
-              timePicked.hour, timePicked.minute);
-        });
-      }
     }
   }
 
@@ -183,6 +141,48 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
+  Future<void> _selectStartTime() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      final TimeOfDay? timePicked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (timePicked != null) {
+        setState(() {
+          _startTime = DateTime(picked.year, picked.month, picked.day,
+              timePicked.hour, timePicked.minute);
+        });
+      }
+    }
+  }
+
+  Future<void> _selectEndTime() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      final TimeOfDay? timePicked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (timePicked != null) {
+        setState(() {
+          _endTime = DateTime(picked.year, picked.month, picked.day,
+              timePicked.hour, timePicked.minute);
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,44 +197,116 @@ class _AddCatchPageState extends State<AddCatchPage> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _locationController,
-                decoration: const InputDecoration(labelText: 'Location'),
+                decoration: const InputDecoration(
+                  labelText: 'Location',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _basePriceController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Base Price'),
+                decoration: const InputDecoration(
+                  labelText: 'Base Price',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _quantityController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Quantity'),
+                decoration: const InputDecoration(
+                  labelText: 'Quantity',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
-              // Start Time Picker
               ElevatedButton(
                 onPressed: _selectStartTime,
-                child: const Text('Select Start Time'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Select Start Date',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
               ),
-              if (_startTime != null) Text('Start Time: $_startTime'),
+              if (_startTime != null) Text('Start Date: $_startTime'),
               const SizedBox(height: 16),
-              // End Time Picker
               ElevatedButton(
                 onPressed: _selectEndTime,
-                child: const Text('Select End Time'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Select End Date',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
               ),
-              if (_endTime != null) Text('End Time: $_endTime'),
+              if (_endTime != null) Text('End Date: $_endTime'),
               const SizedBox(height: 16),
-              // Image Picker
               ElevatedButton(
                 onPressed: _selectImages,
-                child: const Text('Pick Images'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Pick Images',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
               ),
               // Display selected images
               if (images.isNotEmpty)
@@ -282,7 +354,6 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   ],
                 ),
               const SizedBox(height: 16),
-              // Fetch email from SharedPreferences
               FutureBuilder<String>(
                 future: _loadEmail(),
                 builder: (context, snapshot) {
@@ -291,7 +362,20 @@ class _AddCatchPageState extends State<AddCatchPage> {
                       onPressed: () {
                         _addCatch(snapshot.data!);
                       },
-                      child: const Text('Add Catch'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'Add Catch',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
                     );
                   } else {
                     return const CircularProgressIndicator();
