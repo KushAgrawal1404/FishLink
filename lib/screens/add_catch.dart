@@ -42,6 +42,17 @@ class _AddCatchPageState extends State<AddCatchPage> {
       return;
     }
 
+    // Check if end time is before start time
+    if (_endTime!.isBefore(_startTime!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('End date cannot be before start date'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     // Your add catch API endpoint
     String apiUrl = Api.addCatchUrl;
 
@@ -162,11 +173,21 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
-  Future<void> _selectEndTime() async {
+    Future<void> _selectEndTime() async {
+    if (_startTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select the start date first'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: _startTime ?? DateTime.now(),
+      firstDate: _startTime ?? DateTime.now(),
       lastDate: DateTime(2101),
     );
     if (picked != null) {
@@ -182,6 +203,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
