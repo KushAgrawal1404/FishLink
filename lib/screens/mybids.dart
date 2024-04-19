@@ -1,41 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class BidService {
-  
-  static Future<List<dynamic>> getMyBids(String userId) async {
-    try {
-      final response = await http.get(
-        Uri.parse('${Api.fetchbids}/$userId'),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        // Handle error response
-        throw Exception('Failed to fetch bids');
-      }
-    } catch (e) {
-      // Handle network error
-      throw Exception('Network error: $e');
-    }
-  }
-
-}
+import 'package:fish_link/utils/api.dart';
 
 class MyBidsPage extends StatefulWidget {
   const MyBidsPage({Key? key}) : super(key: key);
 
   @override
-  State<MyBidsPage> createState() => _MyBidsPageState();
+  _MyBidsPageState createState() => _MyBidsPageState();
 }
 
 class _MyBidsPageState extends State<MyBidsPage> {
-  late SharedPreferences _prefs;
   List<dynamic> myBids = [];
 
   @override
@@ -45,43 +21,74 @@ class _MyBidsPageState extends State<MyBidsPage> {
   }
 
   Future<void> _fetchMyBids() async {
-    _prefs = await SharedPreferences.getInstance();
-    // Check if user already logged in
-    String? userId = _prefs.getString('userId');
-    // Replace 'userId' with the actual logged-in user's ID
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userId') ?? '';
+    String apiUrl = '${Api.fetchbids}/$userId';
 
     try {
-      final bids = await BidService.getMyBids(userId!);
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        List<dynamic> bids = jsonDecode(response.body);
+        List<dynamic> updatedMyBids = [];
 
-      setState(() {
-        myBids = bids;
-      });
+        for (var bid in bids) {
+          final catchResponse = await http
+              .get(Uri.parse('${Api.catchDetailsUrl}/${bid['catchId']}'));
+          if (catchResponse.statusCode == 200) {
+            var catchDetails = jsonDecode(catchResponse.body);
+            Map<String, dynamic> mergedDetails = {...bid, 'catchDetails': catchDetails};
+            updatedMyBids.add(mergedDetails);
+          }
+        }
+
+        setState(() {
+          myBids = updatedMyBids;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to fetch my bids'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } catch (e) {
-      // Handle error
-      print('Error fetching bids: $e');
+      print('Error fetching my bids: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Build your UI using the 'myBids' list
-    // Example: ListView.builder, GridView.builder, etc.
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Bids'),
+        title: Text('My Bids'),
       ),
       body: myBids.isEmpty
-          ? const Center(
-              child: Text('No bids found'),
-            )
-          : ListView.builder(
+          ? Center(child: Text('No bids found'))
+          : ListView.separated(
               itemCount: myBids.length,
+              separatorBuilder: (BuildContext context, int index) => Divider(),
               itemBuilder: (context, index) {
-                var bidDetails = myBids[index];
-                // Build UI for each bid
-                return ListTile(
-                  title: Text('Bid Amount: ${bidDetails['bidAmount']}'),
-                  // Add more details as needed
+                var bid = myBids[index];
+                var catchDetails = bid['catchDetails'];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Catch Name: ${catchDetails['name']}',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(height: 4),
+                      Text('My Current Bid: ${bid['bidAmount']}'),
+                      Text('Highest Current Bid: ${catchDetails['currentBid']}'),
+                    ],
+                  ),
                 );
               },
             ),
