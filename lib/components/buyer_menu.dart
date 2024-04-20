@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/screens/mybids.dart';
+import 'package:fish_link/screens/buyerAnalytics.dart';
 
 class BuyerHomeMenu extends StatelessWidget {
   const BuyerHomeMenu({Key? key}) : super(key: key);
@@ -58,6 +59,22 @@ class BuyerHomeMenu extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.analytics),
+            title: const Text(
+              'Buyer Analytics',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.pop(context); // Close the drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BuyerAnalyticsPage()), // Navigate to buyer analytics page
+              );
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text(
               'Logout',
@@ -73,5 +90,4 @@ class BuyerHomeMenu extends StatelessWidget {
       ),
     );
   }
-  
 }
