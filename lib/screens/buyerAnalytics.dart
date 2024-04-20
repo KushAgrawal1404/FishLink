@@ -60,37 +60,29 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildAnalyticsItem('Bids Placed:', bidsPlaced),
+            _buildAnalyticsItem('Bids Won:', bidsWon),
             _buildAnalyticsItem(
-                Icons.shopping_basket, 'Bids Placed:', bidsPlaced as String),
+                'Average Spending:', averageSpending.toStringAsFixed(2)),
             _buildAnalyticsItem(
-                Icons.check_circle, 'Bids Won:', bidsWon as String),
-            _buildAnalyticsItem(Icons.monetization_on, 'Average Spending:',
-                '\$${averageSpending.toStringAsFixed(2)}'),
-            _buildAnalyticsItem(Icons.attach_money, 'Most Amount Spent:',
-                '\$${mostAmountSpent.toStringAsFixed(2)}'),
-            _buildAnalyticsItem(Icons.money_off, 'Least Amount Spent:',
-                '\$${leastAmountSpent.toStringAsFixed(2)}'),
+                'Most Amount Spent:', mostAmountSpent.toStringAsFixed(2)),
+            _buildAnalyticsItem(
+                'Least Amount Spent:', leastAmountSpent.toStringAsFixed(2)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAnalyticsItem(IconData icon, String label, String value) {
+  Widget _buildAnalyticsItem(String label, dynamic value) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, color: Colors.blue),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(value, style: TextStyle(fontSize: 16)),
-            ],
-          ),
+          Text(label, style: TextStyle(fontSize: 16)),
+          Text(value.toString(),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ],
       ),
     );
