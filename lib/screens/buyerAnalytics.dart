@@ -60,29 +60,37 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAnalyticsItem('Bids Placed:', bidsPlaced),
-            _buildAnalyticsItem('Bids Won:', bidsWon),
             _buildAnalyticsItem(
-                'Average Spending:', averageSpending.toStringAsFixed(2)),
+                Icons.shopping_basket, 'Bids Placed:', bidsPlaced.toString()),
             _buildAnalyticsItem(
-                'Most Amount Spent:', mostAmountSpent.toStringAsFixed(2)),
-            _buildAnalyticsItem(
-                'Least Amount Spent:', leastAmountSpent.toStringAsFixed(2)),
+                Icons.check_circle, 'Bids Won:', bidsWon.toString()),
+            _buildAnalyticsItem(Icons.monetization_on, 'Average Spending:',
+                '\$${averageSpending.toStringAsFixed(2)}'),
+            _buildAnalyticsItem(Icons.attach_money, 'Most Amount Spent:',
+                '\$${mostAmountSpent.toStringAsFixed(2)}'),
+            _buildAnalyticsItem(Icons.money_off, 'Least Amount Spent:',
+                '\$${leastAmountSpent.toStringAsFixed(2)}'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAnalyticsItem(String label, dynamic value) {
+  Widget _buildAnalyticsItem(IconData icon, String label, String value) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: 16)),
-          Text(value.toString(),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Icon(icon, color: Colors.blue),
+          SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text(value, style: TextStyle(fontSize: 16)),
+            ],
+          ),
         ],
       ),
     );
