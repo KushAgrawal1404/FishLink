@@ -218,22 +218,35 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                 var catchDetails = myCatches[index];
                 return Card(
                   child: ListTile(
-                    title: Text(catchDetails['name']),
+                    title: Text(
+                      catchDetails['name'],
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    tileColor: Colors.blue.withOpacity(0.1),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Location: ${catchDetails['location']}'),
-                        Text('Base Price: ${catchDetails['basePrice']}'),
-                        Text('Quantity: ${catchDetails['quantity']}'),
+                        Text('Location: ${catchDetails['location']}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text('Base Price: ${catchDetails['basePrice']}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text('Quantity: ${catchDetails['quantity']}',
+                            style: const TextStyle(fontSize: 16)),
                         Text(
-                            'Start Time: ${formatDateTime(catchDetails['startTime'])}'),
+                            'Start Time: ${formatDateTime(catchDetails['startTime'])}',
+                            style: const TextStyle(fontSize: 16)),
                         Text(
-                            'End Time: ${formatDateTime(catchDetails['endTime'])}'),
-                        Text('Status: ${catchDetails['status']}'),
+                            'End Time: ${formatDateTime(catchDetails['endTime'])}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text('Status: ${catchDetails['status']}',
+                            style: const TextStyle(fontSize: 16)),
                         if (catchDetails['status'] == 'sold')
-                          Text('Winner: ${catchDetails['highestBidder']}'),
+                          Text('Winner: ${catchDetails['highestBidder']}',
+                              style: const TextStyle(fontSize: 16)),
                         if (catchDetails['rating'] != null)
-                          Text('Rating: ${catchDetails['rating']}'),
+                          Text('Rating: ${catchDetails['rating']}',
+                              style: const TextStyle(fontSize: 16)),
                       ],
                     ),
                     trailing: Row(

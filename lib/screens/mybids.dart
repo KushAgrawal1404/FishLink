@@ -36,7 +36,10 @@ class _MyBidsPageState extends State<MyBidsPage> {
               .get(Uri.parse('${Api.catchDetailsUrl}/${bid['catchId']}'));
           if (catchResponse.statusCode == 200) {
             var catchDetails = jsonDecode(catchResponse.body);
-            Map<String, dynamic> mergedDetails = {...bid, 'catchDetails': catchDetails};
+            Map<String, dynamic> mergedDetails = {
+              ...bid,
+              'catchDetails': catchDetails
+            };
             updatedMyBids.add(mergedDetails);
           }
         }
@@ -46,7 +49,7 @@ class _MyBidsPageState extends State<MyBidsPage> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Failed to fetch my bids'),
             backgroundColor: Colors.red,
           ),
@@ -55,7 +58,7 @@ class _MyBidsPageState extends State<MyBidsPage> {
     } catch (e) {
       print('Error fetching my bids: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('An error occurred'),
           backgroundColor: Colors.red,
         ),
@@ -67,13 +70,14 @@ class _MyBidsPageState extends State<MyBidsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Bids'),
+        title: const Text('My Bids'),
       ),
       body: myBids.isEmpty
-          ? Center(child: Text('No bids found'))
+          ? const Center(child: Text('No bids found'))
           : ListView.separated(
               itemCount: myBids.length,
-              separatorBuilder: (BuildContext context, int index) => Divider(),
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
               itemBuilder: (context, index) {
                 var bid = myBids[index];
                 var catchDetails = bid['catchDetails'];
@@ -83,10 +87,11 @@ class _MyBidsPageState extends State<MyBidsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Catch Name: ${catchDetails['name']}',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      SizedBox(height: 4),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 4),
                       Text('My Current Bid: ${bid['bidAmount']}'),
-                      Text('Highest Current Bid: ${catchDetails['currentBid']}'),
+                      Text(
+                          'Highest Current Bid: ${catchDetails['currentBid']}'),
                     ],
                   ),
                 );

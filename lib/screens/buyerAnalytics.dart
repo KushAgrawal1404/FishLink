@@ -82,13 +82,14 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
       child: Row(
         children: [
           Icon(icon, color: Colors.blue),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(value, style: TextStyle(fontSize: 16)),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+              Text(value, style: const TextStyle(fontSize: 16)),
             ],
           ),
         ],
