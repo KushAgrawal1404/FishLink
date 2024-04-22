@@ -92,17 +92,26 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                         ? Api.baseUrl + images[0]
                         : ''; // Construct the full image URL
 
+                    // Get the current time
+                    DateTime currentTime = DateTime.now();
+                    // Convert the start time string to DateTime object
+                    DateTime bidStartTime = DateTime.parse(catchDetails['startTime']);
+                    
+                    // Check if the current time is less than the bid start time
+                    bool isBiddingStarted = currentTime.isAfter(bidStartTime);
+
                     return GestureDetector(
-                      onTap: () {
-                        // Navigate to the CatchDetailsPage when the item is tapped
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CatchDetailsPage(catchId: catchDetails['_id']),
-                          ),
-                        );
-                      },
+                      onTap: isBiddingStarted
+                          ? () {
+                              // Navigate to the CatchDetailsPage when the item is tapped
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CatchDetailsPage(catchId: catchDetails['_id']),
+                                ),
+                              );
+                            }
+                          : null, // Make the bid not clickable if bidding has not started
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -136,6 +145,11 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                         'Starts: ${formatDateTime(catchDetails['startTime'])}'),
                                     Text(
                                         'Ends: ${formatDateTime(catchDetails['endTime'])}'),
+                                    if (!isBiddingStarted)
+                                      Text(
+                                        'Bidding is not started yet',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -157,3 +171,4 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
         ''; // Assuming 'name' is the key for the name in SharedPreferences
   }
 }
+
