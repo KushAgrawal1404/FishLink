@@ -194,7 +194,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                     _postBid(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
                     elevation: 3,
                     shape: RoundedRectangleBorder(
