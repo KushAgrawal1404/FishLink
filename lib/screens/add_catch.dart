@@ -173,7 +173,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
-    Future<void> _selectEndTime() async {
+  Future<void> _selectEndTime() async {
     if (_startTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -204,8 +204,6 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,12 +220,22 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Name',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                 ),
               ),
@@ -236,12 +244,22 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 controller: _locationController,
                 decoration: const InputDecoration(
                   labelText: 'Location',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                 ),
               ),
@@ -251,12 +269,22 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Base Price',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                 ),
               ),
@@ -266,68 +294,90 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Quantity',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0), // Set border radius here
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _selectStartTime,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              SizedBox(
+                width: 400, // <-- Your width
+                height: 50, // <-- Your height
+                child: ElevatedButton(
+                  onPressed: _selectStartTime,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Select Start Date',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                  child: const Text(
+                    'Select Start Date',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
               if (_startTime != null) Text('Start Date: $_startTime'),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _selectEndTime,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              SizedBox(
+                width: 400, // <-- Your width
+                height: 50, // <-- Your height
+                child: ElevatedButton(
+                  onPressed: _selectEndTime,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Select End Date',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                  child: const Text(
+                    'Select End Date',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
               if (_endTime != null) Text('End Date: $_endTime'),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _selectImages,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              SizedBox(
+                width: 400, // <-- Your width
+                height: 50, // <-- Your height
+                child: ElevatedButton(
+                  onPressed: _selectImages,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Pick Images',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                  child: const Text(
+                    'Pick Images',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
@@ -381,22 +431,26 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 future: _loadEmail(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        _addCatch(snapshot.data!);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    return SizedBox(
+                      width: 400, // <-- Your width
+                      height: 50, // <-- Your height
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _addCatch(snapshot.data!);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Add Catch',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+                        child: const Text(
+                          'Add Catch',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     );
