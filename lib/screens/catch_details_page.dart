@@ -183,10 +183,11 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                     'Current Price:', '₹${catchDetails['currentBid']}'),
                 _buildListItem(
                     'Highest bidder:', catchDetails['highestBidder']),
-                _buildListItem('Quantity', catchDetails['quantity']),
+                _buildListItem('Quantity:', catchDetails['quantity']),
                 _buildListItem(
-                    'Starts', formatDateTime(catchDetails['startTime'])),
-                _buildListItem('Ends', formatDateTime(catchDetails['endTime'])),
+                    'Starts:', formatDateTime(catchDetails['startTime'])),
+                _buildListItem(
+                    'Ends:', formatDateTime(catchDetails['endTime'])),
 
                 // Add a button to place bid
                 ElevatedButton(
