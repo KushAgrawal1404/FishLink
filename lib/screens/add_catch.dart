@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fish_link/utils/api.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -204,6 +205,15 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
+  String? formatDateTime(DateTime? datetime) {
+    if (datetime == null) {
+      return null; // Return null if datetime is null
+    }
+    DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');
+    DateTime localDatetime = datetime.toLocal();
+    return formatter.format(localDatetime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -335,7 +345,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   ),
                 ),
               ),
-              if (_startTime != null) Text('Start Date: $_startTime'),
+              if (_startTime != null)
+                Text('Start Date: ${formatDateTime(_startTime)}'),
               const SizedBox(height: 16),
               SizedBox(
                 width: 400, // <-- Your width
@@ -358,7 +369,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   ),
                 ),
               ),
-              if (_endTime != null) Text('End Date: $_endTime'),
+              if (_endTime != null)
+                Text('End Date: ${formatDateTime(_endTime)}'),
               const SizedBox(height: 16),
               SizedBox(
                 width: 400, // <-- Your width

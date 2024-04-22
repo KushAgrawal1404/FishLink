@@ -12,8 +12,7 @@ class Api {
   static const String catchDetailsUrl = '$baseUrl/api/catch';
   static const String fetchbids = '$baseUrl/api/my-bids';
   static const String createRatingUrl = '$baseUrl/api/ratings';
-  static String getRatingsByCatchIdUrl(String catchId) =>
-      '$baseUrl/api/ratings/$catchId';
+  static const String getRatingsByCatchIdUrl = '$baseUrl/api/ratings';
   static const String analyticsUrl = '$baseUrl/api/analytics';
   static const String userProfileUrl = '$baseUrl/api/userProfile';
 }

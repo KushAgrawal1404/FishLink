@@ -173,21 +173,35 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                     },
                   ),
                 ),
-
+                const SizedBox(
+                  height: 16,
+                ),
                 // Display other catch details
-                Text('Location: ${catchDetails['location']}'),
-                Text('Base Price: ₹${catchDetails['basePrice']}'),
-                Text('Current Price: ₹${catchDetails['currentBid']}'),
-                Text('Highest bidder: ${catchDetails['highestBidder']}'),
-                Text('Quantity: ${catchDetails['quantity']}'),
-                Text('Starts: ${formatDateTime(catchDetails['startTime'])}'),
-                Text('Ends: ${formatDateTime(catchDetails['endTime'])}'),
+                _buildListItem('Location:', catchDetails['location']),
+                _buildListItem('Base Price:', '₹${catchDetails['basePrice']}'),
+                _buildListItem(
+                    'Current Price:', '₹${catchDetails['currentBid']}'),
+                _buildListItem(
+                    'Highest bidder:', catchDetails['highestBidder']),
+                _buildListItem('Quantity:', catchDetails['quantity']),
+                _buildListItem(
+                    'Starts:', formatDateTime(catchDetails['startTime'])),
+                _buildListItem(
+                    'Ends:', formatDateTime(catchDetails['endTime'])),
 
                 // Add a button to place bid
                 ElevatedButton(
                   onPressed: () {
                     _postBid(context);
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: const Text('Place Bid'),
                 ),
               ],
@@ -195,6 +209,35 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
           : const Center(
               child: CircularProgressIndicator(),
             ),
+    );
+  }
+
+  Widget _buildListItem(String label, dynamic value) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(12),
+      child: ListTile(
+        title: Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 18,
+          ),
+        ),
+        trailing: Text(
+          label == 'Total Revenue:' ? '₹ $value' : value.toString(),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+            fontSize: 18,
+          ),
+        ),
+      ),
     );
   }
 
