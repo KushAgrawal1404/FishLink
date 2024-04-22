@@ -67,6 +67,18 @@ class SellerHomeMenu extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text(
+              'Seller Profile',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              // Handle navigation to seller profile screen
+              Navigator.pop(context); // Close the drawer
+              Navigator.pushNamed(context, '/seller_profile');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text(
               'Logout',
