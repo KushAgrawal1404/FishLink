@@ -223,6 +223,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
+                    tileColor: Colors.blue.withOpacity(0.1),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
