@@ -4,14 +4,14 @@ import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SellerProfilePage extends StatefulWidget {
-  const SellerProfilePage({Key? key}) : super(key: key);
+class BuyerProfilePage extends StatefulWidget {
+  const BuyerProfilePage({Key? key}) : super(key: key);
 
   @override
-  _SellerProfilePageState createState() => _SellerProfilePageState();
+  _BuyerProfilePageState createState() => _BuyerProfilePageState();
 }
 
-class _SellerProfilePageState extends State<SellerProfilePage> {
+class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Map<String, dynamic>? userProfile;
 
   @override
@@ -26,7 +26,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
     String userId = prefs.getString('userId') ?? '';
     try {
       final response =
-          await http.get(Uri.parse('${Api.userProfileUrl}/seller/$userId'));
+          await http.get(Uri.parse('${Api.userProfileUrl}/buyer/$userId'));
       if (response.statusCode == 200) {
         setState(() {
           userProfile = json.decode(response.body);
@@ -44,7 +44,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Profile'),
+        title: Text('Buyer Profile'),
       ),
       body: userProfile == null
           ? Center(child: CircularProgressIndicator())

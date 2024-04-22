@@ -1,3 +1,4 @@
+import 'package:fish_link/screens/buyer_profile.dart';
 import 'package:fish_link/screens/seller_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,6 +59,8 @@ class MyApp extends StatelessWidget {
                     catchDetails: arguments as Map<String, dynamic>);
               case '/seller_profile':
                 return const SellerProfilePage();
+              case '/buyer_profile':
+                return const BuyerProfilePage();
               default:
                 return const LoginPage();
             }

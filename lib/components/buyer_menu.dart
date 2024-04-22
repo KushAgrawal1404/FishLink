@@ -58,6 +58,7 @@ class BuyerHomeMenu extends StatelessWidget {
               );
             },
           ),
+
           ListTile(
             leading: const Icon(Icons.analytics),
             title: const Text(
@@ -72,6 +73,19 @@ class BuyerHomeMenu extends StatelessWidget {
                     builder: (context) =>
                         BuyerAnalyticsPage()), // Navigate to buyer analytics page
               );
+            },
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text(
+              'My Profile',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              // Handle navigation to seller profile screen
+              Navigator.pop(context); // Close the drawer
+              Navigator.pushNamed(context, '/buyer_profile');
             },
           ),
           ListTile(
