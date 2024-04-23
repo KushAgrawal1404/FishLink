@@ -12,6 +12,8 @@ import 'package:fish_link/screens/add_catch.dart';
 import 'package:fish_link/screens/my_catches.dart';
 import 'package:fish_link/screens/edit_catches.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:fish_link/screens/mybids.dart';
+import 'package:fish_link/screens/buyerAnalytics.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,6 +63,10 @@ class MyApp extends StatelessWidget {
                 return const SellerProfilePage();
               case '/buyer_profile':
                 return const BuyerProfilePage();
+              case '/my_bids':
+                return const MyBidsPage();
+              case '/buyer_analytics':
+                return const BuyerAnalyticsPage();
               default:
                 return const LoginPage();
             }

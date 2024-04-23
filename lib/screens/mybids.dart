@@ -32,14 +32,10 @@ class _MyBidsPageState extends State<MyBidsPage> {
         List<dynamic> updatedMyBids = [];
 
         for (var bid in bids) {
-          final catchResponse = await http
-              .get(Uri.parse('${Api.catchDetailsUrl}/${bid['catchId']}'));
+          final catchResponse = await http.get(Uri.parse('${Api.catchDetailsUrl}/${bid['catchId']}'));
           if (catchResponse.statusCode == 200) {
             var catchDetails = jsonDecode(catchResponse.body);
-            Map<String, dynamic> mergedDetails = {
-              ...bid,
-              'catchDetails': catchDetails
-            };
+            Map<String, dynamic> mergedDetails = {...bid, 'catchDetails': catchDetails};
             updatedMyBids.add(mergedDetails);
           }
         }
@@ -74,25 +70,59 @@ class _MyBidsPageState extends State<MyBidsPage> {
       ),
       body: myBids.isEmpty
           ? const Center(child: Text('No bids found'))
-          : ListView.separated(
+          : ListView.builder(
               itemCount: myBids.length,
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
               itemBuilder: (context, index) {
                 var bid = myBids[index];
                 var catchDetails = bid['catchDetails'];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Catch Name: ${catchDetails['name']}',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      Text('My Current Bid: ${bid['bidAmount']}'),
-                      Text(
-                          'Highest Current Bid: ${catchDetails['currentBid']}'),
-                    ],
+                List<dynamic> images = catchDetails['images'];
+                String firstImageUrl = images.isNotEmpty ? Api.baseUrl + images[0] : '';
+                return GestureDetector(
+                  onTap: () {
+                    // Handle onTap if needed
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    margin: const EdgeInsets.only(left: 7, right: 7, bottom: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Display the first image if available
+                          if (firstImageUrl.isNotEmpty)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.network(
+                                firstImageUrl,
+                                width: 130,
+                                height: 130,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Catch Name: ${catchDetails['name']}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text('My Current Bid: ${bid['bidAmount']}'),
+                                Text('Highest Current Bid: ${catchDetails['currentBid']}'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
