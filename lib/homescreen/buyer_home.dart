@@ -125,19 +125,30 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                   String firstImageUrl = images.isNotEmpty
                                       ? Api.baseUrl + images[0]
                                       : '';
+                                  // Get the current time
+                                  DateTime currentTime = DateTime.now();
+                                  // Convert the start time string to DateTime object
+                                  DateTime bidStartTime =
+                                      DateTime.parse(catchDetails['startTime']);
 
+                                  // Check if the current time is less than the bid start time
+                                  bool isBiddingStarted =
+                                      currentTime.isAfter(bidStartTime);
                                   return GestureDetector(
-                                    onTap: () {
-                                      // Navigate to the CatchDetailsPage when the item is tapped
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              CatchDetailsPage(
-                                                  catchId: catchDetails['_id']),
-                                        ),
-                                      );
-                                    },
+                                    onTap: isBiddingStarted
+                                        ? () {
+                                            // Navigate to the CatchDetailsPage when the item is tapped
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CatchDetailsPage(
+                                                        catchId: catchDetails[
+                                                            '_id']),
+                                              ),
+                                            );
+                                          }
+                                        : null,
                                     child: Card(
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -174,6 +185,12 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                                       'Starts: ${formatDateTime(catchDetails['startTime'])}'),
                                                   Text(
                                                       'Ends: ${formatDateTime(catchDetails['endTime'])}'),
+                                                  if (!isBiddingStarted)
+                                                    const Text(
+                                                      'Bidding is not started yet',
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ),
                                                 ],
                                               ),
                                             ),
