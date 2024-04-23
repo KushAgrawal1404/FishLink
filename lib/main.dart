@@ -12,7 +12,7 @@ import 'package:fish_link/screens/add_catch.dart';
 import 'package:fish_link/screens/my_catches.dart';
 import 'package:fish_link/screens/edit_catches.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
+ 
 void main() {
   runApp(const MyApp());
 }

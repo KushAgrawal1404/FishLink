@@ -48,14 +48,80 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
       ),
       body: userProfile == null
           ? Center(child: CircularProgressIndicator())
-          : ListView(
+          : Container(
+              color: Colors.grey[200],
               padding: EdgeInsets.all(16.0),
-              children: <Widget>[
-                Text('Name: ${userProfile!['name']}'),
-                Text('Email: ${userProfile!['email']}'),
-                Text('Phone: ${userProfile!['phone']}'),
-                // Display other profile details as needed
-              ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Card(
+                    elevation: 3,
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Name: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            '${userProfile!['name']}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Card(
+                    elevation: 3,
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Email: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            '${userProfile!['email']}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Card(
+                    elevation: 3,
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Phone: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            '${userProfile!['phone']}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Add other profile details as needed
+                ],
+              ),
             ),
     );
   }
