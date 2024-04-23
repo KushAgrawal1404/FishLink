@@ -97,7 +97,6 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -122,7 +121,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                             : userProfile!['profilePic'] != null &&
                                     userProfile!['profilePic'] != ''
                                 ? NetworkImage(userProfile![
-                                    'profilePic']!) // Use the correct URL here
+                                    'profilePic']) // Use the correct URL here
                                 : AssetImage('assets/default_profile_pic.png')
                                     as ImageProvider,
                       ),
@@ -130,11 +129,11 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                   ),
                 ),
                 SizedBox(height: 16),
-                _buildProfileItem('Name', userProfile!['name']),
-                _buildProfileItem('Email', userProfile!['email']),
-                _buildProfileItem('Phone', userProfile!['phone']),
-                _buildEditableProfileItem('Bio', _bioController),
-                _buildEditableProfileItem('Harbour', _harbourController),
+                _buildProfileItemBox('Name', userProfile!['name']),
+                _buildProfileItemBox('Email', userProfile!['email']),
+                _buildProfileItemBox('Phone', userProfile!['phone']),
+                _buildEditableProfileItemBox('Bio', _bioController),
+                _buildEditableProfileItemBox('Harbour', _harbourController),
                 ElevatedButton(
                   onPressed: _isChanged
                       ? updateUserProfile
@@ -146,83 +145,103 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     );
   }
 
-  Widget _buildProfileItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+  Widget _buildProfileItemBox(String label, String value) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
-        ),
-        SizedBox(height: 8),
-        Text(value),
-        SizedBox(height: 16),
-      ],
+          SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildEditableProfileItem(
+  Widget _buildEditableProfileItemBox(
       String label, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: Text('Edit $label'),
-                    content: TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        labelText: label,
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Edit $label'),
+                      content: TextField(
+                        controller: controller,
+                        decoration: InputDecoration(
+                          labelText: label,
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (_) {
+                          setState(() {
+                            _isChanged = true;
+                          });
+                        },
                       ),
-                      onChanged: (_) {
-                        setState(() {
-                          _isChanged =
-                              true; // Set _isChanged to true when bio or harbour is changed
-                        });
-                      },
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: _isChanged
+                              ? () {
+                                  updateUserProfile();
+                                  Navigator.pop(context);
+                                }
+                              : null,
+                          child: Text('Save'),
+                        ),
+                      ],
                     ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('Cancel'),
-                      ),
-                      ElevatedButton(
-                        onPressed: _isChanged
-                            ? () {
-                                updateUserProfile(); // Update profile when editing bio or harbour
-                                Navigator.pop(context);
-                              }
-                            : null, // Disable button if nothing is changed
-                        child: Text('Save'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-        SizedBox(height: 8),
-        Text(controller.text),
-        SizedBox(height: 16),
-      ],
+                  );
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          Text(
+            controller.text,
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 }
