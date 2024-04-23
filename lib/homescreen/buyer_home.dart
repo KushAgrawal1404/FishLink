@@ -16,6 +16,8 @@ class BuyerHomePage extends StatefulWidget {
 
 class _BuyerHomePageState extends State<BuyerHomePage> {
   List<dynamic> catches = [];
+  List<dynamic> filteredCatches = [];
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -24,7 +26,6 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
   }
 
   Future<void> _fetchCatches() async {
-    // Replace with your API endpoint for fetching seller's catches
     String apiUrl = Api.catchesUrl;
     try {
       final response = await http.get(
@@ -35,6 +36,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
       if (response.statusCode == 200) {
         setState(() {
           catches = jsonDecode(response.body);
+          filteredCatches = catches;
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -55,16 +57,9 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
   }
 
   String formatDateTime(String datetimeString) {
-    // Parse the datetime string into a DateTime object
     DateTime datetime = DateTime.parse(datetimeString);
-
-    // Convert the DateTime object to local time
     DateTime localDatetime = datetime.toLocal();
-
-    // Define the date and time format
     DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');
-
-    // Format the local datetime and return the formatted string
     return formatter.format(localDatetime);
   }
 
@@ -78,73 +73,121 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
           appBar: AppBar(
             title: Text(title),
           ),
-          drawer: const BuyerHomeMenu(), // Integrate the buyer menu panel here
+          drawer: const BuyerHomeMenu(),
           body: catches.isEmpty
               ? const Center(
                   child: Text('No catches found'),
                 )
-              : ListView.builder(
-                  itemCount: catches.length,
-                  itemBuilder: (context, index) {
-                    var catchDetails = catches[index];
-                    List<dynamic> images = catchDetails['images'];
-                    String firstImageUrl = images.isNotEmpty
-                        ? Api.baseUrl + images[0]
-                        : ''; // Construct the full image URL
-
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigate to the CatchDetailsPage when the item is tapped
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CatchDetailsPage(catchId: catchDetails['_id']),
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search catches by name or location',
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0), // Set border radius here
+                            ),
                           ),
-                        );
-                      },
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Display the first image if available
-                              if (firstImageUrl.isNotEmpty)
-                                Image.network(
-                                  firstImageUrl,
-                                  width: 130,
-                                  height: 130,
-                                  fit: BoxFit.cover,
-                                ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(catchDetails['name'],
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(
-                                        'Location: ${catchDetails['location']}'),
-                                    Text(
-                                        'Base Price: ₹${catchDetails['basePrice']}'),
-                                    Text(
-                                        'Quantity: ${catchDetails['quantity']}'),
-                                    Text(
-                                        'Starts: ${formatDateTime(catchDetails['startTime'])}'),
-                                    Text(
-                                        'Ends: ${formatDateTime(catchDetails['endTime'])}'),
-                                  ],
-                                ),
+                              IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: () {
+                                  _filterCatches();
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  searchController.clear();
+                                  _filterCatches();
+                                },
                               ),
                             ],
                           ),
                         ),
                       ),
-                    );
-                  },
+                    ),
+                    Expanded(
+                      child: filteredCatches.isEmpty
+                          ? const Center(
+                              child: Text('No catches found'),
+                            )
+                          : ListView.builder(
+                              itemCount: filteredCatches.length,
+                              itemBuilder: (context, index) {
+                                var catchDetails = filteredCatches[index];
+                                List<dynamic> images = catchDetails['images'];
+                                String firstImageUrl = images.isNotEmpty
+                                    ? Api.baseUrl + images[0]
+                                    : '';
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CatchDetailsPage(
+                                          catchId: catchDetails['_id'],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (firstImageUrl.isNotEmpty)
+                                            Image.network(
+                                              firstImageUrl,
+                                              width: 130,
+                                              height: 130,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  catchDetails['name'],
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                    'Location: ${catchDetails['location']}'),
+                                                Text(
+                                                    'Base Price: ₹${catchDetails['basePrice']}'),
+                                                Text(
+                                                    'Quantity: ${catchDetails['quantity']}'),
+                                                Text(
+                                                  'Starts: ${formatDateTime(catchDetails['startTime'])}',
+                                                ),
+                                                Text(
+                                                  'Ends: ${formatDateTime(catchDetails['endTime'])}',
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 ),
         );
       },
@@ -153,7 +196,25 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
 
   Future<String> _getNameFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('name') ??
-        ''; // Assuming 'name' is the key for the name in SharedPreferences
+    return prefs.getString('name') ?? '';
+  }
+
+  void _filterCatches() {
+    String query = searchController.text.toLowerCase();
+    setState(() {
+      filteredCatches = catches.where((catchDetails) {
+        String name = catchDetails['name'].toLowerCase();
+        String location = catchDetails['location'].toLowerCase();
+        return name.contains(query) || location.contains(query);
+      }).toList();
+    });
+    if (filteredCatches.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No catches found'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }
