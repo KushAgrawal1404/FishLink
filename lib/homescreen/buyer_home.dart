@@ -149,7 +149,14 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                             );
                                           }
                                         : null,
-                                    child: Card(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue.withOpacity(0.2),
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                      ),
+                                      margin: const EdgeInsets.only(
+                                          left: 7, right: 7, bottom: 10),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
@@ -158,13 +165,17 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                           children: [
                                             // Display the first image if available
                                             if (firstImageUrl.isNotEmpty)
-                                              Image.network(
-                                                firstImageUrl,
-                                                width: 130,
-                                                height: 130,
-                                                fit: BoxFit.cover,
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                child: Image.network(
+                                                  firstImageUrl,
+                                                  width: 130,
+                                                  height: 130,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
-                                            const SizedBox(width: 10),
+                                            const SizedBox(width: 12),
                                             Expanded(
                                               child: Column(
                                                 crossAxisAlignment:
