@@ -151,7 +151,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                         : null,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.blue.withOpacity(0.2),
+                                        color: Colors.blue.withOpacity(0.1),
                                         borderRadius:
                                             BorderRadius.circular(12.0),
                                       ),
