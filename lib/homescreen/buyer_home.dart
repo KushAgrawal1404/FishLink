@@ -70,117 +70,123 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
       builder: (context, snapshot) {
         String title = snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
         return Scaffold(
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          drawer: const BuyerHomeMenu(),
-          body: catches.isEmpty
-              ? const Center(
-                  child: Text('No catches found'),
-                )
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search catches by name or location',
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0), // Set border radius here
+            appBar: AppBar(
+              title: Text(title),
+            ),
+            drawer: const BuyerHomeMenu(),
+            body: catches.isEmpty
+                ? const Center(
+                    child: Text('No catches found'),
+                  )
+                : Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            hintText: 'Search catches by name or location',
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0), // Set border radius here
+                              ),
+                            ),
+                            suffixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.search),
+                                  onPressed: () {
+                                    _filterCatches();
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    searchController.clear();
+                                    _filterCatches();
+                                  },
+                                ),
+                              ],
                             ),
                           ),
-                          suffixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.search),
-                                onPressed: () {
-                                  _filterCatches();
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  searchController.clear();
-                                  _filterCatches();
-                                },
-                              ),
-                            ],
-                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: filteredCatches.isEmpty
-                          ? const Center(
-                              child: Text('No catches found'),
-                            )
-                          : ListView.builder(
-                              itemCount: filteredCatches.length,
-                              itemBuilder: (context, index) {
-                                var catchDetails = filteredCatches[index];
-                                List<dynamic> images = catchDetails['images'];
-                                String firstImageUrl = images.isNotEmpty
-                                    ? Api.baseUrl + images[0]
-                                    : '';
+                      Expanded(
+                        child: filteredCatches.isEmpty
+                            ? const Center(
+                                child: Text('No catches found'),
+                              )
+                            : ListView.builder(
+                                itemCount: filteredCatches.length,
+                                itemBuilder: (context, index) {
+                                  var catchDetails = filteredCatches[index];
+                                  List<dynamic> images = catchDetails['images'];
+                                  String firstImageUrl = images.isNotEmpty
+                                      ? Api.baseUrl + images[0]
+                                      : '';
 
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigate to the CatchDetailsPage when the item is tapped
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CatchDetailsPage(catchId: catchDetails['_id']),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Display the first image if available
-                              if (firstImageUrl.isNotEmpty)
-                                Image.network(
-                                  firstImageUrl,
-                                  width: 130,
-                                  height: 130,
-                                  fit: BoxFit.cover,
-                                ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(catchDetails['name'],
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(
-                                        'Location: ${catchDetails['location']}'),
-                                    Text(
-                                        'Base Price: ₹${catchDetails['basePrice']}'),
-                                    Text(
-                                        'Quantity: ${catchDetails['quantity']}'),
-                                    Text(
-                                        'Starts: ${formatDateTime(catchDetails['startTime'])}'),
-                                    Text(
-                                        'Ends: ${formatDateTime(catchDetails['endTime'])}'),
-                                  ],
-                                ),
+                                  return GestureDetector(
+                                    onTap: () {
+                                      // Navigate to the CatchDetailsPage when the item is tapped
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              CatchDetailsPage(
+                                                  catchId: catchDetails['_id']),
+                                        ),
+                                      );
+                                    },
+                                    child: Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Display the first image if available
+                                            if (firstImageUrl.isNotEmpty)
+                                              Image.network(
+                                                firstImageUrl,
+                                                width: 130,
+                                                height: 130,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(catchDetails['name'],
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  Text(
+                                                      'Location: ${catchDetails['location']}'),
+                                                  Text(
+                                                      'Base Price: ₹${catchDetails['basePrice']}'),
+                                                  Text(
+                                                      'Quantity: ${catchDetails['quantity']}'),
+                                                  Text(
+                                                      'Starts: ${formatDateTime(catchDetails['startTime'])}'),
+                                                  Text(
+                                                      'Ends: ${formatDateTime(catchDetails['endTime'])}'),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            ],
-                          ),
-                        ),
                       ),
-                    );
-                  },
-                ),
-        );
+                    ],
+                  ));
       },
     );
   }
@@ -209,4 +215,3 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     }
   }
 }
-
