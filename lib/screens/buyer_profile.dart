@@ -44,7 +44,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buyer Profile'),
+        title: Text('My Profile'),
       ),
       body: userProfile == null
           ? Center(child: CircularProgressIndicator())
