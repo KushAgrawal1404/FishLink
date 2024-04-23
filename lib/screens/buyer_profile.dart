@@ -176,8 +176,9 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Widget _buildEditableProfileItemBox(
       String label, TextEditingController controller) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 8), // Reduce bottom margin
+      padding:
+          EdgeInsets.symmetric(vertical: 4, horizontal: 16), // Adjust padding
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
@@ -235,7 +236,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
               ),
             ],
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 4), // Reduce the height of SizedBox
           Text(
             controller.text,
             style: TextStyle(fontSize: 16),
