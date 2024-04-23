@@ -126,68 +126,59 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                     ? Api.baseUrl + images[0]
                                     : '';
 
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CatchDetailsPage(
-                                          catchId: catchDetails['_id'],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          if (firstImageUrl.isNotEmpty)
-                                            Image.network(
-                                              firstImageUrl,
-                                              width: 130,
-                                              height: 130,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  catchDetails['name'],
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(
-                                                    'Location: ${catchDetails['location']}'),
-                                                Text(
-                                                    'Base Price: ₹${catchDetails['basePrice']}'),
-                                                Text(
-                                                    'Quantity: ${catchDetails['quantity']}'),
-                                                Text(
-                                                  'Starts: ${formatDateTime(catchDetails['startTime'])}',
-                                                ),
-                                                Text(
-                                                  'Ends: ${formatDateTime(catchDetails['endTime'])}',
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                    ),
-                  ],
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to the CatchDetailsPage when the item is tapped
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CatchDetailsPage(catchId: catchDetails['_id']),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Display the first image if available
+                              if (firstImageUrl.isNotEmpty)
+                                Image.network(
+                                  firstImageUrl,
+                                  width: 130,
+                                  height: 130,
+                                  fit: BoxFit.cover,
+                                ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(catchDetails['name'],
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                        'Location: ${catchDetails['location']}'),
+                                    Text(
+                                        'Base Price: ₹${catchDetails['basePrice']}'),
+                                    Text(
+                                        'Quantity: ${catchDetails['quantity']}'),
+                                    Text(
+                                        'Starts: ${formatDateTime(catchDetails['startTime'])}'),
+                                    Text(
+                                        'Ends: ${formatDateTime(catchDetails['endTime'])}'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
         );
       },
@@ -218,3 +209,4 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     }
   }
 }
+
