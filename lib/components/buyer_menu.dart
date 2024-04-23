@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fish_link/screens/buyerAnalytics.dart';
 
 class BuyerHomeMenu extends StatelessWidget {
   const BuyerHomeMenu({Key? key}) : super(key: key);
@@ -63,12 +62,7 @@ class BuyerHomeMenu extends StatelessWidget {
             ),
             onTap: () {
               Navigator.pop(context); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        BuyerAnalyticsPage()), // Navigate to buyer analytics page
-              );
+              Navigator.pushNamed(context, '/buyer_analytics');
             },
           ),
 
