@@ -78,7 +78,8 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     return FutureBuilder<String>(
       future: _getNameFromSharedPreferences(),
       builder: (context, snapshot) {
-        String title = snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
+        String title =
+            snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
         return Scaffold(
           appBar: AppBar(
             title: Text(title),
@@ -94,31 +95,30 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
                         controller: searchController,
+                        onChanged: (value) {
+                          _filterCatches();
+                        },
                         decoration: InputDecoration(
                           hintText: 'Search catches by name or location',
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(10.0), // Set border radius here
+                              Radius.circular(20.0), // Set border radius here
                             ),
+                            borderSide: BorderSide.none, // Remove border
                           ),
-                          suffixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.search),
-                                onPressed: () {
-                                  _filterCatches();
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  searchController.clear();
-                                  _filterCatches();
-                                },
-                              ),
-                            ],
-                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200], // Set background color
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.grey),
+                          suffixIcon: searchController.text.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    searchController.clear();
+                                    _filterCatches();
+                                  },
+                                )
+                              : null,
                         ),
                       ),
                     ),
