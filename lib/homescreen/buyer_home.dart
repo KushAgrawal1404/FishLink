@@ -78,8 +78,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     return FutureBuilder<String>(
       future: _getNameFromSharedPreferences(),
       builder: (context, snapshot) {
-        String title =
-            snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
+        String title = snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
         return Scaffold(
           appBar: AppBar(
             title: Text(title),
@@ -251,13 +250,5 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
         return name.contains(query) || location.contains(query);
       }).toList();
     });
-    if (filteredCatches.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No catches found'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
   }
 }
