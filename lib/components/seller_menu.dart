@@ -58,6 +58,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
+          // Drawer Header
           userProfile == null
               ? DrawerHeader(
                   decoration: BoxDecoration(
@@ -65,93 +66,93 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
                   ),
                   child: CircularProgressIndicator(),
                 )
-              : Container(
-                  height: 200.0, // Increase the height of the container
-                  child: UserAccountsDrawerHeader(
-                    margin: EdgeInsets.zero,
-                    accountName: Text(
-                      'Hi, ${userProfile!['name']}',
-                      style:
-                          TextStyle(fontSize: 20.0), // Increase the font size
-                    ),
-                    accountEmail:
-                        Text(capitalizeFirstLetter(userProfile!['userType'])),
-                    currentAccountPicture: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context,
-                            '/buyer_profile'); // Navigate to buyer_profile.dart
-                      },
-                      child: CircleAvatar(
-                        radius: 70.0, // Increase the radius of the CircleAvatar
-                        backgroundImage: userProfile!['profilePic'] != null &&
-                                userProfile!['profilePic'] != ''
-                            ? NetworkImage(userProfile!['profilePic'])
-                            : AssetImage('assets/default_profile_pic.png')
-                                as ImageProvider,
-                      ),
+              : UserAccountsDrawerHeader(
+                  accountName: Text(
+                    'Hi, ${userProfile!['name']}',
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                  accountEmail: Text(
+                    capitalizeFirstLetter(userProfile!['userType']),
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  currentAccountPicture: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context,
+                          '/buyer_profile'); // Navigate to buyer_profile.dart
+                    },
+                    child: CircleAvatar(
+                      radius: 50.0,
+                      backgroundImage: userProfile!['profilePic'] != null &&
+                              userProfile!['profilePic'] != ''
+                          ? NetworkImage(userProfile!['profilePic'])
+                          : AssetImage('assets/default_profile_pic.png')
+                              as ImageProvider,
                     ),
                   ),
+                  decoration: BoxDecoration(
+                    color: Color(0xff0f1f30),
+                  ),
                 ),
+
+          // Divider
+          Divider(),
+
+          // List Items
           ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text(
+            leading: Icon(Icons.home, size: 28),
+            title: Text(
               'Home',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Handle navigation to home screen
               Navigator.pop(context); // Close the drawer
               // Add navigation logic here
             },
           ),
           ListTile(
-            leading: const Icon(Icons.history),
-            title: const Text(
+            leading: Icon(Icons.history, size: 28),
+            title: Text(
               'My Catches',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Handle navigation to my products screen
               Navigator.pop(context); // Close the drawer
               Navigator.pushNamed(context, '/my_catches');
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add),
-            title: const Text(
+            leading: Icon(Icons.add, size: 28),
+            title: Text(
               'Add Catches',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Handle navigation to my products screen
               Navigator.pop(context); // Close the drawer
               Navigator.pushNamed(context, '/add_catch');
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text(
+            leading: Icon(Icons.person, size: 28),
+            title: Text(
               'Seller Profile',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Handle navigation to seller profile screen
               Navigator.pop(context); // Close the drawer
               Navigator.pushNamed(context, '/seller_profile');
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text(
+            leading: Icon(Icons.logout, size: 28),
+            title: Text(
               'Logout',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {
               logout(context);
               Navigator.pop(context);
             },
           ),
-          // Add more menu items as needed
         ],
       ),
     );
