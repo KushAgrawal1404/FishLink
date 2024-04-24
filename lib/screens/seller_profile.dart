@@ -56,7 +56,6 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
       body: userProfile == null
           ? Center(child: CircularProgressIndicator())
           : Container(
-              color: Colors.grey[200],
               padding: EdgeInsets.all(16.0),
               child: ListView(
                 children: <Widget>[
@@ -100,95 +99,123 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   }
 
   Widget _buildProfileItemBox(String label, String value) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Text(
+    return Container(
+      margin: EdgeInsets.only(bottom: 16.0),
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Text(
               '$label: ',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 16.0,
               ),
             ),
-            Text(
-              '$value',
-              style: TextStyle(fontSize: 16),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 16.0),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildEditableProfileItemBox(
       String label, TextEditingController controller) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.0),
+      padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(
                   '$label: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 16.0,
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text('Edit $label'),
-                        content: TextField(
-                          controller: controller,
-                          decoration: InputDecoration(
-                            labelText: label,
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (_) {
-                            setState(() {
-                              _isChanged = true;
-                            });
-                          },
+              ),
+              Expanded(
+                flex: 2,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controller,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text('Cancel'),
-                          ),
-                          ElevatedButton(
-                            onPressed: _isChanged
-                                ? () {
-                                    updateUserProfile();
-                                    Navigator.pop(context);
-                                  }
-                                : null,
-                            child: Text('Save'),
-                          ),
-                        ],
+                        onChanged: (_) {
+                          setState(() {
+                            _isChanged = true;
+                          });
+                        },
                       ),
-                    );
-                  },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text('Edit $label'),
+                            content: TextField(
+                              controller: controller,
+                              decoration: InputDecoration(
+                                labelText: label,
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (_) {
+                                setState(() {
+                                  _isChanged = true;
+                                });
+                              },
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: _isChanged
+                                    ? () {
+                                        updateUserProfile();
+                                        Navigator.pop(context);
+                                      }
+                                    : null,
+                                child: Text('Save'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            SizedBox(height: 4),
-            Text(
-              controller.text,
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
