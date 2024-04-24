@@ -1,9 +1,9 @@
-import 'package:fish_link/screens/catch_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
+import 'package:fish_link/screens/catch_details_page.dart';
 
 class MyBidsPage extends StatefulWidget {
   const MyBidsPage({Key? key}) : super(key: key);
@@ -75,71 +75,75 @@ class _MyBidsPageState extends State<MyBidsPage> {
       ),
       body: myBids.isEmpty
           ? const Center(child: Text('No bids found'))
-          : ListView.builder(
-              itemCount: myBids.length,
-              itemBuilder: (context, index) {
-                var bid = myBids[index];
-                var catchDetails = bid['catchDetails'];
-                List<dynamic> images = catchDetails['images'];
-                String firstImageUrl =
-                    images.isNotEmpty ? Api.baseUrl + images[0] : '';
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            CatchDetailsPage(catchId: catchDetails['_id']),
+          : Padding(
+              padding: const EdgeInsets.only(top: 12.0), // Add top margin
+              child: ListView.builder(
+                itemCount: myBids.length,
+                itemBuilder: (context, index) {
+                  var bid = myBids[index];
+                  var catchDetails = bid['catchDetails'];
+                  List<dynamic> images = catchDetails['images'];
+                  String firstImageUrl =
+                      images.isNotEmpty ? Api.baseUrl + images[0] : '';
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CatchDetailsPage(
+                            catchId: catchDetails['_id'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    margin:
-                        const EdgeInsets.only(left: 7, right: 7, bottom: 10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Display the first image if available
-                          if (firstImageUrl.isNotEmpty)
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: Image.network(
-                                firstImageUrl,
-                                width: 130,
-                                height: 130,
-                                fit: BoxFit.cover,
+                      margin: const EdgeInsets.only(
+                          left: 7, right: 7, bottom: 10),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Display the first image if available
+                            if (firstImageUrl.isNotEmpty)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Image.network(
+                                  firstImageUrl,
+                                  width: 130,
+                                  height: 130,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Catch Name: ${catchDetails['name']}',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text('My Current Bid: ${bid['bidAmount']}'),
+                                  Text(
+                                      'Highest Current Bid: ${catchDetails['currentBid']}'),
+                                ],
                               ),
                             ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Catch Name: ${catchDetails['name']}',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text('My Current Bid: ${bid['bidAmount']}'),
-                                Text(
-                                    'Highest Current Bid: ${catchDetails['currentBid']}'),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
     );
   }
