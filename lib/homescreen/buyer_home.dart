@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:fish_link/screens/catch_details_page.dart';
+import 'dart:async';
 
 class BuyerHomePage extends StatefulWidget {
   const BuyerHomePage({Key? key}) : super(key: key);
@@ -18,11 +19,20 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
   List<dynamic> catches = [];
   List<dynamic> filteredCatches = [];
   TextEditingController searchController = TextEditingController();
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
     _fetchCatches();
+    _timer = Timer.periodic(
+        const Duration(seconds: 10), (Timer t) => _fetchCatches());
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchCatches() async {
@@ -70,151 +80,159 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
       builder: (context, snapshot) {
         String title = snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
         return Scaffold(
-            appBar: AppBar(
-              title: Text(title),
-            ),
-            drawer: const BuyerHomeMenu(),
-            body: catches.isEmpty
-                ? const Center(
-                    child: Text('No catches found'),
-                  )
-                : Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller: searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search catches by name or location',
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0), // Set border radius here
+          appBar: AppBar(
+            title: Text(title),
+          ),
+          drawer: const BuyerHomeMenu(),
+          body: catches.isEmpty
+              ? const Center(
+                  child: Text('No catches found'),
+                )
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search catches by name or location',
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0), // Set border radius here
+                            ),
+                          ),
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: () {
+                                  _filterCatches();
+                                },
                               ),
-                            ),
-                            suffixIcon: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.search),
-                                  onPressed: () {
-                                    _filterCatches();
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    searchController.clear();
-                                    _filterCatches();
-                                  },
-                                ),
-                              ],
-                            ),
+                              IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  searchController.clear();
+                                  _filterCatches();
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: filteredCatches.isEmpty
-                            ? const Center(
-                                child: Text('No catches found'),
-                              )
-                            : ListView.builder(
-                                itemCount: filteredCatches.length,
-                                itemBuilder: (context, index) {
-                                  var catchDetails = filteredCatches[index];
-                                  List<dynamic> images = catchDetails['images'];
-                                  String firstImageUrl = images.isNotEmpty
-                                      ? Api.baseUrl + images[0]
-                                      : '';
-                                  // Get the current time
-                                  DateTime currentTime = DateTime.now();
-                                  // Convert the start time string to DateTime object
-                                  DateTime bidStartTime =
-                                      DateTime.parse(catchDetails['startTime']);
+                    ),
+                    Expanded(
+                      child: filteredCatches.isEmpty
+                          ? const Center(
+                              child: Text('No catches found'),
+                            )
+                          : ListView.builder(
+                              itemCount: filteredCatches.length,
+                              itemBuilder: (context, index) {
+                                var catchDetails = filteredCatches[index];
+                                List<dynamic> images = catchDetails['images'];
+                                String firstImageUrl = images.isNotEmpty
+                                    ? Api.baseUrl + images[0]
+                                    : '';
+                                // Get the current time
+                                DateTime currentTime = DateTime.now();
+                                // Convert the start time string to DateTime object
+                                DateTime bidStartTime =
+                                    DateTime.parse(catchDetails['startTime']);
 
-                                  // Check if the current time is less than the bid start time
-                                  bool isBiddingStarted =
-                                      currentTime.isAfter(bidStartTime);
-                                  return GestureDetector(
-                                    onTap: isBiddingStarted
-                                        ? () {
-                                            // Navigate to the CatchDetailsPage when the item is tapped
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CatchDetailsPage(
-                                                        catchId: catchDetails[
-                                                            '_id']),
-                                              ),
-                                            );
-                                          }
-                                        : null,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue.withOpacity(0.1),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      margin: const EdgeInsets.only(
-                                          left: 7, right: 7, bottom: 10),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // Display the first image if available
-                                            if (firstImageUrl.isNotEmpty)
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                                child: Image.network(
-                                                  firstImageUrl,
-                                                  width: 130,
-                                                  height: 130,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(catchDetails['name'],
-                                                      style: const TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                  Text(
-                                                      'Location: ${catchDetails['location']}'),
-                                                  Text(
-                                                      'Base Price: ₹${catchDetails['basePrice']}'),
-                                                  Text(
-                                                      'Quantity: ${catchDetails['quantity']}'),
-                                                  Text(
-                                                      'Starts: ${formatDateTime(catchDetails['startTime'])}'),
-                                                  Text(
-                                                      'Ends: ${formatDateTime(catchDetails['endTime'])}'),
-                                                  if (!isBiddingStarted)
-                                                    const Text(
-                                                      'Bidding is not started yet',
-                                                      style: TextStyle(
-                                                          color: Colors.red),
-                                                    ),
-                                                ],
+                                // Check if the current time is less than the bid start time
+                                bool isBiddingStarted =
+                                    currentTime.isAfter(bidStartTime);
+                                return GestureDetector(
+                                  onTap: isBiddingStarted
+                                      ? () {
+                                          // Navigate to the CatchDetailsPage when the item is tapped
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CatchDetailsPage(
+                                                      catchId:
+                                                          catchDetails['_id']),
+                                            ),
+                                          );
+                                        }
+                                      : null,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    margin: const EdgeInsets.only(
+                                        left: 7, right: 7, bottom: 10),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // Display the first image if available
+                                          if (firstImageUrl.isNotEmpty)
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              child: Image.network(
+                                                firstImageUrl,
+                                                width: 130,
+                                                height: 130,
+                                                fit: BoxFit.cover,
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  catchDetails['name'],
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Location: ${catchDetails['location']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                                Text(
+                                                  'Base Price: ₹${catchDetails['basePrice']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                                Text(
+                                                  'Quantity: ${catchDetails['quantity']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                                if (!isBiddingStarted)
+                                                  const Text(
+                                                    'Bidding is not started yet',
+                                                    style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 14),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  ));
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+        );
       },
     );
   }

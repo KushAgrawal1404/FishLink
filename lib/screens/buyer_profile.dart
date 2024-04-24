@@ -100,12 +100,12 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Profile'),
+        title: const Text('My Profile'),
       ),
       body: userProfile == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               children: <Widget>[
                 GestureDetector(
                   onTap: _pickImage,
@@ -122,13 +122,14 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                                     userProfile!['profilePic'] != ''
                                 ? NetworkImage(userProfile![
                                     'profilePic']) // Use the correct URL here
-                                : AssetImage('assets/default_profile_pic.png')
+                                : const AssetImage(
+                                        'assets/default_profile_pic.png')
                                     as ImageProvider,
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildProfileItemBox('Name', userProfile!['name']),
                 _buildProfileItemBox('Email', userProfile!['email']),
                 _buildProfileItemBox('Phone', userProfile!['phone']),
@@ -138,7 +139,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                   onPressed: _isChanged
                       ? updateUserProfile
                       : null, // Disable button if nothing is changed
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             ),
@@ -147,8 +148,8 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
 
   Widget _buildProfileItemBox(String label, String value) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
@@ -158,15 +159,15 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ],
       ),
@@ -176,9 +177,9 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Widget _buildEditableProfileItemBox(
       String label, TextEditingController controller) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8), // Reduce bottom margin
-      padding:
-          EdgeInsets.symmetric(vertical: 4, horizontal: 16), // Adjust padding
+      margin: const EdgeInsets.only(bottom: 8), // Reduce bottom margin
+      padding: const EdgeInsets.symmetric(
+          vertical: 4, horizontal: 16), // Adjust padding
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
@@ -191,13 +192,13 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
             children: [
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -207,7 +208,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                         controller: controller,
                         decoration: InputDecoration(
                           labelText: label,
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                         ),
                         onChanged: (_) {
                           setState(() {
@@ -218,7 +219,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: Text('Cancel'),
+                          child: const Text('Cancel'),
                         ),
                         ElevatedButton(
                           onPressed: _isChanged
@@ -227,7 +228,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                                   Navigator.pop(context);
                                 }
                               : null,
-                          child: Text('Save'),
+                          child: const Text('Save'),
                         ),
                       ],
                     ),
@@ -236,10 +237,10 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
               ),
             ],
           ),
-          SizedBox(height: 4), // Reduce the height of SizedBox
+          const SizedBox(height: 4), // Reduce the height of SizedBox
           Text(
             controller.text,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ],
       ),
@@ -248,7 +249,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: BuyerProfilePage(),
   ));
 }

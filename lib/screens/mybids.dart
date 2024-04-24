@@ -1,3 +1,4 @@
+import 'package:fish_link/screens/catch_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -32,10 +33,14 @@ class _MyBidsPageState extends State<MyBidsPage> {
         List<dynamic> updatedMyBids = [];
 
         for (var bid in bids) {
-          final catchResponse = await http.get(Uri.parse('${Api.catchDetailsUrl}/${bid['catchId']}'));
+          final catchResponse = await http
+              .get(Uri.parse('${Api.catchDetailsUrl}/${bid['catchId']}'));
           if (catchResponse.statusCode == 200) {
             var catchDetails = jsonDecode(catchResponse.body);
-            Map<String, dynamic> mergedDetails = {...bid, 'catchDetails': catchDetails};
+            Map<String, dynamic> mergedDetails = {
+              ...bid,
+              'catchDetails': catchDetails
+            };
             updatedMyBids.add(mergedDetails);
           }
         }
@@ -76,17 +81,25 @@ class _MyBidsPageState extends State<MyBidsPage> {
                 var bid = myBids[index];
                 var catchDetails = bid['catchDetails'];
                 List<dynamic> images = catchDetails['images'];
-                String firstImageUrl = images.isNotEmpty ? Api.baseUrl + images[0] : '';
+                String firstImageUrl =
+                    images.isNotEmpty ? Api.baseUrl + images[0] : '';
                 return GestureDetector(
                   onTap: () {
-                    // Handle onTap if needed
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            CatchDetailsPage(catchId: catchDetails['_id']),
+                      ),
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.blue.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    margin: const EdgeInsets.only(left: 7, right: 7, bottom: 10),
+                    margin:
+                        const EdgeInsets.only(left: 7, right: 7, bottom: 10),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -116,7 +129,8 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                   ),
                                 ),
                                 Text('My Current Bid: ${bid['bidAmount']}'),
-                                Text('Highest Current Bid: ${catchDetails['currentBid']}'),
+                                Text(
+                                    'Highest Current Bid: ${catchDetails['currentBid']}'),
                               ],
                             ),
                           ),

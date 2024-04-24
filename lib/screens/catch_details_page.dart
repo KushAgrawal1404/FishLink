@@ -148,7 +148,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(catchDetails['name'] ?? 'Catch Details'),
+        title: Text(catchDetails['name'] ?? ''),
       ),
       body: catchDetails.isNotEmpty
           ? ListView(
