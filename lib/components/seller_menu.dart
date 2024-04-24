@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 
 class SellerHomeMenu extends StatefulWidget {
@@ -54,7 +54,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           userProfile == null
-              ? const DrawerHeader(
+              ? DrawerHeader(
                   decoration: BoxDecoration(
                     color: Color(0xff0f1f30),
                   ),
@@ -62,13 +62,18 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
                 )
               : UserAccountsDrawerHeader(
                   accountName: Text(userProfile!['name']),
-                  accountEmail: Text(userProfile!['email']),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundImage: userProfile!['profilePic'] != null &&
-                            userProfile!['profilePic'] != ''
-                        ? NetworkImage(userProfile!['profilePic'])
-                        : AssetImage('assets/default_profile_pic.png')
-                            as ImageProvider,
+                  accountEmail: Text(userProfile!['userType']),
+                  currentAccountPicture: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/seller_profile');
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: userProfile!['profilePic'] != null &&
+                              userProfile!['profilePic'] != ''
+                          ? NetworkImage(userProfile!['profilePic'])
+                          : AssetImage('assets/default_profile_pic.png')
+                              as ImageProvider,
+                    ),
                   ),
                 ),
           ListTile(
