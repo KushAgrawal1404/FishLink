@@ -1,8 +1,43 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:fish_link/utils/api.dart';
 
-class SellerHomeMenu extends StatelessWidget {
+class SellerHomeMenu extends StatefulWidget {
   const SellerHomeMenu({Key? key}) : super(key: key);
+
+  @override
+  _SellerHomeMenuState createState() => _SellerHomeMenuState();
+}
+
+class _SellerHomeMenuState extends State<SellerHomeMenu> {
+  Map<String, dynamic>? userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfile();
+  }
+
+  Future<void> fetchUserProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userId') ?? '';
+    try {
+      final response =
+          await http.get(Uri.parse('${Api.userProfileUrl}/seller/$userId'));
+      if (response.statusCode == 200) {
+        setState(() {
+          userProfile = json.decode(response.body);
+        });
+      } else {
+        throw Exception('Failed to load user profile');
+      }
+    } catch (error) {
+      print('Error fetching user profile: $error');
+    }
+  }
+
   void logout(BuildContext context) async {
     // Clear the stored login state
     final prefs = await SharedPreferences.getInstance();
@@ -18,18 +53,24 @@ class SellerHomeMenu extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Color(0xff0f1f30),
-            ),
-            child: Text(
-              'Seller Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-          ),
+          userProfile == null
+              ? const DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Color(0xff0f1f30),
+                  ),
+                  child: CircularProgressIndicator(),
+                )
+              : UserAccountsDrawerHeader(
+                  accountName: Text(userProfile!['name']),
+                  accountEmail: Text(userProfile!['email']),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundImage: userProfile!['profilePic'] != null &&
+                            userProfile!['profilePic'] != ''
+                        ? NetworkImage(userProfile!['profilePic'])
+                        : AssetImage('assets/default_profile_pic.png')
+                            as ImageProvider,
+                  ),
+                ),
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text(
