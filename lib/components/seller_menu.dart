@@ -47,6 +47,11 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
         .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
   }
 
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return '';
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -60,19 +65,30 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
                   ),
                   child: CircularProgressIndicator(),
                 )
-              : UserAccountsDrawerHeader(
-                  accountName: Text(userProfile!['name']),
-                  accountEmail: Text(userProfile!['userType']),
-                  currentAccountPicture: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/seller_profile');
-                    },
-                    child: CircleAvatar(
-                      backgroundImage: userProfile!['profilePic'] != null &&
-                              userProfile!['profilePic'] != ''
-                          ? NetworkImage(userProfile!['profilePic'])
-                          : AssetImage('assets/default_profile_pic.png')
-                              as ImageProvider,
+              : Container(
+                  height: 200.0, // Increase the height of the container
+                  child: UserAccountsDrawerHeader(
+                    margin: EdgeInsets.zero,
+                    accountName: Text(
+                      'Hi, ${userProfile!['name']}',
+                      style:
+                          TextStyle(fontSize: 20.0), // Increase the font size
+                    ),
+                    accountEmail:
+                        Text(capitalizeFirstLetter(userProfile!['userType'])),
+                    currentAccountPicture: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context,
+                            '/buyer_profile'); // Navigate to buyer_profile.dart
+                      },
+                      child: CircleAvatar(
+                        radius: 70.0, // Increase the radius of the CircleAvatar
+                        backgroundImage: userProfile!['profilePic'] != null &&
+                                userProfile!['profilePic'] != ''
+                            ? NetworkImage(userProfile!['profilePic'])
+                            : AssetImage('assets/default_profile_pic.png')
+                                as ImageProvider,
+                      ),
                     ),
                   ),
                 ),
