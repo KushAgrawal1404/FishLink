@@ -154,20 +154,26 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+          Expanded(
+            flex: 1,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16),
+          const SizedBox(width: 1), // Reduced space between label and value
+          Expanded(
+            flex: 2,
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16),
+            ),
           ),
         ],
       ),
@@ -177,9 +183,8 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Widget _buildEditableProfileItemBox(
       String label, TextEditingController controller) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8), // Reduce bottom margin
-      padding: const EdgeInsets.symmetric(
-          vertical: 4, horizontal: 16), // Adjust padding
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
@@ -190,25 +195,26 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Expanded(
+                flex: 1,
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: Text('Edit $label'),
-                      content: TextField(
+              const SizedBox(width: 8), // Reduced space between label and value
+              Expanded(
+                flex: 2,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
                         controller: controller,
                         decoration: InputDecoration(
-                          labelText: label,
-                          border: const OutlineInputBorder(),
+                          border: InputBorder.none,
                         ),
                         onChanged: (_) {
                           setState(() {
@@ -216,31 +222,49 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                           });
                         },
                       ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        ElevatedButton(
-                          onPressed: _isChanged
-                              ? () {
-                                  updateUserProfile();
-                                  Navigator.pop(context);
-                                }
-                              : null,
-                          child: const Text('Save'),
-                        ),
-                      ],
                     ),
-                  );
-                },
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text('Edit $label'),
+                            content: TextField(
+                              controller: controller,
+                              decoration: InputDecoration(
+                                labelText: label,
+                                border: const OutlineInputBorder(),
+                              ),
+                              onChanged: (_) {
+                                setState(() {
+                                  _isChanged = true;
+                                });
+                              },
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: _isChanged
+                                    ? () {
+                                        updateUserProfile();
+                                        Navigator.pop(context);
+                                      }
+                                    : null,
+                                child: const Text('Save'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
-          ),
-          const SizedBox(height: 4), // Reduce the height of SizedBox
-          Text(
-            controller.text,
-            style: const TextStyle(fontSize: 16),
           ),
         ],
       ),
