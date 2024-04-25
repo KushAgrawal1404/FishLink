@@ -21,15 +21,40 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
   }
 
   Future<void> fetchUserProfile() async {
+    // Attempt to load user profile from SharedPreferences first
+    userProfile = await loadUserProfile();
+
+    if (userProfile == null) {
+      // Load from online source if not available in SharedPreferences
+      await fetchUserProfileFromServer();
+    }
+
+    setState(() {}); // Update UI once userProfile is loaded
+  }
+
+  // Load user profile from SharedPreferences
+  Future<Map<String, dynamic>?> loadUserProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userProfileJson = prefs.getString('userProfile');
+    if (userProfileJson != null) {
+      return json.decode(userProfileJson);
+    } else {
+      return null;
+    }
+  }
+
+  // Fetch user profile from the server, store it in SharedPreferences
+  Future<void> fetchUserProfileFromServer() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
+
     try {
       final response =
           await http.get(Uri.parse('${Api.userProfileUrl}/seller/$userId'));
       if (response.statusCode == 200) {
-        setState(() {
-          userProfile = json.decode(response.body);
-        });
+        Map<String, dynamic> decodedResponse = json.decode(response.body);
+        await prefs.setString('userProfile', json.encode(decodedResponse));
+        userProfile = decodedResponse;
       } else {
         throw Exception('Failed to load user profile');
       }
@@ -60,20 +85,20 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
         children: <Widget>[
           // Drawer Header
           userProfile == null
-              ? DrawerHeader(
+              ? const DrawerHeader(
                   decoration: BoxDecoration(
                     color: Color(0xff0f1f30),
                   ),
-                  child: CircularProgressIndicator(),
+                  child: null,
                 )
               : UserAccountsDrawerHeader(
                   accountName: Text(
                     'Hi, ${userProfile!['name']}',
-                    style: TextStyle(fontSize: 20.0),
+                    style: const TextStyle(fontSize: 20.0),
                   ),
                   accountEmail: Text(
                     capitalizeFirstLetter(userProfile!['userType']),
-                    style: TextStyle(color: Colors.white70),
+                    style: const TextStyle(color: Colors.white70),
                   ),
                   currentAccountPicture: GestureDetector(
                     onTap: () {
@@ -84,22 +109,19 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
                       backgroundImage: userProfile!['profilePic'] != null &&
                               userProfile!['profilePic'] != ''
                           ? NetworkImage(userProfile!['profilePic'])
-                          : AssetImage('assets/default_profile_pic.png')
+                          : const AssetImage('assets/default_profile_pic.png')
                               as ImageProvider,
                     ),
                   ),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xff0f1f30),
                   ),
                 ),
 
-          // Divider
-          Divider(),
-
           // List Items
           ListTile(
-            leading: Icon(Icons.home, size: 28),
-            title: Text(
+            leading: const Icon(Icons.home, size: 28),
+            title: const Text(
               'Home',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
@@ -109,8 +131,8 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.checklist, size: 28),
-            title: Text(
+            leading: const Icon(Icons.checklist, size: 28),
+            title: const Text(
               'My Bids',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
@@ -120,8 +142,8 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.analytics, size: 28),
-            title: Text(
+            leading: const Icon(Icons.analytics, size: 28),
+            title: const Text(
               'Buyer Analytics',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
@@ -131,8 +153,8 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.person, size: 28),
-            title: Text(
+            leading: const Icon(Icons.person, size: 28),
+            title: const Text(
               'My Profile',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
@@ -142,8 +164,8 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.person, size: 28),
-            title: Text(
+            leading: const Icon(Icons.person, size: 28),
+            title: const Text(
               'Find Users',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
@@ -153,8 +175,8 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.logout, size: 28),
-            title: Text(
+            leading: const Icon(Icons.logout, size: 28),
+            title: const Text(
               'Logout',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),

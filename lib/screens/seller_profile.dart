@@ -16,8 +16,8 @@ class SellerProfilePage extends StatefulWidget {
 
 class _SellerProfilePageState extends State<SellerProfilePage> {
   Map<String, dynamic>? userProfile;
-  TextEditingController _bioController = TextEditingController();
-  TextEditingController _harbourController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _harbourController = TextEditingController();
   String? _selectedImagePath;
   bool _isChanged = false;
 
@@ -30,6 +30,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   Future<void> fetchUserProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
+    await prefs.remove('userProfile');
     try {
       final response =
           await http.get(Uri.parse('${Api.userProfileUrl}/seller/$userId'));
@@ -51,12 +52,12 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Profile'),
+        title: const Text('My Profile'),
       ),
       body: userProfile == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: ListView(
                 children: <Widget>[
                   GestureDetector(
@@ -74,13 +75,14 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                                       userProfile!['profilePic'] != ''
                                   ? NetworkImage(userProfile![
                                       'profilePic']) // Use the correct URL here
-                                  : AssetImage('assets/default_profile_pic.png')
+                                  : const AssetImage(
+                                          'assets/default_profile_pic.png')
                                       as ImageProvider,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildProfileItemBox('Name', userProfile!['name']),
                   _buildProfileItemBox('Email', userProfile!['email']),
                   _buildProfileItemBox('Phone', userProfile!['phone']),
@@ -90,7 +92,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                     onPressed: _isChanged
                         ? updateUserProfile
                         : null, // Disable button if nothing is changed
-                    child: Text('Save'),
+                    child: const Text('Save'),
                   ),
                 ],
               ),
@@ -100,8 +102,8 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
 
   Widget _buildProfileItemBox(String label, String value) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16.0),
-      padding: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10.0),
@@ -112,7 +114,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
             flex: 1,
             child: Text(
               '$label: ',
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
               ),
@@ -122,7 +124,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
             flex: 2,
             child: Text(
               value,
-              style: TextStyle(fontSize: 16.0),
+              style: const TextStyle(fontSize: 16.0),
             ),
           ),
         ],
@@ -133,8 +135,8 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   Widget _buildEditableProfileItemBox(
       String label, TextEditingController controller) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8.0),
-      padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+      margin: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10.0),
@@ -149,7 +151,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                 flex: 1,
                 child: Text(
                   '$label: ',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16.0,
                   ),
@@ -162,7 +164,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                     Expanded(
                       child: TextField(
                         controller: controller,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
                         onChanged: (_) {
@@ -173,7 +175,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -183,7 +185,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                               controller: controller,
                               decoration: InputDecoration(
                                 labelText: label,
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                               ),
                               onChanged: (_) {
                                 setState(() {
@@ -194,7 +196,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: Text('Cancel'),
+                                child: const Text('Cancel'),
                               ),
                               ElevatedButton(
                                 onPressed: _isChanged
@@ -203,7 +205,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                                         Navigator.pop(context);
                                       }
                                     : null,
-                                child: Text('Save'),
+                                child: const Text('Save'),
                               ),
                             ],
                           ),

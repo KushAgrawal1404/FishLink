@@ -50,6 +50,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Future<void> updateUserProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
+    await prefs.remove('userProfile');
     try {
       // Prepare the request body
       Map<String, dynamic> requestBody = {

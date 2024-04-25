@@ -28,14 +28,14 @@ class _FindUserPageState extends State<FindUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Find User'),
+        title: const Text('Find User'),
       ),
       body: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[200], // Change the background color
@@ -44,11 +44,11 @@ class _FindUserPageState extends State<FindUserPage> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15.0),
+                  contentPadding: const EdgeInsets.all(15.0),
                   hintText: 'Search with Username, Email or Phone number',
                   border: InputBorder.none,
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
+                    icon: const Icon(Icons.search),
                     onPressed: () {
                       _searchUser(); // Search when the search button is clicked
                     },
@@ -62,12 +62,12 @@ class _FindUserPageState extends State<FindUserPage> {
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: _searchResults == null && _showNoResults == false
-                  ? Center(child: Text('Start typing to find users'))
+                  ? const Center(child: Text('Start typing to find users'))
                   : _searchResults != null && _searchResults!.isEmpty
-                      ? Center(child: Text('No results found'))
+                      ? const Center(child: Text('No results found'))
                       : _searchResults != null
                           ? ListView.builder(
                               itemCount: _searchResults!.length,
@@ -78,8 +78,8 @@ class _FindUserPageState extends State<FindUserPage> {
                                     // Navigate to user profile page
                                   },
                                   child: Container(
-                                    margin: EdgeInsets.only(bottom: 16.0),
-                                    padding: EdgeInsets.all(16.0),
+                                    margin: const EdgeInsets.only(bottom: 16.0),
+                                    padding: const EdgeInsets.all(16.0),
                                     decoration: BoxDecoration(
                                       color: Colors.grey[200],
                                       borderRadius: BorderRadius.circular(10.0),
@@ -98,28 +98,28 @@ class _FindUserPageState extends State<FindUserPage> {
                                               image: user['profilePic'] != null
                                                   ? NetworkImage(
                                                       user['profilePic'])
-                                                  : AssetImage(
+                                                  : const AssetImage(
                                                           'assets/default_profile_pic.png')
                                                       as ImageProvider,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 16),
+                                        const SizedBox(height: 16),
                                         _buildProfileItemBox(
                                             'Name', user['name']),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         _buildProfileItemBox(
                                             'Email', user['email']),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         _buildProfileItemBox(
                                             'Phone', user['phone']),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         _buildProfileItemBox(
                                             'User Type', user['userType']),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         _buildProfileItemBox(
                                             'Bio', user['bio']),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         _buildProfileItemBox(
                                             'Harbour', user['harbour']),
                                       ],
@@ -128,7 +128,7 @@ class _FindUserPageState extends State<FindUserPage> {
                                 );
                               },
                             )
-                          : Center(child: Text('No results found')),
+                          : const Center(child: Text('No results found')),
             ),
           ],
         ),
@@ -138,7 +138,7 @@ class _FindUserPageState extends State<FindUserPage> {
 
   Widget _buildProfileItemBox(String label, String value) {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10.0),
@@ -149,7 +149,7 @@ class _FindUserPageState extends State<FindUserPage> {
             flex: 1,
             child: Text(
               '$label: ',
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14.0,
               ),
@@ -159,7 +159,7 @@ class _FindUserPageState extends State<FindUserPage> {
             flex: 2,
             child: Text(
               value,
-              style: TextStyle(fontSize: 14.0),
+              style: const TextStyle(fontSize: 14.0),
             ),
           ),
         ],
