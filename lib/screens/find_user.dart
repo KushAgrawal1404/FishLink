@@ -2,6 +2,7 @@ import 'package:fish_link/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 
 class FindUserPage extends StatefulWidget {
   const FindUserPage({Key? key}) : super(key: key);
@@ -13,6 +14,15 @@ class FindUserPage extends StatefulWidget {
 class _FindUserPageState extends State<FindUserPage> {
   TextEditingController _searchController = TextEditingController();
   List<dynamic>? _searchResults;
+  Timer? _debounce;
+  bool _showNoResults = false;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,82 +35,100 @@ class _FindUserPageState extends State<FindUserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            SizedBox(height: 10),
             Container(
-              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[200], // Change the background color
+                borderRadius: BorderRadius.circular(25.0),
               ),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  labelText: 'Search',
+                  contentPadding: EdgeInsets.all(15.0),
+                  hintText: 'Search with Username, Email or Phone number',
+                  border: InputBorder.none,
                   suffixIcon: IconButton(
                     icon: Icon(Icons.search),
-                    onPressed: _searchUser,
+                    onPressed: () {
+                      _searchUser(); // Search when the search button is clicked
+                    },
                   ),
                 ),
+                onChanged: (value) {
+                  if (_debounce?.isActive ?? false) _debounce?.cancel();
+                  _debounce = Timer(const Duration(milliseconds: 100), () {
+                    _searchUser(); // Search after the user stops typing for 1 second
+                  });
+                },
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 20),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: _searchResults == null || _searchResults!.isEmpty
-                    ? Center(child: Text('No users found'))
-                    : ListView.builder(
-                        itemCount: _searchResults!.length,
-                        itemBuilder: (context, index) {
-                          var user = _searchResults![index];
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigate to user profile page
-                            },
-                            child: Card(
-                              elevation: 3,
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      user['name'],
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+              child: _searchResults == null && _showNoResults == false
+                  ? Center(child: Text('Start typing to find users'))
+                  : _searchResults != null && _searchResults!.isEmpty
+                      ? Center(child: Text('No results found'))
+                      : _searchResults != null
+                          ? ListView.builder(
+                              itemCount: _searchResults!.length,
+                              itemBuilder: (context, index) {
+                                var user = _searchResults![index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    // Navigate to user profile page
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(bottom: 16.0),
+                                    padding: EdgeInsets.all(16.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    SizedBox(height: 8),
-                                    Text('Email: ${user['email']}'),
-                                    Text('Phone: ${user['phone']}'),
-                                    Text('User Type: ${user['userType']}'),
-                                    Text('Bio: ${user['bio']}'),
-                                    Text('Harbour: ${user['harbour']}'),
-                                    SizedBox(height: 8),
-                                    if (user['profilePic'] != null)
-                                      Image.network(
-                                        user['profilePic'],
-                                        height: 100,
-                                        width: 100,
-                                      ),
-                                    if (user['profilePic'] == null)
-                                      Image.asset(
-                                        'assets/default_profile_pic.png',
-                                        height: 100,
-                                        width: 100,
-                                      ), // Show default profile pic
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-              ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          height: 150,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: user['profilePic'] != null
+                                                  ? NetworkImage(
+                                                      user['profilePic'])
+                                                  : AssetImage(
+                                                          'assets/default_profile_pic.png')
+                                                      as ImageProvider,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 16),
+                                        _buildProfileItemBox(
+                                            'Name', user['name']),
+                                        SizedBox(height: 8),
+                                        _buildProfileItemBox(
+                                            'Email', user['email']),
+                                        SizedBox(height: 8),
+                                        _buildProfileItemBox(
+                                            'Phone', user['phone']),
+                                        SizedBox(height: 8),
+                                        _buildProfileItemBox(
+                                            'User Type', user['userType']),
+                                        SizedBox(height: 8),
+                                        _buildProfileItemBox(
+                                            'Bio', user['bio']),
+                                        SizedBox(height: 8),
+                                        _buildProfileItemBox(
+                                            'Harbour', user['harbour']),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Center(child: Text('No results found')),
             ),
           ],
         ),
@@ -108,20 +136,60 @@ class _FindUserPageState extends State<FindUserPage> {
     );
   }
 
+  Widget _buildProfileItemBox(String label, String value) {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Text(
+              '$label: ',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14.0,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 14.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _searchUser() async {
     final trimmedQuery = _searchController.text.trim();
     if (trimmedQuery.isNotEmpty) {
-      // Check if the search query is not empty
       final response = await http.get(
         Uri.parse('${Api.userProfileUrl}/search?q=$trimmedQuery'),
       );
       if (response.statusCode == 200) {
         setState(() {
           _searchResults = json.decode(response.body);
+          if (_searchResults!.isEmpty) {
+            _showNoResults = true;
+          } else {
+            _showNoResults = false;
+          }
         });
       } else {
         throw Exception('Failed to search user');
       }
+    } else {
+      setState(() {
+        _searchResults = null;
+        _showNoResults = false;
+      });
     }
   }
 }
