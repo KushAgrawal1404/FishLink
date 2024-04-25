@@ -142,6 +142,17 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
+            leading: Icon(Icons.person, size: 28),
+            title: Text(
+              'Find Users',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.pop(context); // Close the drawer
+              Navigator.pushNamed(context, '/find_users');
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.logout, size: 28),
             title: Text(
               'Logout',
