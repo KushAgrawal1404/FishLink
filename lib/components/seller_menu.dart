@@ -134,12 +134,23 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
           ListTile(
             leading: Icon(Icons.person, size: 28),
             title: Text(
-              'Seller Profile',
+              'MY Profile',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {
               Navigator.pop(context); // Close the drawer
               Navigator.pushNamed(context, '/seller_profile');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.person, size: 28),
+            title: Text(
+              'Find Users',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.pop(context); // Close the drawer
+              Navigator.pushNamed(context, '/find_users');
             },
           ),
           ListTile(
