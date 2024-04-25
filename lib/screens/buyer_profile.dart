@@ -15,8 +15,8 @@ class BuyerProfilePage extends StatefulWidget {
 
 class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Map<String, dynamic>? userProfile;
-  TextEditingController _bioController = TextEditingController();
-  TextEditingController _harbourController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _harbourController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
   String? _selectedImagePath;
   bool _isChanged = false;
