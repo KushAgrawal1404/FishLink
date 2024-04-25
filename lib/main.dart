@@ -1,4 +1,5 @@
 import 'package:fish_link/screens/buyer_profile.dart';
+import 'package:fish_link/screens/find_user.dart';
 import 'package:fish_link/screens/seller_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,6 +68,8 @@ class MyApp extends StatelessWidget {
                 return const MyBidsPage();
               case '/buyer_analytics':
                 return const BuyerAnalyticsPage();
+              case '/find_users':
+                return const FindUserPage();
               default:
                 return const LoginPage();
             }
