@@ -16,6 +16,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
   int totalCatches = 0;
   int activeCatches = 0;
   int soldCatches = 0;
+  int expiredCatches = 0;
   int totalRevenue = 0;
   double ratings = 0.0;
 
@@ -45,6 +46,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
             totalCatches = data['totalCatches'];
             activeCatches = data['activeCatches'];
             soldCatches = data['soldCatches'];
+            expiredCatches = data['expiredCatches'];
             totalRevenue = data['totalRevenue'];
             ratings = data['ratings'];
           });
@@ -77,6 +79,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
                 _buildAnalyticsItem('Total Catches:', totalCatches),
                 _buildAnalyticsItem('Active Catches:', activeCatches),
                 _buildAnalyticsItem('Sold Catches:', soldCatches),
+                _buildAnalyticsItem('Expired Catches:', expiredCatches),
                 _buildAnalyticsItem('Total Revenue:', totalRevenue),
                 _buildAnalyticsItem('Average Ratings:', ratings),
               ],
