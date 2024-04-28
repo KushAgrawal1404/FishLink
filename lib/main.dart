@@ -1,6 +1,7 @@
 import 'package:fish_link/screens/buyer_profile.dart';
 import 'package:fish_link/screens/find_user.dart';
 import 'package:fish_link/screens/seller_profile.dart';
+import 'package:fish_link/screens/winner_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/screens/login_page.dart';
@@ -70,6 +71,8 @@ class MyApp extends StatelessWidget {
                 return const BuyerAnalyticsPage();
               case '/find_users':
                 return const FindUserPage();
+              case '/winner_page':
+                return const WinnerPage(catchDetails: {});
               default:
                 return const LoginPage();
             }

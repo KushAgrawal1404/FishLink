@@ -1,10 +1,11 @@
+import 'package:fish_link/screens/winner_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+//import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
@@ -97,110 +98,110 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
     }
   }
 
-  void _showRatingPopup(BuildContext context, String catchId, String sellerId) {
-    double _rating = 0;
+  // void _showRatingPopup(BuildContext context, String catchId, String sellerId) {
+  //   double _rating = 0;
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Rate Buyer'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                const Text('Provide your rating:'),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    RatingBar.builder(
-                      initialRating: _rating,
-                      minRating: 0,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemPadding: const EdgeInsets.symmetric(
-                          horizontal: 2.0), // Reduced padding
-                      itemBuilder: (context, _) => const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      onRatingUpdate: (value) {
-                        setState(() {
-                          _rating = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                TextField(
-                  controller: _feedbackController,
-                  decoration: const InputDecoration(
-                    labelText: 'Feedback (Optional)',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                String feedback = _feedbackController.text.trim();
-                _submitRating(catchId, sellerId, _rating.toInt(), feedback);
-                Navigator.of(context).pop();
-              },
-              child: const Text('Submit'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('Rate Buyer'),
+  //         content: SingleChildScrollView(
+  //           child: Column(
+  //             children: [
+  //               const Text('Provide your rating:'),
+  //               Row(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   RatingBar.builder(
+  //                     initialRating: _rating,
+  //                     minRating: 0,
+  //                     direction: Axis.horizontal,
+  //                     allowHalfRating: true,
+  //                     itemCount: 5,
+  //                     itemPadding: const EdgeInsets.symmetric(
+  //                         horizontal: 2.0), // Reduced padding
+  //                     itemBuilder: (context, _) => const Icon(
+  //                       Icons.star,
+  //                       color: Colors.amber,
+  //                     ),
+  //                     onRatingUpdate: (value) {
+  //                       setState(() {
+  //                         _rating = value;
+  //                       });
+  //                     },
+  //                   ),
+  //                 ],
+  //               ),
+  //               TextField(
+  //                 controller: _feedbackController,
+  //                 decoration: const InputDecoration(
+  //                   labelText: 'Feedback (Optional)',
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         actions: [
+  //           ElevatedButton(
+  //             onPressed: () {
+  //               String feedback = _feedbackController.text.trim();
+  //               _submitRating(catchId, sellerId, _rating.toInt(), feedback);
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: const Text('Submit'),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: const Text('Cancel'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
-  Future<void> _submitRating(
-      String catchId, String buyerId, int rating, String feedback) async {
-    try {
-      // Create the rating data object
-      Map<String, dynamic> ratingData = {
-        'userId': buyerId,
-        'catchId': catchId,
-        'rating': rating,
-        'feedback': feedback,
-      };
+  // Future<void> _submitRating(
+  //     String catchId, String buyerId, int rating, String feedback) async {
+  //   try {
+  //     // Create the rating data object
+  //     Map<String, dynamic> ratingData = {
+  //       'userId': buyerId,
+  //       'catchId': catchId,
+  //       'rating': rating,
+  //       'feedback': feedback,
+  //     };
 
-      // Convert the rating data to JSON
-      String jsonData = jsonEncode(ratingData);
+  //     // Convert the rating data to JSON
+  //     String jsonData = jsonEncode(ratingData);
 
-      // Make the POST request to the server
-      final response = await http.post(
-        Uri.parse(Api.createRatingUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonData,
-      );
+  //     // Make the POST request to the server
+  //     final response = await http.post(
+  //       Uri.parse(Api.createRatingUrl),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonData,
+  //     );
 
-      // Check if the request was successful (status code 201)
-      if (response.statusCode == 201) {
-        print('Success');
-        // Rating created successfully, you can handle this as needed
-        // For example, show a success message or update the UI
-      } else {
-        // Rating creation failed, show an error message
-        print('Failed to create rating: ${response.statusCode}');
-        // You can handle this as needed, e.g., show a snackbar with an error message
-      }
-    } catch (error) {
-      // An error occurred, handle it accordingly
-      print('Error creating rating: $error');
-      // You can handle this as needed, e.g., show a snackbar with an error message
-    }
-  }
+  //     // Check if the request was successful (status code 201)
+  //     if (response.statusCode == 201) {
+  //       print('Success');
+  //       // Rating created successfully, you can handle this as needed
+  //       // For example, show a success message or update the UI
+  //     } else {
+  //       // Rating creation failed, show an error message
+  //       print('Failed to create rating: ${response.statusCode}');
+  //       // You can handle this as needed, e.g., show a snackbar with an error message
+  //     }
+  //   } catch (error) {
+  //     // An error occurred, handle it accordingly
+  //     print('Error creating rating: $error');
+  //     // You can handle this as needed, e.g., show a snackbar with an error message
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -244,9 +245,6 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                         if (catchDetails['status'] == 'sold')
                           Text('Winner: ${catchDetails['highestBidder']}',
                               style: const TextStyle(fontSize: 16)),
-                        if (catchDetails['rating'] != null)
-                          Text('Rating: ${catchDetails['rating']}',
-                              style: const TextStyle(fontSize: 16)),
                       ],
                     ),
                     trailing: Row(
@@ -272,8 +270,16 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                           IconButton(
                             icon: const Icon(Icons.star),
                             onPressed: () {
-                              _showRatingPopup(context, catchDetails['_id'],
-                                  catchDetails['highestBidder']);
+                              // Navigate to winner page with catchDetails
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WinnerPage(
+                                    catchDetails:
+                                        catchDetails, // Pass the catchDetails
+                                  ),
+                                ),
+                              );
                             },
                           ),
                       ],
