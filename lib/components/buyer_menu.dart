@@ -93,7 +93,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
                 )
               : UserAccountsDrawerHeader(
                   accountName: Text(
-                    'Hi, ${userProfile!['name']}',
+                    '${userProfile!['name']}',
                     style: const TextStyle(fontSize: 20.0),
                   ),
                   accountEmail: Text(
@@ -144,7 +144,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
           ListTile(
             leading: const Icon(Icons.analytics, size: 28),
             title: const Text(
-              'Buyer Analytics',
+              'Analytics',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {

@@ -76,7 +76,7 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
             _buildAnalyticsItem(
               Icons.monetization_on,
               'Average Spending:',
-              '\$${averageSpending.toStringAsFixed(2)}',
+              '\₹${averageSpending.toStringAsFixed(2)}',
               Colors.blue,
             ),
             _buildAnalyticsItem(
