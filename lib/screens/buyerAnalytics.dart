@@ -54,6 +54,7 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Buyer Analytics'),
+        backgroundColor: Color(0xff0f1f30), // Set the previous app bar background color
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -61,35 +62,80 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildAnalyticsItem(
-                Icons.shopping_basket, 'Bids Placed:', bidsPlaced.toString()),
+              Icons.shopping_basket,
+              'Bids Placed:',
+              bidsPlaced.toString(),
+              Colors.orange,
+            ),
             _buildAnalyticsItem(
-                Icons.check_circle, 'Bids Won:', bidsWon.toString()),
-            _buildAnalyticsItem(Icons.monetization_on, 'Average Spending:',
-                '\₹${averageSpending.toStringAsFixed(2)}'),
-            _buildAnalyticsItem(Icons.attach_money, 'Most Amount Spent:',
-                '\₹${mostAmountSpent.toStringAsFixed(2)}'),
-            _buildAnalyticsItem(Icons.money_off, 'Least Amount Spent:',
-                '\₹${leastAmountSpent.toStringAsFixed(2)}'),
+              Icons.check_circle,
+              'Bids Won:',
+              bidsWon.toString(),
+              Colors.green,
+            ),
+            _buildAnalyticsItem(
+              Icons.monetization_on,
+              'Average Spending:',
+              '\$${averageSpending.toStringAsFixed(2)}',
+              Colors.blue,
+            ),
+            _buildAnalyticsItem(
+              Icons.attach_money,
+              'Most Amount Spent:',
+              '\$${mostAmountSpent.toStringAsFixed(2)}',
+              Colors.red,
+            ),
+            _buildAnalyticsItem(
+              Icons.money_off,
+              'Least Amount Spent:',
+              '\$${leastAmountSpent.toStringAsFixed(2)}',
+              Colors.purple,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAnalyticsItem(IconData icon, String label, String value) {
+  Widget _buildAnalyticsItem(
+      IconData icon, String label, String value, Color color) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         children: [
-          Icon(icon, color: Colors.blue),
-          const SizedBox(width: 10),
+          Icon(icon, color: color),
+          const SizedBox(width: 16.0),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(value, style: const TextStyle(fontSize: 16)),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
             ],
           ),
         ],
