@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:fish_link/screens/view_profile.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ class CatchDetailsPage extends StatefulWidget {
 
 class _CatchDetailsPageState extends State<CatchDetailsPage> {
   late Map<String, dynamic> catchDetails = {};
+  String sid = "";
   late Timer timer;
 
   @override
@@ -48,6 +50,9 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
       if (response.statusCode == 200) {
         setState(() {
           catchDetails = jsonDecode(response.body);
+        });
+        setState(() {
+          sid = catchDetails["seller"];
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -189,6 +194,28 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                 _buildListItem(
                     'Ends:', formatDateTime(catchDetails['endTime'])),
 
+                // Button to view seller details
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileViewPage(userId: catchDetails['seller']),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text('Seller Details'),
+                ),
+
                 // Add a button to place bid
                 ElevatedButton(
                   onPressed: catchDetails['endTime'] != null &&
@@ -208,7 +235,8 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                   ),
                   child: Text(
                     catchDetails['endTime'] != null &&
-                            DateTime.now().isAfter(DateTime.parse(catchDetails['endTime']))
+                            DateTime.now().isAfter(
+                                DateTime.parse(catchDetails['endTime']))
                         ? 'Bidding is over'
                         : 'Place Bid',
                   ),
