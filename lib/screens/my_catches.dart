@@ -266,7 +266,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                             },
                           ),
                         if (catchDetails['status'] == 'sold' &&
-                            catchDetails['rating'] == null)
+                            catchDetails['buyerRated'] == false &&
+                            catchDetails['highestBidder'] != null)
                           IconButton(
                             icon: const Icon(Icons.star),
                             onPressed: () {
