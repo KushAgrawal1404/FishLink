@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fish_link/screens/seller_rating.dart';
 
 class BuyerWonCatchesPage extends StatefulWidget {
   const BuyerWonCatchesPage({Key? key}) : super(key: key);
@@ -58,7 +59,16 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                 String firstImageUrl =
                     images.isNotEmpty ? Api.baseUrl + images[0] : '';
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SellerRatingPage(
+                          catchDetails: catchDetails,
+                        ),
+                      ),
+                    );
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.blue.withOpacity(0.1),
@@ -97,6 +107,8 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                                 Text('Quantity: ${catchDetails['quantity']}'),
                                 Text(
                                     'Winning Price: ${catchDetails['currentBid']}'),
+                                Icon(Icons
+                                    .star), // Assuming this is your star button
                               ],
                             ),
                           ),
