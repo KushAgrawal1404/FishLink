@@ -14,6 +14,7 @@ class Api {
   static const String createRatingUrl = '$baseUrl/api/ratings';
   static const String getRatingsByCatchIdUrl = '$baseUrl/api/ratings';
   static const String analyticsUrl = '$baseUrl/api/analytics';
+  static const String fetchMyWins = '$baseUrl/api/catches/won';
   static const String userProfileUrl = '$baseUrl/api/userProfile';
   static const String updateBuyerRatedUrl = '$baseUrl/api/updateBuyerRated';
 }
