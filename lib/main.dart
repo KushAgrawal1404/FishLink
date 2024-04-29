@@ -18,7 +18,6 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:fish_link/screens/mybids.dart';
 import 'package:fish_link/screens/buyerAnalytics.dart';
 import 'package:fish_link/screens/buyer_my_wins.dart';
-
 void main() {
   runApp(const MyApp());
 }

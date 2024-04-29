@@ -93,7 +93,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
                 )
               : UserAccountsDrawerHeader(
                   accountName: Text(
-                    'Hi, ${userProfile!['name']}',
+                    '${userProfile!['name']}',
                     style: const TextStyle(fontSize: 20.0),
                   ),
                   accountEmail: Text(
