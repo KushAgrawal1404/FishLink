@@ -1,5 +1,5 @@
 class Api {
-  static const String baseUrl = 'http://192.168.15.82:5000';
+  static const String baseUrl = 'http://172.16.251.106:5000';
   static const String loginUrl = '$baseUrl/api/login';
   static const String signupPath = '$baseUrl/api/signup';
   static const String forgotPasswordUrl = '$baseUrl/api/forgot-password';
@@ -16,4 +16,5 @@ class Api {
   static const String analyticsUrl = '$baseUrl/api/analytics';
   static const String userProfileUrl = '$baseUrl/api/userProfile';
   static const String updateBuyerRatedUrl = '$baseUrl/api/updateBuyerRated';
+  static const String fetchMyWins = '$baseUrl/api/catches/won';
 }
