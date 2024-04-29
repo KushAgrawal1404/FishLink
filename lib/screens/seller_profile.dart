@@ -72,8 +72,9 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                               ? FileImage(File(_selectedImagePath!))
                               : userProfile!['profilePic'] != null &&
                                       userProfile!['profilePic'] != ''
-                                  ? NetworkImage(userProfile![
-                                      'profilePic']) // Use the correct URL here
+                                  ? NetworkImage(Api.baseUrl +
+                                      userProfile![
+                                          'profilePic']) // Use the correct URL here
                                   : const AssetImage(
                                           'assets/default_profile_pic.png')
                                       as ImageProvider,

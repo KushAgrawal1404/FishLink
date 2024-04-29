@@ -96,7 +96,7 @@ class _FindUserPageState extends State<FindUserPage> {
                                             image: DecorationImage(
                                               fit: BoxFit.cover,
                                               image: user['profilePic'] != null
-                                                  ? NetworkImage(
+                                                  ? NetworkImage(Api.baseUrl +
                                                       user['profilePic'])
                                                   : const AssetImage(
                                                           'assets/default_profile_pic.png')
