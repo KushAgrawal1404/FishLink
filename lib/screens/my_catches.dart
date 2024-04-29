@@ -103,108 +103,144 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
       appBar: AppBar(
         title: const Text('My Catches'),
       ),
-      body: myCatches.isEmpty
-          ? const Center(
-              child: Text('No catches found'),
-            )
-          : ListView.builder(
-              itemCount: myCatches.length,
-              itemBuilder: (context, index) {
-                var catchDetails = myCatches[index];
-                // Parse datetime strings into DateTime objects
-                DateTime endTime = DateTime.parse(catchDetails['endTime']);
-                // Compare with DateTime.now()
-                bool isEndTimePassed = endTime.isBefore(DateTime.now());
-
-                Color boxColor = Colors.green
-                    .withOpacity(0.8); // Default color for unsold catches
-
-                if (catchDetails['status'] == 'sold' &&
-                    catchDetails['highestBidder'] == null) {
-                  boxColor = Colors.red
-                      .withOpacity(0.9); // Red color for unsold with no winner
-                } else if (catchDetails['status'] == 'sold') {
-                  boxColor = Colors.blue
-                      .withOpacity(0.7); // Blue color for sold catches
-                }
-
-                return Card(
-                  color: boxColor, // Set color dynamically
-                  child: ListTile(
-                    title: Text(
-                      catchDetails['name'],
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    tileColor: Colors.blue.withOpacity(0.05),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Location: ${catchDetails['location']}',
-                            style: const TextStyle(fontSize: 16)),
-                        Text('Base Price: ${catchDetails['basePrice']}',
-                            style: const TextStyle(fontSize: 16)),
-                        Text('Quantity: ${catchDetails['quantity']}',
-                            style: const TextStyle(fontSize: 16)),
-                        Text(
-                            'Start Time: ${formatDateTime(catchDetails['startTime'])}',
-                            style: const TextStyle(fontSize: 16)),
-                        Text(
-                            'End Time: ${formatDateTime(catchDetails['endTime'])}',
-                            style: const TextStyle(fontSize: 16)),
-                        Text('Status: ${catchDetails['status']}',
-                            style: const TextStyle(fontSize: 16)),
-                        if (catchDetails['status'] == 'sold')
-                          Text('Winner: ${catchDetails['highestBidder']}',
-                              style: const TextStyle(fontSize: 16)),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (catchDetails['status'] == 'available')
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/edit_catches',
-                                  arguments: catchDetails);
-                            },
-                          ),
-                        if (catchDetails['status'] == 'available')
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              _deleteCatch(catchDetails['_id']);
-                            },
-                          ),
-                        if (catchDetails['status'] == 'sold' &&
-                            isEndTimePassed &&
-                            catchDetails['buyerRated'] == false &&
-                            catchDetails['highestBidder'] != null)
-                          IconButton(
-                            icon: const Icon(Icons.star),
-                            onPressed: () {
-                              // Navigate to winner page with catchDetails
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WinnerPage(
-                                    catchDetails:
-                                        catchDetails, // Pass the catchDetails
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            color: Colors.grey.withOpacity(0.2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildLegendItem(Colors.red, 'Unsold, No Winner'),
+                _buildLegendItem(Colors.blue, 'Sold'),
+                _buildLegendItem(Colors.green, 'Unsold'),
+              ],
             ),
+          ),
+          Expanded(
+            child: myCatches.isEmpty
+                ? const Center(
+                    child: Text('No catches found'),
+                  )
+                : ListView.builder(
+                    itemCount: myCatches.length,
+                    itemBuilder: (context, index) {
+                      var catchDetails = myCatches[index];
+                      // Parse datetime strings into DateTime objects
+                      DateTime endTime =
+                          DateTime.parse(catchDetails['endTime']);
+                      // Compare with DateTime.now()
+                      bool isEndTimePassed = endTime.isBefore(DateTime.now());
+
+                      Color boxColor = Colors.green
+                          .withOpacity(0.8); // Default color for unsold catches
+
+                      if (catchDetails['status'] == 'sold' &&
+                          catchDetails['highestBidder'] == null) {
+                        boxColor = Colors.red.withOpacity(
+                            0.9); // Red color for unsold with no winner
+                      } else if (catchDetails['status'] == 'sold') {
+                        boxColor = Colors.blue
+                            .withOpacity(0.7); // Blue color for sold catches
+                      }
+
+                      return Card(
+                        color: boxColor, // Set color dynamically
+                        child: ListTile(
+                          title: Text(
+                            catchDetails['name'],
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          tileColor: Colors.blue.withOpacity(0.05),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Location: ${catchDetails['location']}',
+                                  style: const TextStyle(fontSize: 16)),
+                              Text('Base Price: ${catchDetails['basePrice']}',
+                                  style: const TextStyle(fontSize: 16)),
+                              Text('Quantity: ${catchDetails['quantity']}',
+                                  style: const TextStyle(fontSize: 16)),
+                              Text(
+                                  'Start Time: ${formatDateTime(catchDetails['startTime'])}',
+                                  style: const TextStyle(fontSize: 16)),
+                              Text(
+                                  'End Time: ${formatDateTime(catchDetails['endTime'])}',
+                                  style: const TextStyle(fontSize: 16)),
+                              Text('Status: ${catchDetails['status']}',
+                                  style: const TextStyle(fontSize: 16)),
+                              if (catchDetails['status'] == 'sold')
+                                Text('Winner: ${catchDetails['highestBidder']}',
+                                    style: const TextStyle(fontSize: 16)),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (catchDetails['status'] == 'available')
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, '/edit_catches',
+                                        arguments: catchDetails);
+                                  },
+                                ),
+                              if (catchDetails['status'] == 'available')
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    _deleteCatch(catchDetails['_id']);
+                                  },
+                                ),
+                              if (catchDetails['status'] == 'sold' &&
+                                  isEndTimePassed &&
+                                  catchDetails['buyerRated'] == false &&
+                                  catchDetails['highestBidder'] != null)
+                                IconButton(
+                                  icon: const Icon(Icons.star),
+                                  onPressed: () {
+                                    // Navigate to winner page with catchDetails
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => WinnerPage(
+                                          catchDetails: catchDetails,
+                                          // Pass the catchDetails
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String text) {
+    return Row(
+      children: [
+        Container(
+          width: 20,
+          height: 20,
+          color: color,
+          margin: const EdgeInsets.only(right: 8.0),
+        ),
+        Text(text),
+      ],
     );
   }
 }
+
 
 
 
