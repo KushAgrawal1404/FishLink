@@ -4,6 +4,49 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class StarRating extends StatefulWidget {
+  final double rating;
+  final ValueChanged<double> onRatingChanged;
+
+  const StarRating(
+      {Key? key, required this.rating, required this.onRatingChanged})
+      : super(key: key);
+
+  @override
+  _StarRatingState createState() => _StarRatingState();
+}
+
+class _StarRatingState extends State<StarRating> {
+  late double _rating;
+
+  @override
+  void initState() {
+    super.initState();
+    _rating = widget.rating;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(5, (index) {
+        return IconButton(
+          onPressed: () {
+            setState(() {
+              _rating = index + 1.0;
+              widget.onRatingChanged(_rating);
+            });
+          },
+          icon: Icon(
+            index < _rating.floor() ? Icons.star : Icons.star_border,
+            color: Colors.yellow,
+          ),
+        );
+      }),
+    );
+  }
+}
+
 class WinnerPage extends StatefulWidget {
   final Map<String, dynamic> catchDetails;
 
@@ -14,10 +57,9 @@ class WinnerPage extends StatefulWidget {
 }
 
 class _WinnerPageState extends State<WinnerPage> {
-  double _rating = 1.0; // Updated initial value to 1.0
+  double _rating = 1.0;
   late final TextEditingController _commentController = TextEditingController();
 
-  // Inside _submitRating function in WinnerPage
   Future<void> _submitRating() async {
     String apiUrl = Api.createRatingUrl;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -34,7 +76,7 @@ class _WinnerPageState extends State<WinnerPage> {
           'rating': _rating,
           'comment': _commentController.text,
           'commenterUsername': userId,
-          'catchId': catchId, // Include catchId in the request
+          'catchId': catchId,
         }),
       );
 
@@ -73,28 +115,20 @@ class _WinnerPageState extends State<WinnerPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Winner: ${widget.catchDetails['highestBidder']}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              'Rate the winner',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Rate the winner:',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Slider(
-              value: _rating,
-              onChanged: (newRating) {
+            StarRating(
+              rating: _rating,
+              onRatingChanged: (newRating) {
                 setState(() {
                   _rating = newRating;
                 });
               },
-              min: 1,
-              max: 5,
-              divisions: 4,
-              label: _rating.toStringAsFixed(1),
             ),
             const SizedBox(height: 20),
             TextFormField(
