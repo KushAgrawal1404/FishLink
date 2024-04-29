@@ -109,7 +109,8 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
                       radius: 50.0,
                       backgroundImage: userProfile!['profilePic'] != null &&
                               userProfile!['profilePic'] != ''
-                          ? NetworkImage(userProfile!['profilePic'])
+                          ? NetworkImage(
+                              Api.baseUrl + userProfile!['profilePic'])
                           : const AssetImage('assets/default_profile_pic.png')
                               as ImageProvider,
                     ),
