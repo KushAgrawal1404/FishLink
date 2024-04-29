@@ -142,8 +142,9 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       Color boxColor = Colors.lightGreen
                           .withOpacity(0.9); // Default color for unsold catches
 
-                      if (catchDetails['status'] == 'sold' &&
-                          catchDetails['highestBidder'] == null) {
+                      if ((catchDetails['status'] == 'sold' &&
+                              catchDetails['highestBidder'] == null) ||
+                          catchDetails['status'] == 'expired') {
                         boxColor = Color.fromARGB(120, 255, 55, 55).withOpacity(
                             0.9); // Red color for unsold with no winner
                       } else if (catchDetails['status'] == 'sold') {
