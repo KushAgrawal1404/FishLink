@@ -16,4 +16,6 @@ class Api {
   static const String analyticsUrl = '$baseUrl/api/analytics';
   static const String userProfileUrl = '$baseUrl/api/userProfile';
   static const String updateBuyerRatedUrl = '$baseUrl/api/updateBuyerRated';
+  static const String createSellerRatingUrl = '$baseUrl/api/ratings/sellers';
+  static const String getSellerRatingsUrl = '$baseUrl/api/ratings/sellers';
 }
