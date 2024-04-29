@@ -15,6 +15,7 @@ class MyCatchesPage extends StatefulWidget {
 
 class _MyCatchesPageState extends State<MyCatchesPage> {
   List<dynamic> myCatches = [];
+  late String _selectedStatus = 'available';
 
   @override
   void initState() {
@@ -101,153 +102,167 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
       appBar: AppBar(
         title: const Text('My Catches'),
       ),
-      body: Theme(
-        data: ThemeData.light().copyWith(
-            primaryColor: Colors.lightGreen,
-            hintColor: Colors.lightBlue,
-            errorColor: Color.fromARGB(255, 226, 53, 53)),
-        child: ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              color: Colors.grey.withOpacity(0.2),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildLegendItem(
-                      Color.fromARGB(255, 235, 29, 29), 'Unsold, No Winner'),
-                  _buildLegendItem(Colors.lightBlue, 'Sold'),
-                  _buildLegendItem(Colors.lightGreen, 'Unsold'),
-                ],
-              ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 10, // Add margin above buttons
+          ),
+          SizedBox(
+            height: 50,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                _buildCategoryButton('Ongoing', 'available', Colors.blue.shade50),
+                _buildCategoryButton('Sold', 'sold', Colors.green.shade50),
+                _buildCategoryButton('Expired', 'expired', Colors.red.shade50),
+              ],
             ),
-            myCatches.isEmpty
+          ),
+          Expanded(
+            child: myCatches.isEmpty
                 ? const Center(
-                    child: Text('No catches found'),
-                  )
+              child: Text('No catches found'),
+            )
                 : ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: myCatches.length,
-                    itemBuilder: (context, index) {
-                      var catchDetails = myCatches[index];
-                      // Parse datetime strings into DateTime objects
-                      DateTime endTime =
-                          DateTime.parse(catchDetails['endTime']);
-                      // Compare with DateTime.now()
-                      bool isEndTimePassed = endTime.isBefore(DateTime.now());
+              itemCount: myCatches.length,
+              itemBuilder: (context, index) {
+                var catchDetails = myCatches[index];
+                if (catchDetails['status'] != _selectedStatus) {
+                  return SizedBox.shrink();
+                }
 
-                      Color boxColor = Colors.lightGreen
-                          .withOpacity(0.9); // Default color for unsold catches
+                // Parse datetime strings into DateTime objects
+                DateTime endTime =
+                DateTime.parse(catchDetails['endTime']);
+                // Compare with DateTime.now()
+                bool isEndTimePassed = endTime.isBefore(DateTime.now());
 
-                      if ((catchDetails['status'] == 'sold' &&
-                              catchDetails['highestBidder'] == null) ||
-                          catchDetails['status'] == 'expired') {
-                        boxColor = Color.fromARGB(120, 255, 55, 55).withOpacity(
-                            0.9); // Red color for unsold with no winner
-                      } else if (catchDetails['status'] == 'sold') {
-                        boxColor = Colors.lightBlue
-                            .withOpacity(0.7); // Blue color for sold catches
-                      }
+                Color boxColor;
+                switch (_selectedStatus) {
+                  case 'available':
+                    boxColor = Colors.blue.shade50;
+                    break;
+                  case 'sold':
+                    boxColor = Colors.green.shade50;
+                    break;
+                  case 'expired':
+                    boxColor = Colors.red.shade50;
+                    break;
+                  default:
+                    boxColor = Colors.grey;
+                }
 
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        color: boxColor, // Set color dynamically
-                        child: ListTile(
-                          title: Text(
-                            catchDetails['name'],
-                            style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                          tileColor: Colors.lightBlue.withOpacity(0.05),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Location: ${catchDetails['location']}',
-                                  style: const TextStyle(fontSize: 16)),
-                              Text('Base Price: ${catchDetails['basePrice']}',
-                                  style: const TextStyle(fontSize: 16)),
-                              Text('Quantity: ${catchDetails['quantity']}',
-                                  style: const TextStyle(fontSize: 16)),
-                              Text(
-                                  'Start Time: ${formatDateTime(catchDetails['startTime'])}',
-                                  style: const TextStyle(fontSize: 16)),
-                              Text(
-                                  'End Time: ${formatDateTime(catchDetails['endTime'])}',
-                                  style: const TextStyle(fontSize: 16)),
-                              Text('Status: ${catchDetails['status']}',
-                                  style: const TextStyle(fontSize: 16)),
-                              if (catchDetails['status'] == 'sold')
-                                Text('Winner: ${catchDetails['highestBidder']}',
-                                    style: const TextStyle(fontSize: 16)),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (catchDetails['status'] == 'available')
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, '/edit_catches',
-                                        arguments: catchDetails);
-                                  },
-                                ),
-                              if (catchDetails['status'] == 'available')
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () {
-                                    _deleteCatch(catchDetails['_id']);
-                                  },
-                                ),
-                              if (catchDetails['status'] == 'sold' &&
-                                  isEndTimePassed &&
-                                  catchDetails['buyerRated'] == false &&
-                                  catchDetails['highestBidder'] != null)
-                                IconButton(
-                                  icon: const Icon(Icons.star),
-                                  onPressed: () {
-                                    // Navigate to winner page with catchDetails
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => WinnerPage(
-                                          catchDetails: catchDetails,
-                                          // Pass the catchDetails
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                return Card(
+                  elevation: 4, // Add elevation for better UI
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-          ],
-        ),
+                  color: boxColor, // Set color dynamically based on status
+                  child: ListTile(
+                    title: Text(
+                      catchDetails['name'],
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Location: ${catchDetails['location']}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text('Base Price: ${catchDetails['basePrice']}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text('Quantity: ${catchDetails['quantity']}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text(
+                            'Start Time: ${formatDateTime(catchDetails['startTime'])}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text(
+                            'End Time: ${formatDateTime(catchDetails['endTime'])}',
+                            style: const TextStyle(fontSize: 16)),
+                        Text('Status: ${catchDetails['status']}',
+                            style: const TextStyle(fontSize: 16)),
+                        if (catchDetails['status'] == 'sold')
+                          Text('Winner: ${catchDetails['highestBidder']}',
+                              style: const TextStyle(fontSize: 16)),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (catchDetails['status'] == 'available')
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, '/edit_catches',
+                                  arguments: catchDetails);
+                            },
+                          ),
+                        if (catchDetails['status'] == 'available')
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              _deleteCatch(catchDetails['_id']);
+                            },
+                          ),
+                        if (catchDetails['status'] == 'sold' &&
+                            isEndTimePassed &&
+                            catchDetails['buyerRated'] == false &&
+                            catchDetails['highestBidder'] != null)
+                          IconButton(
+                            icon: const Icon(Icons.star),
+                            onPressed: () {
+                              // Navigate to winner page with catchDetails
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WinnerPage(
+                                    catchDetails: catchDetails,
+                                    // Pass the catchDetails
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildLegendItem(Color color, String text) {
-    return Row(
+  Widget _buildCategoryButton(String text, String status, Color color) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4.0),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _selectedStatus = status;
+            });
+          },
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.black), // Set text color to black
           ),
-          margin: const EdgeInsets.only(right: 8.0),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0), // Adjust border radius for better UI
+            ),
+            primary: color, // Set button color based on status
+          ),
         ),
-        Text(text),
+        SizedBox(width: 10), // Add some space between button and bid
       ],
-    );
-  }
+    ),
+  );
+}
+
 }
