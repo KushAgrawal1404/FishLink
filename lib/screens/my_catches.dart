@@ -15,8 +15,6 @@ class MyCatchesPage extends StatefulWidget {
 
 class _MyCatchesPageState extends State<MyCatchesPage> {
   List<dynamic> myCatches = [];
-  late final TextEditingController _feedbackController =
-      TextEditingController();
 
   @override
   void initState() {

@@ -120,14 +120,15 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
 
           // List Items
           ListTile(
-            leading: const Icon(Icons.home, size: 28),
+            leading:
+                const Icon(Icons.emoji_events, color: Colors.yellow, size: 28),
             title: const Text(
-              'Home',
+              'My Wins',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             onTap: () {
               Navigator.pop(context); // Close the drawer
-              // Add navigation logic here
+              Navigator.pushNamed(context, '/buyer_wins');
             },
           ),
           ListTile(
@@ -164,7 +165,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person, size: 28),
+            leading: const Icon(Icons.person_search, size: 28),
             title: const Text(
               'Find Users',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
