@@ -91,9 +91,9 @@ class _MyBidsPageState extends State<MyBidsPage> {
                   if (catchDetails['status'] == 'won') {
                     bidColor = Colors.blue; // Blue for won bids
                   } else if (catchDetails['status'] == 'available') {
-                    bidColor = Colors.red; // Red for bids not won
+                    bidColor = Colors.green; // Red for bids not won
                   } else {
-                    bidColor = Colors.green; // Green for ongoing bids
+                    bidColor = Colors.red; // Green for ongoing bids
                   }
 
                   return GestureDetector(
