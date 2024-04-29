@@ -87,12 +87,13 @@ class _MyBidsPageState extends State<MyBidsPage> {
                       images.isNotEmpty ? Api.baseUrl + images[0] : '';
 
                   // Determine color based on bid status
-                  Color bidColor =
-                      Colors.green; // Default color for ongoing bids
+                  Color bidColor;
                   if (catchDetails['status'] == 'won') {
                     bidColor = Colors.blue; // Blue for won bids
                   } else if (catchDetails['status'] == 'available') {
                     bidColor = Colors.red; // Red for bids not won
+                  } else {
+                    bidColor = Colors.green; // Green for ongoing bids
                   }
 
                   return GestureDetector(
