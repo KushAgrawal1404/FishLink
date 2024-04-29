@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart'; // Import your API class
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WinnerPage extends StatefulWidget {
   final Map<String, dynamic> catchDetails;
@@ -14,14 +14,17 @@ class WinnerPage extends StatefulWidget {
 }
 
 class _WinnerPageState extends State<WinnerPage> {
-  double _rating = 0.0;
+  double _rating = 1.0; // Updated initial value to 1.0
   late final TextEditingController _commentController = TextEditingController();
 
+  // Inside _submitRating function in WinnerPage
   Future<void> _submitRating() async {
     String apiUrl = Api.createRatingUrl;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('userId');
     String? winnerId = widget.catchDetails['highestBidder'];
+    String catchId = widget.catchDetails['_id']; // Retrieve catchId
+
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -31,8 +34,10 @@ class _WinnerPageState extends State<WinnerPage> {
           'rating': _rating,
           'comment': _commentController.text,
           'commenterUsername': userId,
+          'catchId': catchId, // Include catchId in the request
         }),
       );
+
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -86,9 +91,9 @@ class _WinnerPageState extends State<WinnerPage> {
                   _rating = newRating;
                 });
               },
-              min: 0,
+              min: 1,
               max: 5,
-              divisions: 5,
+              divisions: 4,
               label: _rating.toStringAsFixed(1),
             ),
             const SizedBox(height: 20),

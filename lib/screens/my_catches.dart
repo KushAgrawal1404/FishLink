@@ -217,6 +217,11 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
               itemCount: myCatches.length,
               itemBuilder: (context, index) {
                 var catchDetails = myCatches[index];
+                // Parse datetime strings into DateTime objects
+                DateTime endTime = DateTime.parse(catchDetails['endTime']);
+                // Compare with DateTime.now()
+                bool isEndTimePassed = endTime.isBefore(DateTime.now());
+
                 return Card(
                   child: ListTile(
                     title: Text(
@@ -266,6 +271,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                             },
                           ),
                         if (catchDetails['status'] == 'sold' &&
+                            isEndTimePassed &&
                             catchDetails['buyerRated'] == false &&
                             catchDetails['highestBidder'] != null)
                           IconButton(
