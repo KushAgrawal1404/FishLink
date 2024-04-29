@@ -134,7 +134,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       bool isEndTimePassed = endTime.isBefore(DateTime.now());
 
                       Color boxColor = Colors.green
-                          .withOpacity(0.8); // Default color for unsold catches
+                          .withOpacity(0.9); // Default color for unsold catches
 
                       if (catchDetails['status'] == 'sold' &&
                           catchDetails['highestBidder'] == null) {
@@ -232,7 +232,10 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
         Container(
           width: 20,
           height: 20,
-          color: color,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(4.0),
+          ),
           margin: const EdgeInsets.only(right: 8.0),
         ),
         Text(text),
