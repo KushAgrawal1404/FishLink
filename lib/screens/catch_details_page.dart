@@ -191,9 +191,13 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
 
                 // Add a button to place bid
                 ElevatedButton(
-                  onPressed: () {
-                    _postBid(context);
-                  },
+                  onPressed: catchDetails['endTime'] != null &&
+                          DateTime.now()
+                              .isBefore(DateTime.parse(catchDetails['endTime']))
+                      ? () {
+                          _postBid(context);
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
@@ -202,7 +206,12 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text('Place Bid'),
+                  child: Text(
+                    catchDetails['endTime'] != null &&
+                            DateTime.now().isAfter(DateTime.parse(catchDetails['endTime']))
+                        ? 'Bidding is over'
+                        : 'Place Bid',
+                  ),
                 ),
               ],
             )
