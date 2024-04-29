@@ -76,7 +76,7 @@ class _MyBidsPageState extends State<MyBidsPage> {
       body: myBids.isEmpty
           ? const Center(child: Text('No bids found'))
           : Padding(
-              padding: const EdgeInsets.only(top: 12.0), // Add top margin
+              padding: const EdgeInsets.only(top: 12.0),
               child: ListView.builder(
                 itemCount: myBids.length,
                 itemBuilder: (context, index) {
@@ -85,6 +85,16 @@ class _MyBidsPageState extends State<MyBidsPage> {
                   List<dynamic> images = catchDetails['images'];
                   String firstImageUrl =
                       images.isNotEmpty ? Api.baseUrl + images[0] : '';
+
+                  // Determine color based on bid status
+                  Color bidColor =
+                      Colors.green; // Default color for ongoing bids
+                  if (catchDetails['status'] == 'won') {
+                    bidColor = Colors.blue; // Blue for won bids
+                  } else if (catchDetails['status'] == 'available') {
+                    bidColor = Colors.red; // Red for bids not won
+                  }
+
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -98,17 +108,16 @@ class _MyBidsPageState extends State<MyBidsPage> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
+                        color: bidColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      margin: const EdgeInsets.only(
-                          left: 7, right: 7, bottom: 10),
+                      margin:
+                          const EdgeInsets.only(left: 7, right: 7, bottom: 10),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Display the first image if available
                             if (firstImageUrl.isNotEmpty)
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10.0),
