@@ -103,27 +103,33 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
       appBar: AppBar(
         title: const Text('My Catches'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            color: Colors.grey.withOpacity(0.2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildLegendItem(Colors.red, 'Unsold, No Winner'),
-                _buildLegendItem(Colors.blue, 'Sold'),
-                _buildLegendItem(Colors.green, 'Unsold'),
-              ],
+      body: Theme(
+        data: ThemeData.light().copyWith(
+            primaryColor: Colors.lightGreen,
+            hintColor: Colors.lightBlue,
+            errorColor: Color.fromARGB(255, 226, 53, 53)),
+        child: ListView(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey.withOpacity(0.2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildLegendItem(
+                      Color.fromARGB(255, 235, 29, 29), 'Unsold, No Winner'),
+                  _buildLegendItem(Colors.lightBlue, 'Sold'),
+                  _buildLegendItem(Colors.lightGreen, 'Unsold'),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: myCatches.isEmpty
+            myCatches.isEmpty
                 ? const Center(
                     child: Text('No catches found'),
                   )
                 : ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: myCatches.length,
                     itemBuilder: (context, index) {
                       var catchDetails = myCatches[index];
@@ -133,19 +139,22 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       // Compare with DateTime.now()
                       bool isEndTimePassed = endTime.isBefore(DateTime.now());
 
-                      Color boxColor = Colors.green
+                      Color boxColor = Colors.lightGreen
                           .withOpacity(0.9); // Default color for unsold catches
 
                       if (catchDetails['status'] == 'sold' &&
                           catchDetails['highestBidder'] == null) {
-                        boxColor = Colors.red.withOpacity(
+                        boxColor = Color.fromARGB(120, 255, 55, 55).withOpacity(
                             0.9); // Red color for unsold with no winner
                       } else if (catchDetails['status'] == 'sold') {
-                        boxColor = Colors.blue
+                        boxColor = Colors.lightBlue
                             .withOpacity(0.7); // Blue color for sold catches
                       }
 
                       return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
                         color: boxColor, // Set color dynamically
                         child: ListTile(
                           title: Text(
@@ -153,7 +162,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                             style: const TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
-                          tileColor: Colors.blue.withOpacity(0.05),
+                          tileColor: Colors.lightBlue.withOpacity(0.05),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -220,8 +229,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       );
                     },
                   ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
