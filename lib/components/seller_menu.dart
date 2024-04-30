@@ -122,18 +122,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
 
           // List Items
           ListTile(
-            leading: const Icon(Icons.home, size: 28, color: Colors.green,),
-            title: const Text(
-              'Home',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              // Add navigation logic here
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.history, size: 28, color: Colors.blue,),
+            leading: const Icon(Icons.history, size: 28, color: Colors.green,),
             title: const Text(
               'My Catches',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
