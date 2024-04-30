@@ -8,9 +8,11 @@ class StarRating extends StatefulWidget {
   final double rating;
   final ValueChanged<double> onRatingChanged;
 
-  const StarRating(
-      {Key? key, required this.rating, required this.onRatingChanged})
-      : super(key: key);
+  const StarRating({
+    Key? key,
+    required this.rating,
+    required this.onRatingChanged,
+  }) : super(key: key);
 
   @override
   _StarRatingState createState() => _StarRatingState();
@@ -30,6 +32,7 @@ class _StarRatingState extends State<StarRating> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(5, (index) {
+        final starColor = _getStarColor(index);
         return IconButton(
           onPressed: () {
             setState(() {
@@ -39,11 +42,26 @@ class _StarRatingState extends State<StarRating> {
           },
           icon: Icon(
             index < _rating.floor() ? Icons.star : Icons.star_border,
-            color: Colors.yellow,
+            color: starColor,
           ),
         );
       }),
     );
+  }
+
+  Color _getStarColor(int index) {
+    final filledStarCount = _rating.floor();
+    if (filledStarCount >= index + 1) {
+      if (filledStarCount <= 2) {
+        return Colors.red;
+      } else if (filledStarCount == 3) {
+        return Colors.yellow;
+      } else {
+        return Colors.green;
+      }
+    } else {
+      return Colors.grey; // Color for empty stars
+    }
   }
 }
 
@@ -142,7 +160,18 @@ class _WinnerPageState extends State<WinnerPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _submitRating,
-              child: const Text('Submit Rating'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue, // Button color
+                onPrimary: Colors.white, // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // Button border
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10), // Button padding
+              ),
+              child: const Text(
+                'Submit Rating',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ],
         ),
