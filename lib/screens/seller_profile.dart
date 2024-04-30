@@ -62,7 +62,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                   GestureDetector(
                     onTap: _pickImage,
                     child: Container(
-                      width: 250,
+                      width: 200,
                       height: 200,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,

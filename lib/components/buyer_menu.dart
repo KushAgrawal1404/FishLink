@@ -98,7 +98,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
                           Navigator.pushNamed(context, '/buyer_profile');
                         },
                         child: CircleAvatar(
-                          radius: 60.0,
+                          radius: 45.0,
                           backgroundImage: userProfile!['profilePic'] != null &&
                                   userProfile!['profilePic'] != ''
                               ? NetworkImage(
