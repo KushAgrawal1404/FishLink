@@ -83,46 +83,58 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          // Drawer Header
-          userProfile == null
-              ? const DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color(0xff0f1f30),
-                  ),
-                  child: null,
-                )
-              : UserAccountsDrawerHeader(
-                  accountName: Text(
-                    '${userProfile!['name']}',
-                    style: const TextStyle(fontSize: 20.0),
-                  ),
-                  accountEmail: Text(
-                    capitalizeFirstLetter(userProfile!['userType']),
-                    style: const TextStyle(color: Colors.white70),
-                  ),
-                  currentAccountPicture: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context,
-                          '/buyer_profile'); // Navigate to buyer_profile.dart
-                    },
-                    child: CircleAvatar(
-                      radius: 50.0,
-                      backgroundImage: userProfile!['profilePic'] != null &&
-                              userProfile!['profilePic'] != ''
-                          ? NetworkImage(
-                              Api.baseUrl + userProfile!['profilePic'])
-                          : const AssetImage('assets/default_profile_pic.png')
-                              as ImageProvider,
-                    ),
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Color(0xff0f1f30),
-                  ),
-                ),
+          // Custom Drawer Header
+          Container(
+            color: const Color(0xff0f1f30),
+            padding: const EdgeInsets.only(right: 20, top: 30, bottom: 20),
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                userProfile == null
+                    ? Container() // Placeholder if user profile is not available
+                    : GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/buyer_profile');
+                        },
+                        child: CircleAvatar(
+                          radius: 60.0,
+                          backgroundImage: userProfile!['profilePic'] != null &&
+                                  userProfile!['profilePic'] != ''
+                              ? NetworkImage(
+                                  Api.baseUrl + userProfile!['profilePic'])
+                              : const AssetImage(
+                                      'assets/default_profile_pic.png')
+                                  as ImageProvider,
+                        ),
+                      ),
+                const SizedBox(height: 10),
+                userProfile == null
+                    ? Container() // Placeholder if user profile is not available
+                    : Text(
+                        '${userProfile!['name']}',
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                const SizedBox(height: 5),
+                userProfile == null
+                    ? Container() // Placeholder if user profile is not available
+                    : Text(
+                        capitalizeFirstLetter(userProfile!['userType']),
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+              ],
+            ),
+          ),
 
           // List Items
           ListTile(
-            leading: const Icon(Icons.history, size: 28, color: Colors.green,),
+            leading: const Icon(
+              Icons.history,
+              size: 28,
+              color: Colors.green,
+            ),
             title: const Text(
               'My Catches',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -133,7 +145,11 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add, size: 28, color: Colors.blue,),
+            leading: const Icon(
+              Icons.add,
+              size: 28,
+              color: Colors.blue,
+            ),
             title: const Text(
               'Add Catches',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -144,7 +160,11 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person, size: 28, color: Colors.blue,),
+            leading: const Icon(
+              Icons.person,
+              size: 28,
+              color: Colors.blue,
+            ),
             title: const Text(
               'My Profile',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -155,7 +175,11 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person_search, size: 28, color: Colors.blue,),
+            leading: const Icon(
+              Icons.person_search,
+              size: 28,
+              color: Colors.blue,
+            ),
             title: const Text(
               'Find Users',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -166,7 +190,11 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout, size: 28, color: Colors.red,),
+            leading: const Icon(
+              Icons.logout,
+              size: 28,
+              color: Colors.red,
+            ),
             title: const Text(
               'Logout',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
