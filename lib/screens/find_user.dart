@@ -12,7 +12,7 @@ class FindUserPage extends StatefulWidget {
 }
 
 class _FindUserPageState extends State<FindUserPage> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<dynamic>? _searchResults;
   Timer? _debounce;
   bool _showNoResults = false;

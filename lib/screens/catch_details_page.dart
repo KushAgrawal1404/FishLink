@@ -28,7 +28,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
     _fetchCatchDetails();
 
     // Set up a timer to refresh catch details every second
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       _fetchCatchDetails();
     });
   }
@@ -50,9 +50,6 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
       if (response.statusCode == 200) {
         setState(() {
           catchDetails = jsonDecode(response.body);
-        });
-        setState(() {
-          sid = catchDetails["seller"];
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -200,8 +197,8 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            ProfileViewPage(userId: catchDetails['seller']),
+                        builder: (context) => ProfileViewPage(
+                            userId: catchDetails['seller']['_id']),
                       ),
                     );
                   },
@@ -213,7 +210,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text('Seller Details'),
+                  child: const Text('Seller Details'),
                 ),
 
                 // Add a button to place bid
