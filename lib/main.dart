@@ -2,7 +2,7 @@ import 'package:fish_link/screens/buyer_profile.dart';
 import 'package:fish_link/screens/find_user.dart';
 import 'package:fish_link/screens/seller_profile.dart';
 import 'package:fish_link/screens/seller_rating.dart';
-import 'package:fish_link/screens/winner_page.dart';
+import 'package:fish_link/screens/buyer_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/screens/login_page.dart';
@@ -18,6 +18,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:fish_link/screens/mybids.dart';
 import 'package:fish_link/screens/buyerAnalytics.dart';
 import 'package:fish_link/screens/buyer_my_wins.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -72,7 +73,7 @@ class MyApp extends StatelessWidget {
                 return const BuyerAnalyticsPage();
               case '/find_users':
                 return const FindUserPage();
-              case '/winner_page':
+              case '/buyer_rating':
                 return const WinnerPage(catchDetails: {});
               case '/seller_rating':
                 return const SellerRatingPage(catchDetails: {});

@@ -1,4 +1,4 @@
-import 'package:fish_link/screens/winner_page.dart';
+import 'package:fish_link/screens/buyer_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
