@@ -18,6 +18,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:fish_link/screens/mybids.dart';
 import 'package:fish_link/screens/buyerAnalytics.dart';
 import 'package:fish_link/screens/buyer_my_wins.dart';
+import 'package:fish_link/screens/buyer_win_details.dart';
 
 void main() {
   runApp(const MyApp());
@@ -79,6 +80,11 @@ class MyApp extends StatelessWidget {
                 return const SellerRatingPage(catchDetails: {});
               case '/buyer_wins':
                 return const BuyerWonCatchesPage();
+              case '/buyer_wins_details':
+                return const WinDetailsPage(
+                  catchId: '',
+                  sellerId: '',
+                );
               default:
                 return const LoginPage();
             }
