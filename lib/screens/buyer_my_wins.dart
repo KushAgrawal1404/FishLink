@@ -3,8 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fish_link/screens/catch_details_page.dart';
-import 'package:fish_link/screens/seller_rating.dart'; // Import the SellerRatingPage
+//import 'package:fish_link/screens/catch_details_page.dart';
+import 'package:fish_link/screens/seller_rating.dart';
+import 'package:fish_link/screens/buyer_win_details.dart';
+//import 'package:fish_link/screens/buyer_win_details.dart'; // Import the WinDetailsPage
 
 class BuyerWonCatchesPage extends StatefulWidget {
   const BuyerWonCatchesPage({Key? key}) : super(key: key);
@@ -66,8 +68,10 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CatchDetailsPage(
+                        builder: (context) => WinDetailsPage(
                           catchId: catchDetails['_id'],
+                          sellerId: catchDetails[
+                              'seller'], // Pass sellerId to WinDetailsPage
                         ),
                       ),
                     );
