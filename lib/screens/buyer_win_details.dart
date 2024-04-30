@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fish_link/screens/seller_rating.dart';
 
 class WinDetailsPage extends StatefulWidget {
   final String catchId;
@@ -20,12 +22,17 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   Map<String, dynamic> catchDetails = {};
   Map<String, dynamic> userProfile = {};
   bool isCatchDetailsExpanded = false;
+  List<dynamic> sellerRatings = [];
+  bool isLoadingRatings = false;
+  double _rating = 0.0;
+  String _comment = '';
 
   @override
   void initState() {
     super.initState();
     _fetchCatchDetails();
     fetchUserProfile();
+    _getSellerRatings();
   }
 
   Future<void> _fetchCatchDetails() async {
@@ -75,6 +82,46 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     }
   }
 
+  Future<void> _getSellerRatings() async {
+    setState(() {
+      isLoadingRatings = true;
+    });
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+
+      if (userId != null) {
+        final response = await http.get(
+          Uri.parse('${Api.getSellerRatingsUrl}/${widget.sellerId}'),
+          headers: {'Content-Type': 'application/json'},
+        );
+
+        if (response.statusCode == 200) {
+          setState(() {
+            sellerRatings = jsonDecode(response.body);
+            isLoadingRatings = false;
+          });
+        } else {
+          print('Failed to fetch seller ratings: ${response.statusCode}');
+          setState(() {
+            isLoadingRatings = false;
+          });
+        }
+      } else {
+        print('User ID is null');
+        setState(() {
+          isLoadingRatings = false;
+        });
+      }
+    } catch (error) {
+      print('Error fetching seller ratings: $error');
+      setState(() {
+        isLoadingRatings = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,8 +137,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                 leading: Icon(Icons.details),
                 title: Text(
                   'Catch Details',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold), // Make the title bold
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 initiallyExpanded: isCatchDetailsExpanded,
                 onExpansionChanged: (expanded) {
@@ -129,7 +175,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                               Text('Base Price: ${catchDetails['basePrice']}'),
                         ),
                         ListTile(
-                          title: Text('Quanity: ${catchDetails['quantity']}'),
+                          title: Text('Quantity: ${catchDetails['quantity']}'),
                         ),
                         ListTile(
                           title: Text(
@@ -141,9 +187,10 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                           ),
                         ),
                         ListTile(
-                            title: Text(
-                          'Bid End Time: ${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['endTime']))}',
-                        )),
+                          title: Text(
+                            'Bid End Time: ${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['endTime']))}',
+                          ),
+                        ),
                       ],
                     )
                   else
@@ -158,8 +205,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                 leading: Icon(Icons.person),
                 title: Text(
                   'Seller Profile',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold), // Make the title bold
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 children: <Widget>[
                   if (userProfile.isNotEmpty)
@@ -205,6 +251,62 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                 ],
               ),
             ),
+            if (!isLoadingRatings)
+              if (catchDetails['isSellerRated'] == true)
+                Card(
+                  child: ExpansionTile(
+                    leading: Icon(Icons.star),
+                    title: Text(
+                      'Seller Rating',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    children: <Widget>[
+                      // Display ratings and comments here
+                      if (sellerRatings.isNotEmpty)
+                        Column(
+                          children: sellerRatings.map((rating) {
+                            return ListTile(
+                              title: Text('Rating: ${rating['rating']}'),
+                              subtitle: Text(
+                                  'Comment: ${rating['comment'] ?? 'No comment'}'),
+                            );
+                          }).toList(),
+                        )
+                      else
+                        ListTile(
+                          title: Text('No ratings available'),
+                        )
+                    ],
+                  ),
+                )
+              else
+                Card(
+                  child: ExpansionTile(
+                    leading: Icon(Icons.star),
+                    title: Text(
+                      'Rate Seller',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    children: <Widget>[
+                      // Navigate to seller rating page
+                      ListTile(
+                        title: Text('Please rate the seller'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SellerRatingPage(
+                                catchDetails: catchDetails,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                )
+            else
+              CircularProgressIndicator(),
           ],
         ),
       ),

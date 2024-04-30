@@ -26,30 +26,51 @@ class _SellerRatingPageState extends State<SellerRatingPage> {
       String? userId = prefs.getString('userId');
 
       if (userId != null) {
-        final response = await http.post(
-          Uri.parse(Api.createSellerRatingUrl),
-          body: jsonEncode({
-            'ratedSellerId': widget.catchDetails['seller'] ??
-                '', // Change 'catchId' to 'sellerId'
-            'rating': _rating.toString(),
-            'comment': _comment,
-            'raterUserId': userId,
-          }),
-          headers: {'Content-Type': 'application/json'},
+        final response = await http.get(
+          Uri.parse('${Api.catchSellerUrl}/${widget.catchDetails['_id']}'),
         );
 
-        if (response.statusCode == 201) {
-          // Rating created successfully
-          // Handle success logic here if needed
+        if (response.statusCode == 200) {
+          final sellerDetails = jsonDecode(response.body);
+          final sellerId = sellerDetails['seller'];
+
+          final ratingResponse = await http.post(
+            Uri.parse(Api.createSellerRatingUrl),
+            body: jsonEncode({
+              'ratedSellerId': sellerId,
+              'rating': _rating.toString(),
+              'comment': _comment,
+              'raterUserId': userId,
+            }),
+            headers: {'Content-Type': 'application/json'},
+          );
+
+          if (ratingResponse.statusCode == 201) {
+            _showSnackBar('Rating submitted successfully', Colors.green);
+          } else {
+            _showSnackBar(
+                'Failed to submit rating. Please try again.', Colors.red);
+          }
         } else {
-          print('Failed to create seller rating: ${response.statusCode}');
+          _showSnackBar(
+              'Failed to fetch seller details. Please try again.', Colors.red);
         }
       } else {
-        print('User ID is null');
+        _showSnackBar('User ID is null. Please try again.', Colors.red);
       }
     } catch (error) {
-      print('Error creating seller rating: $error');
+      _showSnackBar('Error creating seller rating: $error', Colors.red);
     }
+  }
+
+  void _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -61,12 +82,16 @@ class _SellerRatingPageState extends State<SellerRatingPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(
+                height: MediaQuery.of(context).size.height *
+                    0.1), // Top padding to keep content at the top
             Text(
               'Rate the seller:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 8),
             RatingBar.builder(
               initialRating: _rating,
               minRating: 1,
@@ -84,7 +109,7 @@ class _SellerRatingPageState extends State<SellerRatingPage> {
                 });
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Add a comment (optional)',
@@ -96,7 +121,7 @@ class _SellerRatingPageState extends State<SellerRatingPage> {
                 });
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 _submitRating();

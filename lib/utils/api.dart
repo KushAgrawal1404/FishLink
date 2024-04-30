@@ -19,4 +19,5 @@ class Api {
   static const String updateBuyerRatedUrl = '$baseUrl/api/updateBuyerRated';
   static const String createSellerRatingUrl = '$baseUrl/api/ratings/sellers';
   static const String getSellerRatingsUrl = '$baseUrl/api/ratings/sellers';
+  static const String catchSellerUrl = '$baseUrl/api/catch/seller'; // New URL
 }
