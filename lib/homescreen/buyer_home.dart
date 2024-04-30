@@ -20,6 +20,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
   List<dynamic> filteredCatches = [];
   TextEditingController searchController = TextEditingController();
   late Timer _timer;
+  bool _sortByPriceAscending = true; // Flag to toggle sorting order
 
   @override
   void initState() {
@@ -44,9 +45,11 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
       );
 
       if (response.statusCode == 200) {
+        List<dynamic> fetchedCatches = jsonDecode(response.body);
         setState(() {
-          catches = jsonDecode(response.body);
-          filteredCatches = catches;
+          catches.clear();
+          catches.addAll(fetchedCatches);
+          _filterCatches(); // Filter catches when fetched
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -66,11 +69,23 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     }
   }
 
-  String formatDateTime(String datetimeString) {
-    DateTime datetime = DateTime.parse(datetimeString);
-    DateTime localDatetime = datetime.toLocal();
-    DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');
-    return formatter.format(localDatetime);
+  // Function to toggle sorting order and re-sort catches
+  void _sortByPrice() {
+    setState(() {
+      _sortByPriceAscending = !_sortByPriceAscending;
+      _sortCatches();
+    });
+  }
+
+  // Sort catches based on base price and sorting order
+  void _sortCatches() {
+    if (_sortByPriceAscending) {
+      filteredCatches = List.from(catches)
+        ..sort((a, b) => a['basePrice'].compareTo(b['basePrice']));
+    } else {
+      filteredCatches = List.from(catches)
+        ..sort((a, b) => b['basePrice'].compareTo(a['basePrice']));
+    }
   }
 
   @override
@@ -92,33 +107,45 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (value) {
-                          _filterCatches();
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Search catches by name or location',
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20.0), // Set border radius here
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: searchController,
+                              onChanged: (value) {
+                                _filterCatches();
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Search catches by name or location',
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20.0),
+                                  ),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                prefixIcon: const Icon(Icons.search,
+                                    color: Colors.grey),
+                                suffixIcon: searchController.text.isNotEmpty
+                                    ? IconButton(
+                                        icon: const Icon(Icons.clear),
+                                        onPressed: () {
+                                          // Clear search text and filter catches
+                                          searchController.clear();
+                                          _filterCatches();
+                                          // FocusScope.of(context).unfocus(); // Close keyboard
+                                        },
+                                      )
+                                    : null,
+                              ),
                             ),
-                            borderSide: BorderSide.none, // Remove border
                           ),
-                          filled: true,
-                          fillColor: Colors.grey[200], // Set background color
-                          prefixIcon:
-                              const Icon(Icons.search, color: Colors.grey),
-                          suffixIcon: searchController.text.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    searchController.clear();
-                                    _filterCatches();
-                                  },
-                                )
-                              : null,
-                        ),
+                          IconButton(
+                            icon: Icon(Icons.sort),
+                            onPressed: _sortByPrice,
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(

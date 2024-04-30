@@ -122,18 +122,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
 
           // List Items
           ListTile(
-            leading: const Icon(Icons.home, size: 28),
-            title: const Text(
-              'Home',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              // Add navigation logic here
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.history, size: 28),
+            leading: const Icon(Icons.history, size: 28, color: Colors.green,),
             title: const Text(
               'My Catches',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -144,7 +133,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add, size: 28),
+            leading: const Icon(Icons.add, size: 28, color: Colors.blue,),
             title: const Text(
               'Add Catches',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -155,7 +144,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person, size: 28),
+            leading: const Icon(Icons.person, size: 28, color: Colors.blue,),
             title: const Text(
               'My Profile',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -166,7 +155,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person_search, size: 28),
+            leading: const Icon(Icons.person_search, size: 28, color: Colors.blue,),
             title: const Text(
               'Find Users',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -177,7 +166,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout, size: 28),
+            leading: const Icon(Icons.logout, size: 28, color: Colors.red,),
             title: const Text(
               'Logout',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
