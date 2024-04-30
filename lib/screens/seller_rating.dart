@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:http/http.dart' as http;
 import 'package:fish_link/utils/api.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'buyer_rating.dart'; // Importing StarRating from buyer_rating.dart
 
 class SellerRatingPage extends StatefulWidget {
   final catchDetails;
@@ -18,7 +18,7 @@ class SellerRatingPage extends StatefulWidget {
 
 class _SellerRatingPageState extends State<SellerRatingPage> {
   double _rating = 0.0;
-  String _comment = '';
+  late String _comment;
 
   Future<void> _submitRating() async {
     try {
@@ -85,49 +85,46 @@ class _SellerRatingPageState extends State<SellerRatingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-                height: MediaQuery.of(context).size.height *
-                    0.1), // Top padding to keep content at the top
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Rate the seller:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
-            RatingBar.builder(
-              initialRating: _rating,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemSize: 30,
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              onRatingUpdate: (rating) {
+            const SizedBox(height: 20),
+            StarRating(
+              rating: _rating,
+              onRatingChanged: (newRating) {
                 setState(() {
-                  _rating = rating;
+                  _rating = newRating;
                 });
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 20),
             TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Add a comment (optional)',
-                border: OutlineInputBorder(),
-              ),
               onChanged: (value) {
                 setState(() {
                   _comment = value;
                 });
               },
+              decoration: const InputDecoration(
+                labelText: 'Add a comment (optional)',
+                border: OutlineInputBorder(),
+              ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                _submitRating();
-              },
-              child: const Text('Submit Rating'),
+              onPressed: _submitRating,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              ),
+              child:
+                  const Text('Submit Rating', style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
