@@ -41,7 +41,7 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Profile'),
+        title: const Text('Seller Profile'),
       ),
       body: userProfile == null
           ? const Center(child: CircularProgressIndicator())
