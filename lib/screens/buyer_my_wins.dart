@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fish_link/screens/seller_rating.dart';
+import 'package:fish_link/screens/catch_details_page.dart';
+import 'package:fish_link/screens/seller_rating.dart'; // Import the SellerRatingPage
 
 class BuyerWonCatchesPage extends StatefulWidget {
   const BuyerWonCatchesPage({Key? key}) : super(key: key);
@@ -58,13 +59,15 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                 List<dynamic> images = catchDetails['images'];
                 String firstImageUrl =
                     images.isNotEmpty ? Api.baseUrl + images[0] : '';
+                bool isSellerRated = catchDetails['isSellerRated'];
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SellerRatingPage(
-                          catchDetails: catchDetails,
+                        builder: (context) => CatchDetailsPage(
+                          catchId: catchDetails['_id'],
                         ),
                       ),
                     );
@@ -107,11 +110,26 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                                 Text('Quantity: ${catchDetails['quantity']}'),
                                 Text(
                                     'Winning Price: ${catchDetails['currentBid']}'),
-                                Icon(Icons
-                                    .star), // Assuming this is your star button
                               ],
                             ),
                           ),
+                          if (!isSellerRated)
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SellerRatingPage(
+                                      catchDetails: catchDetails,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                            ),
                         ],
                       ),
                     ),
