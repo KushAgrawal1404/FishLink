@@ -122,7 +122,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
           // List Items
           ListTile(
             leading:
-                const Icon(Icons.emoji_events, color: Colors.yellow, size: 28),
+                const Icon(Icons.emoji_events, color: Colors.green, size: 28),
             title: const Text(
               'My Wins',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -133,7 +133,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.checklist, size: 28),
+            leading: const Icon(Icons.checklist, size: 28, color: Colors.blue,),
             title: const Text(
               'My Bids',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -144,7 +144,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.analytics, size: 28),
+            leading: const Icon(Icons.analytics, size: 28, color: Colors.blue,),
             title: const Text(
               'Analytics',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -155,7 +155,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person, size: 28),
+            leading: const Icon(Icons.person, size: 28, color: Colors.blue,),
             title: const Text(
               'My Profile',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -166,7 +166,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person_search, size: 28),
+            leading: const Icon(Icons.person_search, size: 28, color: Colors.blue,),
             title: const Text(
               'Find Users',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -177,7 +177,8 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout, size: 28),
+            leading: 
+            const Icon(Icons.logout, size: 28, color: Colors.red,),
             title: const Text(
               'Logout',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
