@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:fish_link/screens/catch_details_page.dart';
-import 'package:fish_link/screens/seller_rating.dart';
+//import 'package:fish_link/screens/seller_rating.dart'; // Remove import statement for SellerRatingPage
 import 'package:fish_link/screens/buyer_win_details.dart';
 //import 'package:fish_link/screens/buyer_win_details.dart'; // Import the WinDetailsPage
 
@@ -61,7 +61,6 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                 List<dynamic> images = catchDetails['images'];
                 String firstImageUrl =
                     images.isNotEmpty ? Api.baseUrl + images[0] : '';
-                bool isSellerRated = catchDetails['isSellerRated'];
 
                 return GestureDetector(
                   onTap: () {
@@ -117,23 +116,6 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                               ],
                             ),
                           ),
-                          if (!isSellerRated)
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SellerRatingPage(
-                                      catchDetails: catchDetails,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                            ),
                         ],
                       ),
                     ),

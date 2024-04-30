@@ -24,8 +24,6 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   bool isCatchDetailsExpanded = false;
   List<dynamic> sellerRatings = [];
   bool isLoadingRatings = false;
-  double _rating = 0.0;
-  String _comment = '';
 
   @override
   void initState() {
@@ -93,7 +91,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
 
       if (userId != null) {
         final response = await http.get(
-          Uri.parse('${Api.getSellerRatingsUrl}/${widget.sellerId}'),
+          Uri.parse(
+              '${Api.getSellerRatingsUrl}/${widget.sellerId}/${widget.catchId}'),
           headers: {'Content-Type': 'application/json'},
         );
 
@@ -289,9 +288,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                     ),
                     children: <Widget>[
                       // Navigate to seller rating page
-                      ListTile(
-                        title: Text('Please rate the seller'),
-                        onTap: () {
+                      ElevatedButton(
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -301,6 +299,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                             ),
                           );
                         },
+                        child: Text('Please rate the seller'),
                       ),
                     ],
                   ),

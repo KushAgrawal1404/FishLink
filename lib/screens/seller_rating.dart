@@ -41,6 +41,7 @@ class _SellerRatingPageState extends State<SellerRatingPage> {
               'rating': _rating.toString(),
               'comment': _comment,
               'raterUserId': userId,
+              'catchId': widget.catchDetails['_id']
             }),
             headers: {'Content-Type': 'application/json'},
           );

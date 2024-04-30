@@ -135,7 +135,7 @@ class _WinnerPageState extends State<WinnerPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Rate the winner',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -151,7 +151,7 @@ class _WinnerPageState extends State<WinnerPage> {
             const SizedBox(height: 20),
             TextFormField(
               controller: _commentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Comment (optional)',
                 border: OutlineInputBorder(),
               ),
@@ -161,12 +161,13 @@ class _WinnerPageState extends State<WinnerPage> {
             ElevatedButton(
               onPressed: _submitRating,
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue, // Text color
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12), // Button border
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10), // Button padding
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 15, vertical: 10), // Button padding
               ),
               child: const Text(
                 'Submit Rating',
