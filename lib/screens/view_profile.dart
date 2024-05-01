@@ -24,7 +24,7 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
   Future<void> fetchUserProfile() async {
     try {
       final response = await http
-          .get(Uri.parse('${Api.userProfileUrl}/seller/${widget.userId}'));
+          .get(Uri.parse('${Api.userProfileUrl}/user/${widget.userId}'));
       if (response.statusCode == 200) {
         setState(() {
           userProfile = json.decode(response.body);

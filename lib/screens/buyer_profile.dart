@@ -32,7 +32,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     String userId = prefs.getString('userId') ?? '';
     try {
       final response =
-          await http.get(Uri.parse('${Api.userProfileUrl}/buyer/$userId'));
+          await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
       if (response.statusCode == 200) {
         setState(() {
           userProfile = json.decode(response.body);
