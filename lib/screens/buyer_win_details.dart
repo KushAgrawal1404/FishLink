@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/screens/seller_rating.dart';
 
 class WinDetailsPage extends StatefulWidget {
   final String catchId;
   final String sellerId;
 
-  const WinDetailsPage(
-      {Key? key, required this.catchId, required this.sellerId})
+  const WinDetailsPage({Key? key, required this.catchId, required this.sellerId})
       : super(key: key);
 
   @override
@@ -65,8 +64,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
 
   Future<void> fetchUserProfile() async {
     try {
-      final response = await http
-          .get(Uri.parse('${Api.userProfileUrl}/user/${widget.sellerId}'));
+      final response = await http.get(Uri.parse('${Api.userProfileUrl}/user/${widget.sellerId}'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -91,8 +89,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
 
       if (userId != null) {
         final response = await http.get(
-          Uri.parse(
-              '${Api.getSellerRatingsUrl}/${widget.sellerId}/${widget.catchId}'),
+          Uri.parse('${Api.getSellerRatingsUrl}/${widget.sellerId}/${widget.catchId}'),
           headers: {'Content-Type': 'application/json'},
         );
 
@@ -126,190 +123,269 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Win Details'),
+        backgroundColor: Color(0xff0f1f30), // Set the app bar background color
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Card(
-              child: ExpansionTile(
-                leading: const Icon(Icons.details),
-                title: const Text(
-                  'Catch Details',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                initiallyExpanded: isCatchDetailsExpanded,
-                onExpansionChanged: (expanded) {
-                  setState(() {
-                    isCatchDetailsExpanded = expanded;
-                  });
-                },
-                children: <Widget>[
-                  if (catchDetails.isNotEmpty)
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 200,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: catchDetails['images'].length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Image.network(
-                                  Api.baseUrl + catchDetails['images'][index],
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('Location: ${catchDetails['location']}'),
-                        ),
-                        ListTile(
-                          title:
-                              Text('Base Price: ${catchDetails['basePrice']}'),
-                        ),
-                        ListTile(
-                          title: Text('Quantity: ${catchDetails['quantity']}'),
-                        ),
-                        ListTile(
-                          title: Text(
-                              'Winning Price: ${catchDetails['currentBid']}'),
-                        ),
-                        ListTile(
-                          title: Text(
-                            'Bid Start Time: ${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['startTime']))}',
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            'Bid End Time: ${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['endTime']))}',
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    const ListTile(
-                      title: Text('Loading Catch Details...'),
-                    )
-                ],
-              ),
-            ),
-            Card(
-              child: ExpansionTile(
-                leading: const Icon(Icons.person),
-                title: const Text(
-                  'Seller Profile',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                children: <Widget>[
-                  if (userProfile.isNotEmpty)
-                    Column(
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundImage: userProfile['profilePic'] !=
-                                          null &&
-                                      userProfile['profilePic'] != ''
-                                  ? NetworkImage(
-                                      Api.baseUrl + userProfile['profilePic'])
-                                  : const AssetImage(
-                                          'assets/default_profile_pic.png')
-                                      as ImageProvider,
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('Name: ${userProfile['name']}'),
-                        ),
-                        ListTile(
-                          title: Text('Email: ${userProfile['email']}'),
-                        ),
-                        ListTile(
-                          title: Text('Phone: ${userProfile['phone']}'),
-                        ),
-                        ListTile(
-                          title: Text('Bio: ${userProfile['bio'] ?? ''}'),
-                        ),
-                        ListTile(
-                          title:
-                              Text('Harbour: ${userProfile['harbour'] ?? ''}'),
-                        ),
-                      ],
-                    )
-                  else
-                    const ListTile(
-                      title: Text('Loading Seller Profile...'),
-                    )
-                ],
-              ),
-            ),
-            if (!isLoadingRatings)
-              if (catchDetails['isSellerRated'] == true)
-                Card(
-                  child: ExpansionTile(
-                    leading: const Icon(Icons.star),
-                    title: const Text(
-                      'Seller Rating',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    children: <Widget>[
-                      // Display ratings and comments here
-                      if (sellerRatings.isNotEmpty)
-                        Column(
-                          children: sellerRatings.map((rating) {
-                            return ListTile(
-                              title: Text('Rating: ${rating['rating']}'),
-                              subtitle: Text(
-                                  'Comment: ${rating['comment'] ?? 'No comment'}'),
-                            );
-                          }).toList(),
-                        )
-                      else
-                        const ListTile(
-                          title: Text('No ratings available'),
-                        )
-                    ],
-                  ),
-                )
-              else
-                Card(
-                  child: ExpansionTile(
-                    leading: const Icon(Icons.star),
-                    title: const Text(
-                      'Rate Seller',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    children: <Widget>[
-                      // Navigate to seller rating page
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SellerRatingPage(
-                                catchDetails: catchDetails,
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Text('Please rate the seller'),
-                      ),
-                    ],
-                  ),
-                )
-            else
-              const CircularProgressIndicator(),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildDetailsCard(),
+              _buildProfileCard(),
+              _buildRatingsCard(),
+              if (isLoadingRatings) _buildLoadingIndicator(),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+Widget _buildDetailsCard() {
+  return Card(
+    color: Colors.white, // Set background color to white
+    child: ExpansionTile(
+      leading: Icon(Icons.details, color: Colors.orange), // Added color to the icon
+      title: const Text(
+        'Catch Details',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      initiallyExpanded: isCatchDetailsExpanded,
+      onExpansionChanged: (expanded) {
+        setState(() {
+          isCatchDetailsExpanded = expanded;
+        });
+      },
+      backgroundColor: isCatchDetailsExpanded ? Colors.grey[200] : null, // Change background color when expanded
+      children: <Widget>[
+        if (catchDetails.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: catchDetails['images'].length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Image.network(
+                          Api.baseUrl + catchDetails['images'][index],
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Text('Location: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${catchDetails['location']}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Base Price: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${catchDetails['basePrice']}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Quantity: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${catchDetails['quantity']}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Winning Price: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${catchDetails['currentBid']}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Bid Start Time: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      '${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['startTime']))}',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Bid End Time: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      '${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['endTime']))}',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        else
+          const ListTile(
+            title: Text('Loading Catch Details...'),
+          )
+      ],
+    ),
+  );
+}
+
+
+
+
+Widget _buildProfileCard() {
+  return Card(
+    color: Colors.white, // Set background color to white
+    child: ExpansionTile(
+      leading: Icon(Icons.person, color: Colors.blue), // Added color to the icon
+      title: const Text(
+        'Seller Profile',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      children: <Widget>[
+        if (userProfile.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      radius: 80,
+                      backgroundImage: userProfile['profilePic'] != null &&
+                              userProfile['profilePic'] != ''
+                          ? NetworkImage(Api.baseUrl + userProfile['profilePic'])
+                          : const AssetImage('assets/default_profile_pic.png')
+                              as ImageProvider,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Text('Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${userProfile['name']}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${userProfile['email']}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Phone: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${userProfile['phone']}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Bio: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${userProfile['bio'] ?? ''}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('Harbour: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${userProfile['harbour'] ?? ''}'),
+                  ],
+                ),
+              ],
+            ),
+          )
+        else
+          const ListTile(
+            title: Text('Loading Seller Profile...'),
+          )
+      ],
+    ),
+  );
+}
+
+
+Widget _buildRatingsCard() {
+  return Card(
+    color: Colors.white, // Set background color to white
+    child: ExpansionTile(
+      leading: Icon(Icons.star, color: Colors.yellow), // Added color to the icon
+      title: const Text(
+        'Seller Rating',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      children: <Widget>[
+        if (!isLoadingRatings)
+          if (catchDetails['isSellerRated'] == true)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: sellerRatings.map((rating) {
+                  return ListTile(
+                    title: Text(
+                      'Rating: ${rating['rating']}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      'Comment: ${rating['comment'] ?? 'No comment'}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }).toList(),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SellerRatingPage(
+                            catchDetails: catchDetails,
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text('Please rate the seller'),
+                  ),
+                ],
+              ),
+            )
+        else
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CircularProgressIndicator(),
+          ),
+      ],
+    ),
+  );
+}
+
+
+  Widget _buildLoadingIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(),
     );
   }
 }
