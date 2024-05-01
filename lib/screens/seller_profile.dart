@@ -35,8 +35,6 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
           await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
       if (response.statusCode == 200) {
         await prefs.remove('userProfile');
-        Map<String, dynamic> decodedResponse = json.decode(response.body);
-        await prefs.setString('userProfile', json.encode(decodedResponse));
         setState(() {
           userProfile = json.decode(response.body);
           _bioController.text = userProfile!['bio'] ?? '';

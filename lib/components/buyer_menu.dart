@@ -88,12 +88,12 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
             color: const Color(0xff0f1f30),
             padding: const EdgeInsets.only(right: 20, top: 30, bottom: 20),
             alignment: Alignment.center,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                userProfile == null
-                    ? Container() // Placeholder if user profile is not available
-                    : GestureDetector(
+            child: userProfile == null
+                ? const SkeletonUserProfile() // Show skeleton UI while loading
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, '/buyer_profile');
                         },
@@ -108,24 +108,20 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
                                   as ImageProvider,
                         ),
                       ),
-                const SizedBox(height: 10),
-                userProfile == null
-                    ? Container() // Placeholder if user profile is not available
-                    : Text(
+                      const SizedBox(height: 10),
+                      Text(
                         '${userProfile!['name']}',
                         style:
                             const TextStyle(fontSize: 20, color: Colors.white),
                       ),
-                const SizedBox(height: 5),
-                userProfile == null
-                    ? Container() // Placeholder if user profile is not available
-                    : Text(
+                      const SizedBox(height: 5),
+                      Text(
                         capitalizeFirstLetter(userProfile!['userType']),
                         style:
                             const TextStyle(fontSize: 16, color: Colors.white),
                       ),
-              ],
-            ),
+                    ],
+                  ),
           ),
 
           // List Items
@@ -218,6 +214,38 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SkeletonUserProfile extends StatelessWidget {
+  const SkeletonUserProfile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 90,
+          height: 90,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          width: 120,
+          height: 18,
+          color: Colors.grey[300],
+        ),
+        const SizedBox(height: 5),
+        Container(
+          width: 100,
+          height: 14,
+          color: Colors.grey[300],
+        ),
+      ],
     );
   }
 }

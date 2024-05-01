@@ -134,15 +134,14 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                       itemBuilder: (context, index) {
                         var catchDetails = myCatches[index];
                         if (catchDetails['status'] != _selectedStatus) {
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }
 
                         // Parse datetime strings into DateTime objects
                         DateTime endTime =
                             DateTime.parse(catchDetails['endTime']);
                         // Compare with DateTime.now()
-                        bool isEndTimePassed =
-                            endTime.isBefore(DateTime.now());
+                        bool isEndTimePassed = endTime.isBefore(DateTime.now());
 
                         Color boxColor;
                         switch (_selectedStatus) {
@@ -229,8 +228,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                 ButtonBar(
                                   alignment: MainAxisAlignment.end,
                                   children: [
-                                    if (catchDetails['status'] ==
-                                        'available')
+                                    if (catchDetails['status'] == 'available')
                                       IconButton(
                                         icon: const Icon(Icons.edit),
                                         onPressed: () {
@@ -239,8 +237,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                               arguments: catchDetails);
                                         },
                                       ),
-                                    if (catchDetails['status'] ==
-                                        'available')
+                                    if (catchDetails['status'] == 'available')
                                       IconButton(
                                         icon: const Icon(Icons.delete),
                                         onPressed: () {
@@ -249,10 +246,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                       ),
                                     if (catchDetails['status'] == 'sold' &&
                                         isEndTimePassed &&
-                                        catchDetails['buyerRated'] ==
-                                            false &&
-                                        catchDetails['highestBidder'] !=
-                                            null)
+                                        catchDetails['buyerRated'] == false &&
+                                        catchDetails['highestBidder'] != null)
                                       IconButton(
                                         icon: const Icon(Icons.star),
                                         onPressed: () {
@@ -260,8 +255,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  WinnerPage(
+                                              builder: (context) => WinnerPage(
                                                 catchDetails: catchDetails,
                                               ),
                                             ),
@@ -292,15 +286,15 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
             _selectedStatus = status;
           });
         },
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.black),
-        ),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
           backgroundColor: color,
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.black),
         ),
       ),
     );
@@ -313,7 +307,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
         children: [
           Text(
             '$label: ',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
