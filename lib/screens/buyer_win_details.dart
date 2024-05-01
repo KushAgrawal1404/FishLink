@@ -46,7 +46,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Failed to fetch catch details'),
             backgroundColor: Colors.red,
           ),
@@ -55,7 +55,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     } catch (e) {
       print('Error fetching catch details: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('An error occurred'),
           backgroundColor: Colors.red,
         ),
@@ -66,7 +66,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   Future<void> fetchUserProfile() async {
     try {
       final response = await http
-          .get(Uri.parse('${Api.userProfileUrl}/seller/${widget.sellerId}'));
+          .get(Uri.parse('${Api.userProfileUrl}/user/${widget.sellerId}'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -125,7 +125,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Win Details'),
+        title: const Text('Win Details'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -133,8 +133,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
           children: <Widget>[
             Card(
               child: ExpansionTile(
-                leading: Icon(Icons.details),
-                title: Text(
+                leading: const Icon(Icons.details),
+                title: const Text(
                   'Catch Details',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -193,7 +193,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                       ],
                     )
                   else
-                    ListTile(
+                    const ListTile(
                       title: Text('Loading Catch Details...'),
                     )
                 ],
@@ -201,8 +201,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
             ),
             Card(
               child: ExpansionTile(
-                leading: Icon(Icons.person),
-                title: Text(
+                leading: const Icon(Icons.person),
+                title: const Text(
                   'Seller Profile',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -220,7 +220,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                                       userProfile['profilePic'] != ''
                                   ? NetworkImage(
                                       Api.baseUrl + userProfile['profilePic'])
-                                  : AssetImage('assets/default_profile_pic.png')
+                                  : const AssetImage(
+                                          'assets/default_profile_pic.png')
                                       as ImageProvider,
                             ),
                           ),
@@ -244,7 +245,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                       ],
                     )
                   else
-                    ListTile(
+                    const ListTile(
                       title: Text('Loading Seller Profile...'),
                     )
                 ],
@@ -254,8 +255,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
               if (catchDetails['isSellerRated'] == true)
                 Card(
                   child: ExpansionTile(
-                    leading: Icon(Icons.star),
-                    title: Text(
+                    leading: const Icon(Icons.star),
+                    title: const Text(
                       'Seller Rating',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -272,7 +273,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                           }).toList(),
                         )
                       else
-                        ListTile(
+                        const ListTile(
                           title: Text('No ratings available'),
                         )
                     ],
@@ -281,8 +282,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
               else
                 Card(
                   child: ExpansionTile(
-                    leading: Icon(Icons.star),
-                    title: Text(
+                    leading: const Icon(Icons.star),
+                    title: const Text(
                       'Rate Seller',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -299,13 +300,13 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                             ),
                           );
                         },
-                        child: Text('Please rate the seller'),
+                        child: const Text('Please rate the seller'),
                       ),
                     ],
                   ),
                 )
             else
-              CircularProgressIndicator(),
+              const CircularProgressIndicator(),
           ],
         ),
       ),
