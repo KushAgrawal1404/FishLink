@@ -82,13 +82,13 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
             _buildAnalyticsItem(
               Icons.attach_money,
               'Most Amount Spent:',
-              '\$${mostAmountSpent.toStringAsFixed(2)}',
+              '\₹${mostAmountSpent.toStringAsFixed(2)}',
               Colors.red,
             ),
             _buildAnalyticsItem(
               Icons.money_off,
               'Least Amount Spent:',
-              '\$${leastAmountSpent.toStringAsFixed(2)}',
+              '\₹${leastAmountSpent.toStringAsFixed(2)}',
               Colors.purple,
             ),
           ],

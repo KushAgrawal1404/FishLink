@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -184,20 +182,43 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize:
-            const Size.fromHeight(155), // Set the preferred height here
+        preferredSize: const Size.fromHeight(155),
         child: AppBar(
-          title: const Text(
-            'Welcome to \nFishLink',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue, Colors.green], // Add gradient colors
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
           ),
-          titleTextStyle:
-              const TextStyle(fontSize: 45, fontFamily: 'Times New Roman'),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Welcome to',
+                style: TextStyle(
+                  fontSize: 28,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'FishLink',
+                style: TextStyle(
+                  fontSize: 48,
+                  color: Colors.white,
+                  fontFamily: 'Times New Roman',
+                ),
+              ),
+            ],
+          ),
           toolbarHeight: 100,
-          bottom: const PreferredSize(
+          bottom: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: Padding(
-              padding: EdgeInsets.only(bottom: 10, left: 20),
+              padding: const EdgeInsets.only(bottom: 10, left: 20),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -226,6 +247,9 @@ class _LoginPageState extends State<LoginPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
+                filled: true,
+                fillColor: Colors.grey[200], // Add background color
+                prefixIcon: Icon(Icons.email), // Add email icon
               ),
             ),
             const SizedBox(height: 16),
@@ -246,18 +270,21 @@ class _LoginPageState extends State<LoginPage> {
                     });
                   },
                 ),
+                filled: true,
+                fillColor: Colors.grey[200], // Add background color
+                prefixIcon: Icon(Icons.lock), // Add lock icon
               ),
-              obscureText: !_isPasswordVisible, // Toggle password visibility
+              obscureText: !_isPasswordVisible,
             ),
             const SizedBox(height: 5),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
               TextButton(
                 onPressed: () {
-                  _forgotPassword(); // Call the forgot password method
+                  _forgotPassword();
                 },
                 child: const Text(
                   'Forgot Password?',
-                  style: TextStyle(color: Color(0xFFbae162)),
+                  style: TextStyle(color: Colors.blue), // Change text color
                 ),
               ),
             ]),
@@ -265,9 +292,9 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: _login,
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(const Color(0xFFbae162)),
-                elevation: MaterialStateProperty.all(8.0),
+                backgroundColor: MaterialStateProperty.all(
+                    Colors.blue), // Change button color
+                elevation: MaterialStateProperty.all(10.0), // Add elevation
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -275,22 +302,27 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 minimumSize: MaterialStateProperty.all(const Size(400, 55)),
               ),
-              child: const Text(
+              child: Text(
                 'Login',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold, // Add bold font weight
+                ),
               ),
             ),
             const SizedBox(height: 20.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text('Don\'t have an account?'),
+                const Text('Don\'t have an account?',
+                    style: TextStyle(color: Colors.black)), // Change text color
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/signup_landing');
                   },
                   child: const Text('Register',
-                      style: TextStyle(color: Color(0xFFbae162))),
+                      style: TextStyle(color: Colors.blue)),
                 ),
               ],
             ),
