@@ -1,42 +1,43 @@
 import 'package:flutter/material.dart';
 
 class SignupLandingPage extends StatelessWidget {
-  const SignupLandingPage({super.key});
+  const SignupLandingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account Selector'),
+        title: const Text('Select Account'),
       ),
-      body: Center(
+      backgroundColor: Colors.grey[200], // Adding a background color
+      body: Padding(
+        padding: const EdgeInsets.all(20.0), // Adding padding around the content
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/buyer_signup');
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.greenAccent),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                elevation: MaterialStateProperty.all(8.0),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
+              style: ElevatedButton.styleFrom(
+                primary: const Color.fromRGBO(105, 240, 174, 1),
+                onPrimary: Colors.white,
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                minimumSize: MaterialStateProperty.all(const Size(400, 300)),
+                padding: EdgeInsets.all(20.0), // Adding padding inside the button
               ),
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.shopping_cart,
-                    size: 90,
+                    size: 50,
                   ),
-                  SizedBox(height: 8), // Add some space between icon and text
-                  Text('Register as Buyer', style: TextStyle(fontSize: 30)),
+                  const SizedBox(height: 10),
+                  Text('Register as Buyer', style: TextStyle(fontSize: 20)),
                 ],
               ),
             ),
@@ -45,26 +46,24 @@ class SignupLandingPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/seller_signup');
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.redAccent),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                elevation: MaterialStateProperty.all(8.0),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.redAccent,
+                onPrimary: Colors.white,
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-                minimumSize: MaterialStateProperty.all(const Size(400, 300)),
+                padding: EdgeInsets.all(20.0), // Adding padding inside the button
               ),
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.storefront,
-                    size: 90,
+                    size: 50,
                   ),
-                  SizedBox(height: 8), // Add some space between icon and text
-                  Text('Register as Seller', style: TextStyle(fontSize: 30)),
+                  const SizedBox(height: 10),
+                  Text('Register as Seller', style: TextStyle(fontSize: 20)),
                 ],
               ),
             ),

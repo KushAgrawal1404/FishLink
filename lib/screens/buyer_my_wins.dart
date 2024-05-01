@@ -45,12 +45,14 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Wins'),
-      ),
-      body: wonCatches.isEmpty
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('My Wins'),
+    ),
+    body: Padding(
+      padding: const EdgeInsets.only(top: 10.0), // Add padding to the top
+      child: wonCatches.isEmpty
           ? const Center(
               child: Text('No won catches found'),
             )
@@ -123,6 +125,8 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                 );
               },
             ),
-    );
-  }
+    ),
+  );
+}
+
 }
