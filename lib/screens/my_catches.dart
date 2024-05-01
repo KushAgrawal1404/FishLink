@@ -1,3 +1,4 @@
+import 'package:fish_link/screens/seller_soldbid_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fish_link/screens/buyer_rating.dart';
 import 'package:fish_link/utils/api.dart';
@@ -159,115 +160,138 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                         }
 
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: boxColor,
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                // Handle onTap action
+                                if (catchDetails['status'] == 'sold') {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SoldBidPage(
+                                        catchId: catchDetails['_id'],
+                                        buyerId: catchDetails[
+                                            'highestBidder'], // Pass sellerId to WinDetailsPage
+                                      ),
                                     ),
-                                  ),
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    catchDetails['name'],
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                  );
+                                }
+                              },
+                              child: Card(
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildDetailRow(
-                                        'Location',
-                                        catchDetails['location'],
-                                      ),
-                                      _buildDetailRow(
-                                        'Base Price',
-                                        '\$${catchDetails['basePrice']}',
-                                      ),
-                                      _buildDetailRow(
-                                        'Quantity',
-                                        catchDetails['quantity'].toString(),
-                                      ),
-                                      _buildDetailRow(
-                                        'Start Time',
-                                        formatDateTime(
-                                            catchDetails['startTime']),
-                                      ),
-                                      _buildDetailRow(
-                                        'End Time',
-                                        formatDateTime(catchDetails['endTime']),
-                                      ),
-                                      _buildDetailRow(
-                                        'Status',
-                                        catchDetails['status'],
-                                      ),
-                                      if (catchDetails['status'] == 'sold')
-                                        _buildDetailRow(
-                                          'Winner',
-                                          catchDetails['highestBidder'],
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                                ButtonBar(
-                                  alignment: MainAxisAlignment.end,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
-                                    if (catchDetails['status'] == 'available')
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        onPressed: () {
-                                          Navigator.pushNamed(
-                                              context, '/edit_catches',
-                                              arguments: catchDetails);
-                                        },
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: boxColor,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                        ),
                                       ),
-                                    if (catchDetails['status'] == 'available')
-                                      IconButton(
-                                        icon: const Icon(Icons.delete),
-                                        onPressed: () {
-                                          _deleteCatch(catchDetails['_id']);
-                                        },
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        catchDetails['name'],
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    if (catchDetails['status'] == 'sold' &&
-                                        isEndTimePassed &&
-                                        catchDetails['buyerRated'] == false &&
-                                        catchDetails['highestBidder'] != null)
-                                      IconButton(
-                                        icon: const Icon(Icons.star),
-                                        onPressed: () {
-                                          // Navigate to winner page with catchDetails
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => WinnerPage(
-                                                catchDetails: catchDetails,
-                                              ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _buildDetailRow(
+                                            'Location',
+                                            catchDetails['location'],
+                                          ),
+                                          _buildDetailRow(
+                                            'Base Price',
+                                            '\$${catchDetails['basePrice']}',
+                                          ),
+                                          _buildDetailRow(
+                                            'Quantity',
+                                            catchDetails['quantity'].toString(),
+                                          ),
+                                          _buildDetailRow(
+                                            'Start Time',
+                                            formatDateTime(
+                                                catchDetails['startTime']),
+                                          ),
+                                          _buildDetailRow(
+                                            'End Time',
+                                            formatDateTime(
+                                                catchDetails['endTime']),
+                                          ),
+                                          _buildDetailRow(
+                                            'Status',
+                                            catchDetails['status'],
+                                          ),
+                                          if (catchDetails['status'] == 'sold')
+                                            _buildDetailRow(
+                                              'Winner',
+                                              catchDetails['highestBidder'],
                                             ),
-                                          );
-                                        },
+                                        ],
                                       ),
+                                    ),
+                                    ButtonBar(
+                                      alignment: MainAxisAlignment.end,
+                                      children: [
+                                        if (catchDetails['status'] ==
+                                            'available')
+                                          IconButton(
+                                            icon: const Icon(Icons.edit),
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context, '/edit_catches',
+                                                  arguments: catchDetails);
+                                            },
+                                          ),
+                                        if (catchDetails['status'] ==
+                                            'available')
+                                          IconButton(
+                                            icon: const Icon(Icons.delete),
+                                            onPressed: () {
+                                              _deleteCatch(catchDetails['_id']);
+                                            },
+                                          ),
+                                        if (catchDetails['status'] == 'sold' &&
+                                            isEndTimePassed &&
+                                            catchDetails['buyerRated'] ==
+                                                false &&
+                                            catchDetails['highestBidder'] !=
+                                                null)
+                                          IconButton(
+                                            icon: const Icon(Icons.star),
+                                            onPressed: () {
+                                              // Navigate to winner page with catchDetails
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      WinnerPage(
+                                                    catchDetails: catchDetails,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
+                              ),
+                            ));
                       },
                     ),
             ),

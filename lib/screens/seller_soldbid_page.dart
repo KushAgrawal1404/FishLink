@@ -66,7 +66,6 @@ class _SoldBidPageState extends State<SoldBidPage> {
     try {
       final response = await http
           .get(Uri.parse('${Api.userProfileUrl}/user/${widget.buyerId}'));
-
       if (response.statusCode == 200) {
         setState(() {
           userProfile = json.decode(response.body);
@@ -75,7 +74,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
         throw Exception('Failed to load user profile');
       }
     } catch (error) {
-      print('Error fetching user profile: $error');
+      print('Error fetching user profile: ${widget.buyerId}');
     }
   }
 
@@ -227,7 +226,9 @@ class _SoldBidPageState extends State<SoldBidPage> {
                       const Text('Bid Start Time: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
-                        '${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['startTime']))}',
+                        DateFormat.yMMMd()
+                            .add_jm()
+                            .format(DateTime.parse(catchDetails['startTime'])),
                       ),
                     ],
                   ),
@@ -237,7 +238,9 @@ class _SoldBidPageState extends State<SoldBidPage> {
                       const Text('Bid End Time: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
-                        '${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['endTime']))}',
+                        DateFormat.yMMMd()
+                            .add_jm()
+                            .format(DateTime.parse(catchDetails['endTime'])),
                       ),
                     ],
                   ),
@@ -260,7 +263,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
         leading: const Icon(Icons.person,
             color: Colors.blue), // Added color to the icon
         title: const Text(
-          'Seller Profile',
+          'Buyer Profile',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -329,7 +332,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
             )
           else
             const ListTile(
-              title: Text('Loading Seller Profile...'),
+              title: Text('Loading Buyer Profile...'),
             )
         ],
       ),
@@ -343,7 +346,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
         leading: const Icon(Icons.star,
             color: Colors.yellow), // Added color to the icon
         title: const Text(
-          'Seller Rating',
+          'Buyer Rating',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -383,7 +386,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
                           ),
                         );
                       },
-                      child: const Text('Please rate the seller'),
+                      child: const Text('Please rate the Buyer'),
                     ),
                   ],
                 ),

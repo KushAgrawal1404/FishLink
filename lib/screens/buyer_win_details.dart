@@ -228,7 +228,9 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                       const Text('Bid Start Time: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
-                        '${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['startTime']))}',
+                        DateFormat.yMMMd()
+                            .add_jm()
+                            .format(DateTime.parse(catchDetails['startTime'])),
                       ),
                     ],
                   ),
@@ -238,7 +240,9 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                       const Text('Bid End Time: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
-                        '${DateFormat.yMMMd().add_jm().format(DateTime.parse(catchDetails['endTime']))}',
+                        DateFormat.yMMMd()
+                            .add_jm()
+                            .format(DateTime.parse(catchDetails['endTime'])),
                       ),
                     ],
                   ),
