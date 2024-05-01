@@ -19,6 +19,7 @@ import 'package:fish_link/screens/mybids.dart';
 import 'package:fish_link/screens/buyerAnalytics.dart';
 import 'package:fish_link/screens/buyer_my_wins.dart';
 import 'package:fish_link/screens/buyer_win_details.dart';
+import 'package:fish_link/screens/seller_soldbid_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -84,6 +85,11 @@ class MyApp extends StatelessWidget {
                 return const WinDetailsPage(
                   catchId: '',
                   sellerId: '',
+                );
+              case '/sold_bid_page':
+                return const SoldBidPage(
+                  catchId: '',
+                  buyerId: '',
                 );
               default:
                 return const LoginPage();
