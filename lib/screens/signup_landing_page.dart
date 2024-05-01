@@ -11,7 +11,8 @@ class SignupLandingPage extends StatelessWidget {
       ),
       backgroundColor: Colors.grey[200], // Adding a background color
       body: Padding(
-        padding: const EdgeInsets.all(20.0), // Adding padding around the content
+        padding:
+            const EdgeInsets.all(20.0), // Adding padding around the content
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -21,22 +22,23 @@ class SignupLandingPage extends StatelessWidget {
                 Navigator.pushNamed(context, '/buyer_signup');
               },
               style: ElevatedButton.styleFrom(
-                primary: const Color.fromRGBO(105, 240, 174, 1),
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white,
+                backgroundColor: const Color.fromRGBO(105, 240, 174, 1),
                 elevation: 8.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                padding: EdgeInsets.all(20.0), // Adding padding inside the button
+                padding: const EdgeInsets.all(
+                    20.0), // Adding padding inside the button
               ),
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.shopping_cart,
                     size: 50,
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text('Register as Buyer', style: TextStyle(fontSize: 20)),
                 ],
               ),
@@ -47,22 +49,23 @@ class SignupLandingPage extends StatelessWidget {
                 Navigator.pushNamed(context, '/seller_signup');
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.redAccent,
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.redAccent,
                 elevation: 8.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                padding: EdgeInsets.all(20.0), // Adding padding inside the button
+                padding: const EdgeInsets.all(
+                    20.0), // Adding padding inside the button
               ),
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.storefront,
                     size: 50,
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text('Register as Seller', style: TextStyle(fontSize: 20)),
                 ],
               ),
