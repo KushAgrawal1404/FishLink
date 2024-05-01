@@ -135,7 +135,7 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Catch Name: ${catchDetails['name']}',
+                                    '${catchDetails['name']}',
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
