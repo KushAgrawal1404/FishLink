@@ -50,7 +50,6 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   Future<void> updateUserProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
-    await prefs.remove('userProfile');
     try {
       // Prepare the request body
       Map<String, dynamic> requestBody = {
@@ -98,6 +97,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -132,11 +132,11 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildProfileItemBox('Name', userProfile!['name']),
-                _buildProfileItemBox('Email', userProfile!['email']),
-                _buildProfileItemBox('Phone', userProfile!['phone']),
-                _buildEditableProfileItemBox('Bio', _bioController),
-                _buildEditableProfileItemBox('Harbour', _harbourController),
+                _buildProfileItemBox(Icons.person, 'Name', userProfile!['name']),
+                _buildProfileItemBox(Icons.email, 'Email', userProfile!['email']),
+                _buildProfileItemBox(Icons.phone, 'Phone', userProfile!['phone']),
+                _buildEditableProfileItemWithEditButton(Icons.book, 'Bio', _bioController),
+                _buildEditableProfileItemWithEditButton(Icons.location_on, 'Harbour', _harbourController),
                 ElevatedButton(
                   onPressed: _isChanged
                       ? updateUserProfile
@@ -148,134 +148,137 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     );
   }
 
-  Widget _buildProfileItemBox(String label, String value) {
+  Widget _buildProfileItemBox(IconData icon, String label, String value) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 1,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          const SizedBox(width: 1), // Reduced space between label and value
-          Expanded(
-            flex: 2,
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 16),
-            ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildEditableProfileItemBox(
-      String label, TextEditingController controller) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 1,
-                child: Text(
+          Icon(icon, color: Colors.blue), // Changed color to blue
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
                   label,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
                     fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
-              ),
-              const SizedBox(width: 8), // Reduced space between label and value
-              Expanded(
-                flex: 2,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: controller,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        onChanged: (_) {
-                          setState(() {
-                            _isChanged = true;
-                          });
-                        },
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: Text('Edit $label'),
-                            content: TextField(
-                              controller: controller,
-                              decoration: InputDecoration(
-                                labelText: label,
-                                border: const OutlineInputBorder(),
-                              ),
-                              onChanged: (_) {
-                                setState(() {
-                                  _isChanged = true;
-                                });
-                              },
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: _isChanged
-                                    ? () {
-                                        updateUserProfile();
-                                        Navigator.pop(context);
-                                      }
-                                    : null,
-                                child: const Text('Save'),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-void main() {
-  runApp(const MaterialApp(
-    home: BuyerProfilePage(),
-  ));
+  Widget _buildEditableProfileItemWithEditButton(IconData icon, String label, TextEditingController controller) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.blue), // Changed color to blue
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 0),
+                TextFormField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: label,
+                  ),
+                  onChanged: (_) {
+                    setState(() {
+                      _isChanged = true;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Edit $label'),
+                    content: TextFormField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        hintText: label,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          updateUserProfile();
+                          Navigator.pop(context);
+                        },
+                        child: Text('Save'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }

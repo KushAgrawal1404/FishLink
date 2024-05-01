@@ -17,6 +17,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   Map<String, dynamic>? userProfile;
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _harbourController = TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
   String? _selectedImagePath;
   bool _isChanged = false;
 
@@ -29,7 +30,6 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
   Future<void> fetchUserProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userId') ?? '';
-    await prefs.remove('userProfile');
     try {
       final response =
           await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
@@ -55,76 +55,90 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
       ),
       body: userProfile == null
           ? const Center(child: CircularProgressIndicator())
-          : Container(
+          : ListView(
               padding: const EdgeInsets.all(16.0),
-              child: ListView(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: _pickImage,
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: _selectedImagePath != null
-                              ? FileImage(File(_selectedImagePath!))
-                              : userProfile!['profilePic'] != null &&
-                                      userProfile!['profilePic'] != ''
-                                  ? NetworkImage(Api.baseUrl +
-                                      userProfile![
-                                          'profilePic']) // Use the correct URL here
-                                  : const AssetImage(
-                                          'assets/default_profile_pic.png')
-                                      as ImageProvider,
-                        ),
+              children: <Widget>[
+                GestureDetector(
+                  
+                  onTap: _pickImage,
+                  child: Container(
+                    width: 250,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: _selectedImagePath != null
+                            ? FileImage(File(_selectedImagePath!))
+                            : userProfile!['profilePic'] != null &&
+                                    userProfile!['profilePic'] != ''
+                                ? NetworkImage(Api.baseUrl +
+                                    userProfile![
+                                        'profilePic']) // Use the correct URL here
+                                : const AssetImage(
+                                        'assets/default_profile_pic.png')
+                                    as ImageProvider,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  _buildProfileItemBox('Name', userProfile!['name']),
-                  _buildProfileItemBox('Email', userProfile!['email']),
-                  _buildProfileItemBox('Phone', userProfile!['phone']),
-                  _buildEditableProfileItemBox('Bio', _bioController),
-                  _buildEditableProfileItemBox('Harbour', _harbourController),
-                  ElevatedButton(
-                    onPressed: _isChanged
-                        ? updateUserProfile
-                        : null, // Disable button if nothing is changed
-                    child: const Text('Save'),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 16),
+                _buildProfileItemBox(Icons.person, 'Name', userProfile!['name']),
+                _buildProfileItemBox(Icons.email, 'Email', userProfile!['email']),
+                _buildProfileItemBox(Icons.phone, 'Phone', userProfile!['phone']),
+                _buildEditableProfileItemWithEditButton(Icons.book, 'Bio', _bioController),
+                _buildEditableProfileItemWithEditButton(Icons.location_on, 'Harbour', _harbourController),
+                ElevatedButton(
+                  onPressed: _isChanged
+                      ? updateUserProfile
+                      : null, // Disable button if nothing is changed
+                  child: const Text('Save'),
+                ),
+              ],
             ),
     );
   }
 
-  Widget _buildProfileItemBox(String label, String value) {
+  Widget _buildProfileItemBox(IconData icon, String label, String value) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
+      margin: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         children: [
+          Icon(icon, color: Colors.blue), // Changed color to blue
+          const SizedBox(width: 16.0),
           Expanded(
-            flex: 1,
-            child: Text(
-              '$label: ',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -132,90 +146,87 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
     );
   }
 
-  Widget _buildEditableProfileItemBox(
-      String label, TextEditingController controller) {
+  Widget _buildEditableProfileItemWithEditButton(IconData icon, String label, TextEditingController controller) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8.0),
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 1,
-                child: Text(
-                  '$label: ',
-                  style: const TextStyle(
+          Icon(icon, color: Colors.blue), // Changed color to blue
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
+                    color: Colors.black87,
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: controller,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                        onChanged: (_) {
-                          setState(() {
-                            _isChanged = true;
-                          });
-                        },
+                SizedBox(height: 0),
+                TextFormField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: label,
+                  ),
+                  onChanged: (_) {
+                    setState(() {
+                      _isChanged = true;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Edit $label'),
+                    content: TextFormField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        hintText: label,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: Text('Edit $label'),
-                            content: TextField(
-                              controller: controller,
-                              decoration: InputDecoration(
-                                labelText: label,
-                                border: const OutlineInputBorder(),
-                              ),
-                              onChanged: (_) {
-                                setState(() {
-                                  _isChanged = true;
-                                });
-                              },
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: _isChanged
-                                    ? () {
-                                        updateUserProfile();
-                                        Navigator.pop(context);
-                                      }
-                                    : null,
-                                child: const Text('Save'),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          updateUserProfile();
+                          Navigator.pop(context);
+                        },
+                        child: Text('Save'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
@@ -263,7 +274,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
 
   Future<void> _pickImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+        await _imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _selectedImagePath = pickedFile.path;
