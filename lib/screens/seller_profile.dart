@@ -34,6 +34,9 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
       final response =
           await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
       if (response.statusCode == 200) {
+        await prefs.remove('userProfile');
+        Map<String, dynamic> decodedResponse = json.decode(response.body);
+        await prefs.setString('userProfile', json.encode(decodedResponse));
         setState(() {
           userProfile = json.decode(response.body);
           _bioController.text = userProfile!['bio'] ?? '';
@@ -59,7 +62,6 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
               padding: const EdgeInsets.all(16.0),
               children: <Widget>[
                 GestureDetector(
-                  
                   onTap: _pickImage,
                   child: Container(
                     width: 250,
@@ -83,11 +85,16 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildProfileItemBox(Icons.person, 'Name', userProfile!['name']),
-                _buildProfileItemBox(Icons.email, 'Email', userProfile!['email']),
-                _buildProfileItemBox(Icons.phone, 'Phone', userProfile!['phone']),
-                _buildEditableProfileItemWithEditButton(Icons.book, 'Bio', _bioController),
-                _buildEditableProfileItemWithEditButton(Icons.location_on, 'Harbour', _harbourController),
+                _buildProfileItemBox(
+                    Icons.person, 'Name', userProfile!['name']),
+                _buildProfileItemBox(
+                    Icons.email, 'Email', userProfile!['email']),
+                _buildProfileItemBox(
+                    Icons.phone, 'Phone', userProfile!['phone']),
+                _buildEditableProfileItemWithEditButton(
+                    Icons.book, 'Bio', _bioController),
+                _buildEditableProfileItemWithEditButton(
+                    Icons.location_on, 'Harbour', _harbourController),
                 ElevatedButton(
                   onPressed: _isChanged
                       ? updateUserProfile
@@ -125,7 +132,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -133,7 +140,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                 ),
                 Text(
                   value,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
                   ),
@@ -146,7 +153,8 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
     );
   }
 
-  Widget _buildEditableProfileItemWithEditButton(IconData icon, String label, TextEditingController controller) {
+  Widget _buildEditableProfileItemWithEditButton(
+      IconData icon, String label, TextEditingController controller) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
@@ -172,13 +180,13 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                SizedBox(height: 0),
+                const SizedBox(height: 0),
                 TextFormField(
                   controller: controller,
                   decoration: InputDecoration(
@@ -195,7 +203,7 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () {
               showDialog(
                 context: context,
@@ -213,14 +221,14 @@ class _SellerProfilePageState extends State<SellerProfilePage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('Cancel'),
+                        child: const Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () {
                           updateUserProfile();
                           Navigator.pop(context);
                         },
-                        child: Text('Save'),
+                        child: const Text('Save'),
                       ),
                     ],
                   );
