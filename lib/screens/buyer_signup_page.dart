@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -8,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:fish_link/utils/api.dart'; // Update with your actual project name
 
 class BuyerSignupPage extends StatefulWidget {
-  const BuyerSignupPage({super.key});
+  const BuyerSignupPage({Key? key}) : super(key: key);
 
   @override
   State<BuyerSignupPage> createState() => _BuyerSignupPageState();
@@ -38,13 +36,12 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
           'username': username,
           'phone': phone,
           'password': password,
-          'userType': 'buyer', // Assuming seller as the user type
+          'userType': 'buyer', // Assuming buyer as the user type
         }),
         headers: {'Content-Type': 'application/json'},
       );
       var responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
-        // Signup successful, navigate to login page
         String msg = responseBody['msg'];
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -90,8 +87,15 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your name',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -100,8 +104,15 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your email',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -110,8 +121,15 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Username',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Choose a username',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -126,8 +144,15 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your phone number',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -136,8 +161,15 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your password',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                   suffixIcon: IconButton(
                     icon: Icon(_isPasswordVisible
                         ? Icons.visibility
@@ -156,7 +188,7 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                 onPressed: _signup,
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all(const Color(0xFFbae162)),
+                      MaterialStateProperty.all(Color.fromARGB(255, 218, 244, 157)),
                   elevation: MaterialStateProperty.all(8.0),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(

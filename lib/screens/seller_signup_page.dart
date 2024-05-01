@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -86,8 +84,15 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your name',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -96,8 +101,15 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your email',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -106,8 +118,15 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Username',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Choose a username',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -121,8 +140,15 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your phone number',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -131,8 +157,15 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter your password',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                   suffixIcon: IconButton(
                     icon: Icon(_isPasswordVisible
                         ? Icons.visibility
