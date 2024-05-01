@@ -50,7 +50,7 @@ class _BuyerHomeMenuState extends State<BuyerHomeMenu> {
 
     try {
       final response =
-          await http.get(Uri.parse('${Api.userProfileUrl}/seller/$userId'));
+          await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(response.body);
         await prefs.setString('userProfile', json.encode(decodedResponse));

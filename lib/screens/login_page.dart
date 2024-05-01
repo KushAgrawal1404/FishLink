@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
         _prefs.setString('token', responseBody['token']);
         String? deviceToken = _prefs.getString('deviceToken');
         sendDeviceId('${responseBody['userId']}', deviceToken!);
-        // Redirect to home
+        fetchUserProfile();
         _redirectToHome(responseBody['userType']);
       } else {
         // Login failed, show error message
@@ -151,6 +151,25 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  Future<void> fetchUserProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userId') ?? '';
+
+    try {
+      final response =
+          await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> decodedResponse = json.decode(response.body);
+        await prefs.setString('userProfile', json.encode(decodedResponse));
+        print("Fetch done...........");
+      } else {
+        throw Exception('Failed to load user profile');
+      }
+    } catch (error) {
+      print('Error fetching user profile: $error');
     }
   }
 
