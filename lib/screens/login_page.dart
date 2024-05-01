@@ -164,7 +164,6 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedResponse = json.decode(response.body);
         await prefs.setString('userProfile', json.encode(decodedResponse));
-        print("Fetch done...........");
       } else {
         throw Exception('Failed to load user profile');
       }

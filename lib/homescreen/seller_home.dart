@@ -18,7 +18,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
   int soldCatches = 0;
   int expiredCatches = 0;
   int totalRevenue = 0;
-  double ratings = 0.0;
+  String ratings = "0.0";
 
   @override
   void initState() {

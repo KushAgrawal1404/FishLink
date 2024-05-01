@@ -34,6 +34,9 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
       final response =
           await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
       if (response.statusCode == 200) {
+        await prefs.remove('userProfile');
+        Map<String, dynamic> decodedResponse = json.decode(response.body);
+        await prefs.setString('userProfile', json.encode(decodedResponse));
         setState(() {
           userProfile = json.decode(response.body);
           _bioController.text = userProfile!['bio'] ?? '';
@@ -132,11 +135,16 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildProfileItemBox(Icons.person, 'Name', userProfile!['name']),
-                _buildProfileItemBox(Icons.email, 'Email', userProfile!['email']),
-                _buildProfileItemBox(Icons.phone, 'Phone', userProfile!['phone']),
-                _buildEditableProfileItemWithEditButton(Icons.book, 'Bio', _bioController),
-                _buildEditableProfileItemWithEditButton(Icons.location_on, 'Harbour', _harbourController),
+                _buildProfileItemBox(
+                    Icons.person, 'Name', userProfile!['name']),
+                _buildProfileItemBox(
+                    Icons.email, 'Email', userProfile!['email']),
+                _buildProfileItemBox(
+                    Icons.phone, 'Phone', userProfile!['phone']),
+                _buildEditableProfileItemWithEditButton(
+                    Icons.book, 'Bio', _bioController),
+                _buildEditableProfileItemWithEditButton(
+                    Icons.location_on, 'Harbour', _harbourController),
                 ElevatedButton(
                   onPressed: _isChanged
                       ? updateUserProfile
@@ -195,7 +203,8 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     );
   }
 
-  Widget _buildEditableProfileItemWithEditButton(IconData icon, String label, TextEditingController controller) {
+  Widget _buildEditableProfileItemWithEditButton(
+      IconData icon, String label, TextEditingController controller) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
