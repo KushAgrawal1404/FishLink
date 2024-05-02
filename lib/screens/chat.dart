@@ -18,28 +18,28 @@ class _ChatPageState extends State<ChatPage> {
   String? sellerId;
   String? messageText;
   List<dynamic>? chatMessages;
-  late String
-      userIdFromPreferences; // Assuming you have stored userId in preferences
+  late String userId = ''; // User ID
 
   @override
   void initState() {
     super.initState();
-    fetchUserIdFromPreferences();
+    fetchUserId();
     fetchWinnerDetails(widget.catchId);
   }
 
-  Future<void> fetchUserIdFromPreferences() async {
+  Future<void> fetchUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userIdFromPreferences = prefs.getString('userId') ??
+      userId = prefs.getString('userId') ??
           ''; // Replace 'userId' with your actual key
+      print('UserID from SharedPreferences: $userId');
     });
   }
 
   Future<void> fetchWinnerDetails(String catchId) async {
     try {
       final response = await http.get(
-        Uri.parse('${Api.winDetailsUrl(widget.catchId)}'),
+        Uri.parse(Api.winDetailsUrl(widget.catchId)),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -71,28 +71,19 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> fetchChatMessages() async {
     try {
-      if (winnerId != null && sellerId != null) {
-        final response = await http.get(
-          Uri.parse(Api.getChatMessagesUrl(winnerId!, sellerId!)),
-          headers: {'Content-Type': 'application/json'},
-        );
+      final response = await http.get(
+        Uri.parse(Api.getChatMessagesUrl(userId, widget.catchId)),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-        if (response.statusCode == 200) {
-          setState(() {
-            chatMessages = jsonDecode(response.body);
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to fetch chat messages'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      if (response.statusCode == 200) {
+        setState(() {
+          chatMessages = jsonDecode(response.body);
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Winner ID or Seller ID is null'),
+            content: Text('Failed to fetch chat messages'),
             backgroundColor: Colors.red,
           ),
         );
@@ -114,8 +105,8 @@ class _ChatPageState extends State<ChatPage> {
         Uri.parse(Api.sendMessageUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'senderId': winnerId,
-          'receiverId': sellerId,
+          'senderId': userId,
+          'catchId': widget.catchId,
           'message': messageText,
         }),
       );
@@ -141,84 +132,72 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  // Function to save data to SharedPreferences
-  Future<void> saveDataToSharedPreferences(String key, String value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value);
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (userIdFromPreferences == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Chat'),
-          backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chat'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: chatMessages?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                final message = chatMessages![index];
+                final senderId = message['senderId'];
+                final messageText = message['message'];
+                final isUser = senderId == userId;
+
+                return Align(
+                  alignment:
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isUser ? Colors.blue : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      messageText,
+                      style: TextStyle(
+                          color: isUser ? Colors.white : Colors.black),
+                    ),
+                  ),
+                );
+              },
             ),
-        ),
-        body: Center(
-          child: CircularProgressIndicator(), // Show a loading indicator
-        ),
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Chat'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (chatMessages != null)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: chatMessages!.length,
-                    itemBuilder: (context, index) {
-                      final message = chatMessages![index];
-                      final isCurrentUser =
-                          message['senderId'] == userIdFromPreferences;
-                      return Align(
-                        alignment: isCurrentUser
-                            ? Alignment.centerLeft
-                            : Alignment.centerRight,
-                        child: ListTile(
-                          title: Text(message['message']),
-                          subtitle: Text(message['timestamp']),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              TextField(
-                onChanged: (value) {
-                  setState(() {
-                    messageText = value;
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: 'Type your message...',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () {
-                      sendMessage();
-                      // Save message to SharedPreferences
-                      saveDataToSharedPreferences('lastMessage', messageText!);
-                    },
-                  ),
-                ),
-              ),
-            ],
           ),
-        ),
-      );
-    }
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        messageText = value;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    sendMessage();
+                  },
+                  child: Text('Send'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
