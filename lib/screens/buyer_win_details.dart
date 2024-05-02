@@ -172,9 +172,9 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
             isCatchDetailsExpanded = expanded;
           });
         },
-        backgroundColor: isCatchDetailsExpanded
-            ? Colors.grey[200]
-            : null, // Change background color when expanded
+        // backgroundColor: isCatchDetailsExpanded
+        //     ? Colors.grey[200]
+        //     : null, // Change background color when expanded
         children: <Widget>[
           if (catchDetails.isNotEmpty)
             Padding(

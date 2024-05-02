@@ -112,13 +112,13 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
                       Text(
                         '${userProfile!['name']}',
                         style:
-                            const TextStyle(fontSize: 20, color: Colors.white),
+                            const TextStyle(fontSize: 20, color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        capitalizeFirstLetter(userProfile!['userType']),
+                        '(${capitalizeFirstLetter(userProfile!['userType'])})',
                         style:
-                            const TextStyle(fontSize: 16, color: Colors.white),
+                            const TextStyle(fontSize: 16, color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
