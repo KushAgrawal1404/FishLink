@@ -220,15 +220,15 @@ class _AddCatchPageState extends State<AddCatchPage> {
       appBar: AppBar(
         title: const Text('Add Catch'),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -238,101 +238,74 @@ class _AddCatchPageState extends State<AddCatchPage> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter name',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _locationController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Location',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter location',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _basePriceController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Base Price',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter base price',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _quantityController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Quantity',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0), // Set border radius here
-                    ),
-                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  hintText: 'Enter quantity',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
                 ),
               ),
+
               const SizedBox(height: 16),
               SizedBox(
                 width: 400, // <-- Your width
