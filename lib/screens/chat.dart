@@ -136,7 +136,15 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         title: Text('Chat', style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
@@ -192,7 +200,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(color: Colors.green), // Change accent color here
+      data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
