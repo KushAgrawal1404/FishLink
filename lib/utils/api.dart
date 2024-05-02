@@ -24,9 +24,9 @@ class Api {
   static String winDetailsUrl(String catchId) =>
       '$baseUrl/api/win_details/$catchId';
 
-//for chat
+  // for chat
   static const String sendMessageUrl =
       '$baseUrl/api/sendMessage'; // New URL for sending messages
-  static String getChatMessagesUrl(String senderId, String receiverId) =>
-      '$baseUrl/api/chat/$senderId/$receiverId'; // New URL for fetching chat messages
+  static String getChatMessagesUrl(String senderId, String catchId) =>
+      '$baseUrl/api/chat/$senderId/$catchId'; // New URL for fetching chat messages
 }

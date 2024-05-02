@@ -18,28 +18,28 @@ class _ChatPageState extends State<ChatPage> {
   String? sellerId;
   String? messageText;
   List<dynamic>? chatMessages;
-  late String
-      userIdFromPreferences; // Assuming you have stored userId in preferences
+  late String userId = ''; // User ID
 
   @override
   void initState() {
     super.initState();
-    fetchUserIdFromPreferences();
+    fetchUserId();
     fetchWinnerDetails(widget.catchId);
   }
 
-  Future<void> fetchUserIdFromPreferences() async {
+  Future<void> fetchUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userIdFromPreferences = prefs.getString('userId') ??
+      userId = prefs.getString('userId') ??
           ''; // Replace 'userId' with your actual key
+      print('UserID from SharedPreferences: $userId');
     });
   }
 
   Future<void> fetchWinnerDetails(String catchId) async {
     try {
       final response = await http.get(
-        Uri.parse('${Api.winDetailsUrl(widget.catchId)}'),
+        Uri.parse(Api.winDetailsUrl(widget.catchId)),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -71,28 +71,29 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> fetchChatMessages() async {
     try {
-      if (winnerId != null && sellerId != null) {
-        final response = await http.get(
-          Uri.parse(Api.getChatMessagesUrl(winnerId!, sellerId!)),
-          headers: {'Content-Type': 'application/json'},
-        );
+      final response = await http.get(
+        Uri.parse(Api.getChatMessagesUrl(userId, widget.catchId)),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-        if (response.statusCode == 200) {
-          setState(() {
-            chatMessages = jsonDecode(response.body);
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to fetch chat messages'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      if (response.statusCode == 200) {
+        setState(() {
+          chatMessages = jsonDecode(response.body);
+        });
+
+        // Print userId, senderId, receiverId, message, and timestamp for each message
+        chatMessages!.forEach((message) {
+          final senderId = message['senderId'];
+          final messageText = message['message'];
+          final timestamp = message['timestamp'];
+          final receiverId = userId == winnerId ? sellerId : winnerId;
+          print(
+              'UserID: $userId, SenderID: $senderId, ReceiverID: $receiverId, Message: $messageText, Timestamp: $timestamp');
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Winner ID or Seller ID is null'),
+            content: Text('Failed to fetch chat messages'),
             backgroundColor: Colors.red,
           ),
         );
@@ -110,18 +111,24 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> sendMessage() async {
     try {
+      //final receiverId = userId == winnerId ? sellerId : winnerId;
+
       final response = await http.post(
         Uri.parse(Api.sendMessageUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'senderId': winnerId,
-          'receiverId': sellerId,
+          'senderId': userId,
+          'catchId': widget.catchId,
           'message': messageText,
         }),
       );
 
       if (response.statusCode == 201) {
         fetchChatMessages();
+
+        final messageTimestamp = DateTime.now().toUtc().toIso8601String();
+        print(
+            'UserID: $userId, SenderID: $userId, Message: $messageText, Timestamp: $messageTimestamp');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -141,15 +148,9 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  // Function to save data to SharedPreferences
-  Future<void> saveDataToSharedPreferences(String key, String value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value);
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (userIdFromPreferences == null) {
+    if (userId.isEmpty) {
       return Scaffold(
         appBar: AppBar(
           title: Text('Chat'),
@@ -173,8 +174,7 @@ class _ChatPageState extends State<ChatPage> {
                     itemCount: chatMessages!.length,
                     itemBuilder: (context, index) {
                       final message = chatMessages![index];
-                      final isCurrentUser =
-                          message['senderId'] == userIdFromPreferences;
+                      final isCurrentUser = message['senderId'] == userId;
                       return Align(
                         alignment: isCurrentUser
                             ? Alignment.centerLeft
@@ -200,7 +200,7 @@ class _ChatPageState extends State<ChatPage> {
                     onPressed: () {
                       sendMessage();
                       // Save message to SharedPreferences
-                      saveDataToSharedPreferences('lastMessage', messageText!);
+                      //saveDataToSharedPreferences('lastMessage', messageText!);
                     },
                   ),
                 ),
