@@ -86,9 +86,9 @@ class _ChatPageState extends State<ChatPage> {
           final senderId = message['senderId'];
           final messageText = message['message'];
           final timestamp = message['timestamp'];
-          final receiverId = userId == winnerId ? sellerId : winnerId;
+          //final receiverId = userId == winnerId ? sellerId : winnerId;
           print(
-              'UserID: $userId, SenderID: $senderId, ReceiverID: $receiverId, Message: $messageText, Timestamp: $timestamp');
+              'UserID: $userId, SenderID: $senderId, Message: $messageText, Timestamp: $timestamp');
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
