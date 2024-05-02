@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // Import HTTP package
-import 'dart:convert'; // Import convert for JSON parsing
-import 'package:fish_link/utils/api.dart'; // Import your API class
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:fish_link/utils/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends StatefulWidget {
   final String catchId;
@@ -17,11 +18,22 @@ class _ChatPageState extends State<ChatPage> {
   String? sellerId;
   String? messageText;
   List<dynamic>? chatMessages;
+  late String
+      userIdFromPreferences; // Assuming you have stored userId in preferences
 
   @override
   void initState() {
     super.initState();
+    fetchUserIdFromPreferences();
     fetchWinnerDetails(widget.catchId);
+  }
+
+  Future<void> fetchUserIdFromPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userIdFromPreferences = prefs.getString('userId') ??
+          ''; // Replace 'userId' with your actual key
+    });
   }
 
   Future<void> fetchWinnerDetails(String catchId) async {
@@ -60,10 +72,8 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> fetchChatMessages() async {
     try {
       if (winnerId != null && sellerId != null) {
-        // Check if winnerId and sellerId are not null
         final response = await http.get(
-          Uri.parse(Api.getChatMessagesUrl(winnerId!,
-              sellerId!)), // Use ! to assert that these variables are not null
+          Uri.parse(Api.getChatMessagesUrl(winnerId!, sellerId!)),
           headers: {'Content-Type': 'application/json'},
         );
 
@@ -104,14 +114,13 @@ class _ChatPageState extends State<ChatPage> {
         Uri.parse(Api.sendMessageUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'senderId': winnerId, // Replace userId with appropriate value
-          'receiverId': sellerId, // Replace receiverId with appropriate value
+          'senderId': winnerId,
+          'receiverId': sellerId,
           'message': messageText,
         }),
       );
 
       if (response.statusCode == 201) {
-        // Message sent successfully, update chat
         fetchChatMessages();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -132,47 +141,74 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  // Function to save data to SharedPreferences
+  Future<void> saveDataToSharedPreferences(String key, String value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(key, value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Chat'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (chatMessages != null)
-              Expanded(
-                child: ListView.builder(
-                  itemCount: chatMessages!.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(chatMessages![index]['message']),
-                      // No longer displaying sender's ID
-                    );
-                  },
-                ),
-              ),
-            TextField(
-              onChanged: (value) {
-                setState(() {
-                  messageText = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Type your message...',
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    sendMessage();
-                  },
-                ),
-              ),
-            ),
-          ],
+    if (userIdFromPreferences == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Chat'),
         ),
-      ),
-    );
+        body: Center(
+          child: CircularProgressIndicator(), // Show a loading indicator
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Chat'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (chatMessages != null)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: chatMessages!.length,
+                    itemBuilder: (context, index) {
+                      final message = chatMessages![index];
+                      final isCurrentUser =
+                          message['senderId'] == userIdFromPreferences;
+                      return Align(
+                        alignment: isCurrentUser
+                            ? Alignment.centerLeft
+                            : Alignment.centerRight,
+                        child: ListTile(
+                          title: Text(message['message']),
+                          subtitle: Text(message['timestamp']),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    messageText = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Type your message...',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () {
+                      sendMessage();
+                      // Save message to SharedPreferences
+                      saveDataToSharedPreferences('lastMessage', messageText!);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
