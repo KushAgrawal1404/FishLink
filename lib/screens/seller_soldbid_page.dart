@@ -1,16 +1,21 @@
+import 'package:fish_link/screens/buyer_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:intl/intl.dart';
-import 'package:fish_link/screens/seller_rating.dart';
 
 class SoldBidPage extends StatefulWidget {
   final String catchId;
   final String buyerId;
+  final Map<String, dynamic> catchDetails;
 
-  const SoldBidPage({Key? key, required this.catchId, required this.buyerId})
+  const SoldBidPage(
+      {Key? key,
+      required this.catchId,
+      required this.buyerId,
+      required this.catchDetails})
       : super(key: key);
 
   @override
@@ -18,7 +23,6 @@ class SoldBidPage extends StatefulWidget {
 }
 
 class _SoldBidPageState extends State<SoldBidPage> {
-  Map<String, dynamic> catchDetails = {};
   Map<String, dynamic> userProfile = {};
   bool isCatchDetailsExpanded = false;
   List<dynamic> sellerRatings = [];
@@ -27,39 +31,8 @@ class _SoldBidPageState extends State<SoldBidPage> {
   @override
   void initState() {
     super.initState();
-    _fetchCatchDetails();
     fetchUserProfile();
-    _getSellerRatings();
-  }
-
-  Future<void> _fetchCatchDetails() async {
-    try {
-      final response = await http.get(
-        Uri.parse('${Api.catchDetailsUrl}/${widget.catchId}'),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          catchDetails = jsonDecode(response.body);
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to fetch catch details'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e) {
-      print('Error fetching catch details: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    _getBuyerRatings();
   }
 
   Future<void> fetchUserProfile() async {
@@ -78,7 +51,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
     }
   }
 
-  Future<void> _getSellerRatings() async {
+  Future<void> _getBuyerRatings() async {
     setState(() {
       isLoadingRatings = true;
     });
@@ -164,7 +137,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
             ? Colors.grey[200]
             : null, // Change background color when expanded
         children: <Widget>[
-          if (catchDetails.isNotEmpty)
+          if (widget.catchDetails.isNotEmpty)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -174,12 +147,12 @@ class _SoldBidPageState extends State<SoldBidPage> {
                     height: 200,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: catchDetails['images'].length,
+                      itemCount: widget.catchDetails['images'].length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Image.network(
-                            Api.baseUrl + catchDetails['images'][index],
+                            Api.baseUrl + widget.catchDetails['images'][index],
                             width: 200,
                             height: 200,
                             fit: BoxFit.cover,
@@ -193,7 +166,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
                     children: [
                       const Text('Location: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${catchDetails['location']}'),
+                      Text('${widget.catchDetails['location']}'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -201,7 +174,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
                     children: [
                       const Text('Base Price: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${catchDetails['basePrice']}'),
+                      Text('${widget.catchDetails['basePrice']}'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -209,7 +182,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
                     children: [
                       const Text('Quantity: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${catchDetails['quantity']}'),
+                      Text('${widget.catchDetails['quantity']}'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -217,7 +190,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
                     children: [
                       const Text('Winning Price: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${catchDetails['currentBid']}'),
+                      Text('${widget.catchDetails['currentBid']}'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -226,9 +199,8 @@ class _SoldBidPageState extends State<SoldBidPage> {
                       const Text('Bid Start Time: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
-                        DateFormat.yMMMd()
-                            .add_jm()
-                            .format(DateTime.parse(catchDetails['startTime'])),
+                        DateFormat.yMMMd().add_jm().format(
+                            DateTime.parse(widget.catchDetails['startTime'])),
                       ),
                     ],
                   ),
@@ -238,9 +210,8 @@ class _SoldBidPageState extends State<SoldBidPage> {
                       const Text('Bid End Time: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
-                        DateFormat.yMMMd()
-                            .add_jm()
-                            .format(DateTime.parse(catchDetails['endTime'])),
+                        DateFormat.yMMMd().add_jm().format(
+                            DateTime.parse(widget.catchDetails['endTime'])),
                       ),
                     ],
                   ),
@@ -351,7 +322,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
         ),
         children: <Widget>[
           if (!isLoadingRatings)
-            if (catchDetails['isSellerRated'] == true)
+            if (widget.catchDetails['buyerRated'] == true)
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -380,8 +351,8 @@ class _SoldBidPageState extends State<SoldBidPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SellerRatingPage(
-                              catchDetails: catchDetails,
+                            builder: (context) => WinnerPage(
+                              catchDetails: widget.catchDetails,
                             ),
                           ),
                         );
