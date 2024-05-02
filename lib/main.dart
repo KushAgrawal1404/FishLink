@@ -93,6 +93,7 @@ class MyApp extends StatelessWidget {
                 return const SoldBidPage(
                   catchId: '',
                   buyerId: '',
+                  catchDetails: {},
                 );
               default:
                 return const LoginPage();

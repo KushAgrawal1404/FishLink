@@ -84,7 +84,6 @@ class _WinnerPageState extends State<WinnerPage> {
     String? userId = prefs.getString('userId');
     String? winnerId = widget.catchDetails['highestBidder'];
     String catchId = widget.catchDetails['_id']; // Retrieve catchId
-
     try {
       final response = await http.post(
         Uri.parse(apiUrl),

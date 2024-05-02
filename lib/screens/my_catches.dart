@@ -1,6 +1,5 @@
 import 'package:fish_link/screens/seller_soldbid_page.dart';
 import 'package:flutter/material.dart';
-import 'package:fish_link/screens/buyer_rating.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -142,7 +141,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                         DateTime endTime =
                             DateTime.parse(catchDetails['endTime']);
                         // Compare with DateTime.now()
-                        bool isEndTimePassed = endTime.isBefore(DateTime.now());
+                        endTime.isBefore(DateTime.now());
 
                         Color boxColor;
                         switch (_selectedStatus) {
@@ -170,8 +169,9 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                     MaterialPageRoute(
                                       builder: (context) => SoldBidPage(
                                         catchId: catchDetails['_id'],
-                                        buyerId: catchDetails[
-                                            'highestBidder'], // Pass sellerId to WinDetailsPage
+                                        buyerId: catchDetails['highestBidder'],
+                                        catchDetails:
+                                            catchDetails, // Pass sellerId to WinDetailsPage
                                       ),
                                     ),
                                   );
@@ -263,27 +263,6 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                             icon: const Icon(Icons.delete),
                                             onPressed: () {
                                               _deleteCatch(catchDetails['_id']);
-                                            },
-                                          ),
-                                        if (catchDetails['status'] == 'sold' &&
-                                            isEndTimePassed &&
-                                            catchDetails['buyerRated'] ==
-                                                false &&
-                                            catchDetails['highestBidder'] !=
-                                                null)
-                                          IconButton(
-                                            icon: const Icon(Icons.star),
-                                            onPressed: () {
-                                              // Navigate to winner page with catchDetails
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      WinnerPage(
-                                                    catchDetails: catchDetails,
-                                                  ),
-                                                ),
-                                              );
                                             },
                                           ),
                                       ],
