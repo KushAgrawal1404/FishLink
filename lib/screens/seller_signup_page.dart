@@ -73,7 +73,7 @@ class _SellerSignupPageState extends State<SellerSignupPage> {
         title: const Text('Registering as Seller'),
         backgroundColor: Colors.transparent,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.blue, Colors.green],
               begin: Alignment.topLeft,

@@ -45,7 +45,7 @@ class _FindUserPageState extends State<FindUserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const SizedBox(height: 10),
+            const SizedBox(height: 0),
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[200], // Change the background color
