@@ -136,17 +136,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue, Colors.green],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        title: Text('Chat', style: TextStyle(color: Colors.white)),
-        centerTitle: true,
+        title: Text('Chat'),
       ),
       body: Column(
         children: [
@@ -159,74 +149,54 @@ class _ChatPageState extends State<ChatPage> {
                 final messageText = message['message'];
                 final isUser = senderId == userId;
 
-                return Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: isUser
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Material(
-                        color: isUser ? Colors.blueAccent : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10.0),
-                        elevation: 6.0,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 15.0),
-                          child: Text(
-                            messageText,
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: isUser ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                return Align(
+                  alignment:
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isUser ? Colors.blue : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      messageText,
+                      style: TextStyle(
+                          color: isUser ? Colors.white : Colors.black),
+                    ),
                   ),
                 );
               },
             ),
           ),
-          Divider(height: 1.0),
-          Container(
-            decoration: BoxDecoration(color: Theme.of(context).cardColor),
-            child: _buildTextComposer(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        messageText = value;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    sendMessage();
+                  },
+                  child: Text('Send'),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextComposer() {
-    return IconTheme(
-      data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              child: TextField(
-                onChanged: (String text) {
-                  setState(() {
-                    messageText = text;
-                  });
-                },
-                decoration:
-                    InputDecoration.collapsed(hintText: "Send a message"),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 4.0),
-              child: IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  sendMessage();
-                },
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
