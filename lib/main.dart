@@ -1,4 +1,5 @@
 import 'package:fish_link/screens/buyer_profile.dart';
+import 'package:fish_link/screens/chat.dart';
 import 'package:fish_link/screens/find_user.dart';
 import 'package:fish_link/screens/seller_profile.dart';
 import 'package:fish_link/screens/seller_rating.dart';
@@ -75,6 +76,8 @@ class MyApp extends StatelessWidget {
                 return const BuyerAnalyticsPage();
               case '/find_users':
                 return const FindUserPage();
+              case '/chat':
+                return ChatPage(catchId: '');
               case '/buyer_rating':
                 return const WinnerPage(catchDetails: {});
               case '/seller_rating':

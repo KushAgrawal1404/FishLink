@@ -1,5 +1,5 @@
 class Api {
-  static const String baseUrl = 'http://172.16.248.83:5000';
+  static const String baseUrl = 'http://192.168.15.82:5000';
   static const String loginUrl = '$baseUrl/api/login';
   static const String signupPath = '$baseUrl/api/signup';
   static const String forgotPasswordUrl = '$baseUrl/api/forgot-password';
@@ -20,4 +20,13 @@ class Api {
   static const String createSellerRatingUrl = '$baseUrl/api/ratings/sellers';
   static const String getSellerRatingsUrl = '$baseUrl/api/ratings/sellers';
   static const String catchSellerUrl = '$baseUrl/api/catch/seller'; // New URL
+
+  static String winDetailsUrl(String catchId) =>
+      '$baseUrl/api/win_details/$catchId';
+
+//for chat
+  static const String sendMessageUrl =
+      '$baseUrl/api/sendMessage'; // New URL for sending messages
+  static String getChatMessagesUrl(String senderId, String receiverId) =>
+      '$baseUrl/api/chat/$senderId/$receiverId'; // New URL for fetching chat messages
 }

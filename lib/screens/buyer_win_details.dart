@@ -1,3 +1,4 @@
+import 'package:fish_link/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -138,6 +139,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
               _buildDetailsCard(),
               _buildProfileCard(),
               _buildRatingsCard(),
+              _buildChatCard(),
               if (isLoadingRatings) _buildLoadingIndicator(),
             ],
           ),
@@ -399,6 +401,31 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
               child: CircularProgressIndicator(),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildChatCard() {
+    return Card(
+      color: Colors.white, // Set background color to white
+      child: ListTile(
+        leading: const Icon(Icons.chat,
+            color: Colors.green), // Added color to the icon
+        title: const Text(
+          'Chat with Seller',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        onTap: () {
+          print(widget.catchId);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatPage(
+                catchId: widget.catchId,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
