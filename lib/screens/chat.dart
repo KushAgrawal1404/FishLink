@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fish_link/utils/api.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fish_link/utils/api.dart';
 
 class ChatPage extends StatefulWidget {
   final String catchId;
@@ -211,19 +211,14 @@ class _ChatPageState extends State<ChatPage> {
                             EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: isUser
-                              ? Color.fromARGB(255, 33, 141, 229)
-                                  .withOpacity(0.9)
-                              : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(3, 0),
-                            ),
-                          ],
+                          color: isUser ? Color(0xFFDCF8C6) : Colors.grey[200],
+                          borderRadius: BorderRadius.only(
+                            topLeft: isUser ? Radius.circular(20) : Radius.zero,
+                            topRight:
+                                isUser ? Radius.zero : Radius.circular(20),
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,7 +226,7 @@ class _ChatPageState extends State<ChatPage> {
                             Text(
                               messageText,
                               style: TextStyle(
-                                color: isUser ? Colors.white : Colors.black,
+                                color: isUser ? Colors.black : Colors.black87,
                                 fontSize: 16,
                               ),
                             ),
