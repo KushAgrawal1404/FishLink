@@ -21,6 +21,7 @@ class _ChatPageState extends State<ChatPage> {
   List<dynamic>? chatMessages;
   late String userId = ''; // User ID
   late TextEditingController _textController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void dispose() {
     _textController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -87,6 +89,12 @@ class _ChatPageState extends State<ChatPage> {
       if (response.statusCode == 200) {
         setState(() {
           chatMessages = jsonDecode(response.body);
+          // Scroll to the bottom after updating messages
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -164,6 +172,7 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               itemCount: chatMessages?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
                 final message = chatMessages![index];
