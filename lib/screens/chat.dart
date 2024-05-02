@@ -80,16 +80,6 @@ class _ChatPageState extends State<ChatPage> {
         setState(() {
           chatMessages = jsonDecode(response.body);
         });
-
-        // Print userId, senderId, receiverId, message, and timestamp for each message
-        chatMessages!.forEach((message) {
-          final senderId = message['senderId'];
-          final messageText = message['message'];
-          final timestamp = message['timestamp'];
-          //final receiverId = userId == winnerId ? sellerId : winnerId;
-          print(
-              'UserID: $userId, SenderID: $senderId, Message: $messageText, Timestamp: $timestamp');
-        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -111,8 +101,6 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> sendMessage() async {
     try {
-      //final receiverId = userId == winnerId ? sellerId : winnerId;
-
       final response = await http.post(
         Uri.parse(Api.sendMessageUrl),
         headers: {'Content-Type': 'application/json'},
@@ -125,10 +113,6 @@ class _ChatPageState extends State<ChatPage> {
 
       if (response.statusCode == 201) {
         fetchChatMessages();
-
-        final messageTimestamp = DateTime.now().toUtc().toIso8601String();
-        print(
-            'UserID: $userId, SenderID: $userId, Message: $messageText, Timestamp: $messageTimestamp');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -150,65 +134,70 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (userId.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Chat'),
-        ),
-        body: Center(
-          child: CircularProgressIndicator(), // Show a loading indicator
-        ),
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Chat'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (chatMessages != null)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: chatMessages!.length,
-                    itemBuilder: (context, index) {
-                      final message = chatMessages![index];
-                      final isCurrentUser = message['senderId'] == userId;
-                      return Align(
-                        alignment: isCurrentUser
-                            ? Alignment.centerLeft
-                            : Alignment.centerRight,
-                        child: ListTile(
-                          title: Text(message['message']),
-                          subtitle: Text(message['timestamp']),
-                        ),
-                      );
-                    },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chat'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: chatMessages?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                final message = chatMessages![index];
+                final senderId = message['senderId'];
+                final messageText = message['message'];
+                final isUser = senderId == userId;
+
+                return Align(
+                  alignment:
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isUser ? Colors.blue : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      messageText,
+                      style: TextStyle(
+                          color: isUser ? Colors.white : Colors.black),
+                    ),
                   ),
-                ),
-              TextField(
-                onChanged: (value) {
-                  setState(() {
-                    messageText = value;
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: 'Type your message...',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () {
-                      sendMessage();
-                      // Save message to SharedPreferences
-                      //saveDataToSharedPreferences('lastMessage', messageText!);
-                    },
-                  ),
-                ),
-              ),
-            ],
+                );
+              },
+            ),
           ),
-        ),
-      );
-    }
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        messageText = value;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    sendMessage();
+                  },
+                  child: Text('Send'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
