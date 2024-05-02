@@ -25,7 +25,7 @@ class SoldBidPage extends StatefulWidget {
 class _SoldBidPageState extends State<SoldBidPage> {
   Map<String, dynamic> userProfile = {};
   bool isCatchDetailsExpanded = false;
-  List<dynamic> sellerRatings = [];
+  List<dynamic> buyerRatings = [];
   bool isLoadingRatings = false;
 
   @override
@@ -63,13 +63,12 @@ class _SoldBidPageState extends State<SoldBidPage> {
       if (userId != null) {
         final response = await http.get(
           Uri.parse(
-              '${Api.getSellerRatingsUrl}/${widget.buyerId}/${widget.catchId}'),
+              '${Api.getRatingsByCatchIdUrl}/${widget.buyerId}/${widget.catchId}'),
           headers: {'Content-Type': 'application/json'},
         );
-
         if (response.statusCode == 200) {
           setState(() {
-            sellerRatings = jsonDecode(response.body);
+            buyerRatings = jsonDecode(response.body);
             isLoadingRatings = false;
           });
         } else {
@@ -327,7 +326,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sellerRatings.map((rating) {
+                  children: buyerRatings.map((rating) {
                     return ListTile(
                       title: Text(
                         'Rating: ${rating['rating']}',
