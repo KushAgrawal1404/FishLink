@@ -219,6 +219,16 @@ class _AddCatchPageState extends State<AddCatchPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Catch'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

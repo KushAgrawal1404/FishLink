@@ -153,6 +153,16 @@ class _ChatPageState extends State<ChatPage> {
       return Scaffold(
         appBar: AppBar(
           title: Text('Chat'),
+          backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
         ),
         body: Center(
           child: CircularProgressIndicator(), // Show a loading indicator

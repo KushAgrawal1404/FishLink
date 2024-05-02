@@ -74,6 +74,16 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registering as Buyer'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

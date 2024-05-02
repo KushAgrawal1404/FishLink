@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
         preferredSize: const Size.fromHeight(155),
         child: AppBar(
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.blue, Colors.green], // Add gradient colors
                 begin: Alignment.topLeft,
@@ -193,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          title: Column(
+          title: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -215,10 +215,10 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
           toolbarHeight: 100,
-          bottom: PreferredSize(
+          bottom: const PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 10, left: 20),
+              padding: EdgeInsets.only(bottom: 10, left: 20),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -244,12 +244,15 @@ class _LoginPageState extends State<LoginPage> {
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+                border: InputBorder.none, // No visible border
                 filled: true,
                 fillColor: Colors.grey[200], // Add background color
                 prefixIcon: Icon(Icons.email), // Add email icon
+                contentPadding: EdgeInsets.all(16), // Add padding
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10.0), // Add border radius
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -257,9 +260,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 labelText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+                border: InputBorder.none, // No visible border
                 suffixIcon: IconButton(
                   icon: Icon(_isPasswordVisible
                       ? Icons.visibility
@@ -273,6 +274,11 @@ class _LoginPageState extends State<LoginPage> {
                 filled: true,
                 fillColor: Colors.grey[200], // Add background color
                 prefixIcon: Icon(Icons.lock), // Add lock icon
+                contentPadding: EdgeInsets.all(16), // Add padding
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(15.0), // Add border radius
+                ),
               ),
               obscureText: !_isPasswordVisible,
             ),

@@ -85,7 +85,7 @@ class _SellerHomeMenuState extends State<SellerHomeMenu> {
         children: <Widget>[
           // Custom Drawer Header
           Container(
-            color: const Color(0xff0f1f30),
+            color: Colors.blue.shade300,
             padding: const EdgeInsets.only(right: 20, top: 30, bottom: 20),
             alignment: Alignment.center,
             child: userProfile == null

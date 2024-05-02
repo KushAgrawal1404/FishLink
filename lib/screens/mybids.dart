@@ -72,6 +72,16 @@ class _MyBidsPageState extends State<MyBidsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Bids'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: myBids.isEmpty
           ? const Center(child: Text('No bids found'))
