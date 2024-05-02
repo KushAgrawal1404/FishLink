@@ -54,7 +54,16 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Buyer Analytics'),
-        backgroundColor: Color(0xff0f1f30), // Set the previous app bar background color
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
