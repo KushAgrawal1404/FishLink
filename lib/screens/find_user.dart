@@ -29,6 +29,16 @@ class _FindUserPageState extends State<FindUserPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Find User'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),

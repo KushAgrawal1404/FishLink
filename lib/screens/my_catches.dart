@@ -101,6 +101,16 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Catches'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(18.0),

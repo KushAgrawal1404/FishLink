@@ -146,6 +146,16 @@ class _EditCatchPageState extends State<EditCatchPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Catch'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

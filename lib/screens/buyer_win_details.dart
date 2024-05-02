@@ -127,8 +127,16 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Win Details'),
-        backgroundColor:
-            const Color(0xff0f1f30), // Set the app bar background color
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -164,9 +172,9 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
             isCatchDetailsExpanded = expanded;
           });
         },
-        backgroundColor: isCatchDetailsExpanded
-            ? Colors.grey[200]
-            : null, // Change background color when expanded
+        // backgroundColor: isCatchDetailsExpanded
+        //     ? Colors.grey[200]
+        //     : null, // Change background color when expanded
         children: <Widget>[
           if (catchDetails.isNotEmpty)
             Padding(

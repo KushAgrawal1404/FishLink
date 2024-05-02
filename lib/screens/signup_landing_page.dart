@@ -8,6 +8,16 @@ class SignupLandingPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Account'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       backgroundColor: Colors.grey[200], // Adding a background color
       body: Padding(

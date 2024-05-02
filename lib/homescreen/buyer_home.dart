@@ -96,6 +96,16 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
         return Scaffold(
           appBar: AppBar(
             title: Text(title),
+            backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
           ),
           drawer: const BuyerHomeMenu(),
           body: catches.isEmpty

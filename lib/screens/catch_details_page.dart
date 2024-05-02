@@ -151,6 +151,16 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(catchDetails['name'] ?? ''),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: catchDetails.isNotEmpty
           ? ListView(

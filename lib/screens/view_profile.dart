@@ -42,6 +42,16 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Seller Profile'),
+        backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
       ),
       body: userProfile == null
           ? const Center(child: CircularProgressIndicator())
