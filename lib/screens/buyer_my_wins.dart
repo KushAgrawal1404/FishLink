@@ -144,9 +144,9 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                                     ),
                                   ),
                                   Text('Location: ${catchDetails['location']}'),
-                                  Text('Quantity: ${catchDetails['quantity']}'),
+                                  Text('Quantity: ${catchDetails['quantity']}kg'),
                                   Text(
-                                      'Winning Price: ${catchDetails['currentBid']}'),
+                                      'Winning Price: ₹${catchDetails['currentBid']}'),
                                 ],
                               ),
                             ),

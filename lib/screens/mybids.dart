@@ -151,9 +151,9 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Text('My Current Bid: ${bid['bidAmount']}'),
+                                  Text('My Current Bid: ₹${bid['bidAmount']}'),
                                   Text(
-                                      'Highest Current Bid: ${catchDetails['currentBid']}'),
+                                      'Highest Current Bid: ₹${catchDetails['currentBid']}'),
                                 ],
                               ),
                             ),

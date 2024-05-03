@@ -54,6 +54,17 @@ class _AddCatchPageState extends State<AddCatchPage> {
       return;
     }
 
+    // Check if the difference between start time and end time is less than 1 minute
+  if (_endTime!.difference(_startTime!).inMinutes < 1) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Minimum auction duration is 1 min'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+
     // Your add catch API endpoint
     String apiUrl = Api.addCatchUrl;
 
@@ -434,7 +445,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
                           _addCatch(snapshot.data!);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Colors.green.shade500,
                           elevation: 3,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

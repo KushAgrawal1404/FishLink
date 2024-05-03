@@ -180,7 +180,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                 bool isBiddingStarted =
                                     currentTime.isAfter(bidStartTime);
                                 return GestureDetector(
-                                  onTap: isBiddingStarted
+                                  onTap: isBiddingStarted || !isBiddingStarted
                                       ? () {
                                           // Navigate to the CatchDetailsPage when the item is tapped
                                           Navigator.push(
@@ -243,7 +243,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                                       fontSize: 14),
                                                 ),
                                                 Text(
-                                                  'Quantity: ${catchDetails['quantity']}',
+                                                  'Quantity: ${catchDetails['quantity']}kg',
                                                   style: const TextStyle(
                                                       fontSize: 14),
                                                 ),
