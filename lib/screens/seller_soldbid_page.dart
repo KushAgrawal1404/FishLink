@@ -388,7 +388,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
         leading: const Icon(Icons.chat,
             color: Colors.green), // Added color to the icon
         title: const Text(
-          'Chat with Seller',
+          'Chat with Buyer',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         trailing: const Icon(Icons.arrow_forward), // Add right arrow icon
