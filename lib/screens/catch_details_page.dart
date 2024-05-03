@@ -152,107 +152,84 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
       appBar: AppBar(
         title: Text(catchDetails['name'] ?? ''),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: catchDetails.isNotEmpty
           ? ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: [
-                // Display images
-                SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: catchDetails['images'].length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Image.network(
-                          Api.baseUrl + catchDetails['images'][index],
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          // Display images
+          SizedBox(
+            height: 200,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: catchDetails['images'].length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Image.network(
+                    Api.baseUrl + catchDetails['images'][index],
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.cover,
                   ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                // Display other catch details
-                _buildListItem('Location:', catchDetails['location']),
-                _buildListItem('Base Price:', '₹${catchDetails['basePrice']}'),
-                _buildListItem(
-                    'Current Price:', '₹${catchDetails['currentBid']}'),
-                _buildListItem(
-                    'Highest bidder:', catchDetails['highestBidder']),
-                _buildListItem('Quantity:', '${catchDetails['quantity']}kg'),
-                _buildListItem(
-                    'Starts:', formatDateTime(catchDetails['startTime'])),
-                _buildListItem(
-                    'Ends:', formatDateTime(catchDetails['endTime'])),
-
-                // Button to view seller details
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProfileViewPage(
-                            userId: catchDetails['seller']['_id']),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text('Seller Details'),
-                ),
-
-                // Add a button to place bid
-                ElevatedButton(
-                  onPressed: catchDetails['endTime'] != null &&
-                          DateTime.now()
-                              .isBefore(DateTime.parse(catchDetails['endTime']))
-                      ? () {
-                          _postBid(context);
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    catchDetails['endTime'] != null &&
-                            DateTime.now().isAfter(
-                                DateTime.parse(catchDetails['endTime']))
-                        ? 'Bidding is over'
-                        : 'Place Bid',
-                  ),
-                ),
-              ],
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
+                );
+              },
             ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          // Display other catch details
+          _buildListItem('Location:', catchDetails['location']),
+          _buildListItem('Base Price:', '₹${catchDetails['basePrice']}'),
+          _buildListItem(
+              'Current Price:', '₹${catchDetails['currentBid']}'),
+          _buildListItem(
+              'Highest bidder:', catchDetails['highestBidder']),
+          _buildListItem('Quantity:', '${catchDetails['quantity']}kg'),
+          _buildListItem(
+              'Starts:', formatDateTime(catchDetails['startTime'])),
+          _buildListItem(
+              'Ends:', formatDateTime(catchDetails['endTime'])),
+
+          // Button to view seller details
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileViewPage(
+                      userId: catchDetails['seller']['_id']),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text('Seller Details'),
+          ),
+
+          // Add a button to place bid
+          _buildPlaceBidButton(),
+        ],
+      )
+          : const Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 
@@ -281,6 +258,42 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
             fontSize: 18,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceBidButton() {
+    // Get the current time
+    DateTime currentTime = DateTime.now();
+    // Convert the start time string to DateTime object
+    DateTime bidStartTime = DateTime.parse(catchDetails['startTime']);
+
+    // Check if bidding has started
+    bool isBiddingStarted = currentTime.isAfter(bidStartTime);
+
+    // Check if bidding has ended
+    bool isBiddingEnded = catchDetails['endTime'] != null &&
+        DateTime.now().isAfter(DateTime.parse(catchDetails['endTime']));
+
+    // Determine if the Place Bid button should be enabled
+    bool isPlaceBidEnabled = isBiddingStarted && !isBiddingEnded;
+
+    return ElevatedButton(
+      onPressed: isPlaceBidEnabled
+          ? () {
+        _postBid(context);
+      }
+          : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isPlaceBidEnabled ? Colors.green : Colors.grey,
+        foregroundColor: Colors.white,
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Text(
+        isBiddingEnded ? 'Bidding is over' : 'Place Bid',
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:fish_link/utils/api.dart';
 import 'dart:convert';
 
@@ -27,8 +28,10 @@ class _EditCatchPageState extends State<EditCatchPage> {
     _locationController.text = widget.catchDetails['location'];
     _basePriceController.text = widget.catchDetails['basePrice'].toString();
     _quantityController.text = widget.catchDetails['quantity'].toString();
-    _startTimeController.text = widget.catchDetails['startTime'];
-    _endTimeController.text = widget.catchDetails['endTime'];
+    _startTimeController.text =
+        DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.catchDetails['startTime']));
+    _endTimeController.text =
+        DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.catchDetails['endTime']));
   }
 
   Future<void> _selectStartTime(BuildContext context) async {
@@ -52,7 +55,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
           timePicked.minute,
         );
         setState(() {
-          _startTimeController.text = selectedDateTime.toString();
+          _startTimeController.text = DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
         });
       }
     }
@@ -79,7 +82,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
           timePicked.minute,
         );
         setState(() {
-          _endTimeController.text = selectedDateTime.toString();
+          _endTimeController.text = DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
         });
       }
     }
@@ -170,8 +173,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 filled: true,
                 fillColor: Colors.grey[200],
                 hintText: 'Enter name',
-                hintStyle: TextStyle(color: Colors.grey),
-                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
@@ -186,8 +189,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 filled: true,
                 fillColor: Colors.grey[200],
                 hintText: 'Enter location',
-                hintStyle: TextStyle(color: Colors.grey),
-                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
@@ -203,8 +206,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 filled: true,
                 fillColor: Colors.grey[200],
                 hintText: 'Enter base price',
-                hintStyle: TextStyle(color: Colors.grey),
-                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
@@ -220,8 +223,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 filled: true,
                 fillColor: Colors.grey[200],
                 hintText: 'Enter quantity',
-                hintStyle: TextStyle(color: Colors.grey),
-                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
@@ -271,20 +274,31 @@ class _EditCatchPageState extends State<EditCatchPage> {
               decoration: const InputDecoration(labelText: 'End Time'),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _saveChanges,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: ElevatedButton(
+                onPressed: _saveChanges,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, 
+                  backgroundColor: Colors.green.shade500, // Text color
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-              ),
-              child: const Text(
-                'Save',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Save',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

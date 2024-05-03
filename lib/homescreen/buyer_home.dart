@@ -180,7 +180,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                 bool isBiddingStarted =
                                     currentTime.isAfter(bidStartTime);
                                 return GestureDetector(
-                                  onTap: isBiddingStarted
+                                  onTap: isBiddingStarted || !isBiddingStarted
                                       ? () {
                                           // Navigate to the CatchDetailsPage when the item is tapped
                                           Navigator.push(
