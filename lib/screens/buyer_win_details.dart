@@ -210,7 +210,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                     children: [
                       const Text('Base Price: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${catchDetails['basePrice']}'),
+                      Text('₹${catchDetails['basePrice']}'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -218,7 +218,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                     children: [
                       const Text('Quantity: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${catchDetails['quantity']}'),
+                      Text('${catchDetails['quantity']}kg'),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -226,7 +226,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                     children: [
                       const Text('Winning Price: ',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${catchDetails['currentBid']}'),
+                      Text('₹${catchDetails['currentBid']}'),
                     ],
                   ),
                   const SizedBox(height: 8),
