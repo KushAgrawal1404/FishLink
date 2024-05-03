@@ -128,15 +128,15 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
       appBar: AppBar(
         title: const Text('Win Details'),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -421,11 +421,30 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         onTap: () {
-          print(widget.catchId);
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => ChatPage(
+            PageRouteBuilder(
+              transitionDuration:
+                  Duration(milliseconds: 400), // Adjust duration as needed
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: ScaleTransition(
+                    scale: Tween<double>(
+                      begin: 0.5,
+                      end: 1.0,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeInOut,
+                      ),
+                    ),
+                    child: child,
+                  ),
+                );
+              },
+              pageBuilder: (context, animation, secondaryAnimation) => ChatPage(
                 catchId: widget.catchId,
               ),
             ),
