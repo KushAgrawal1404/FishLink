@@ -190,12 +190,13 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
           ),
           // Display other catch details
           _buildListItem('Location:', catchDetails['location']),
+          _buildListItem('Quantity:', '${catchDetails['quantity']}kg'),
           _buildListItem('Base Price:', '₹${catchDetails['basePrice']}'),
           _buildListItem(
               'Current Price:', '₹${catchDetails['currentBid']}'),
           _buildListItem(
               'Highest bidder:', catchDetails['highestBidder']),
-          _buildListItem('Quantity:', '${catchDetails['quantity']}kg'),
+          
           _buildListItem(
               'Starts:', formatDateTime(catchDetails['startTime'])),
           _buildListItem(

@@ -241,6 +241,11 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                                   ),
                                                 ),
                                                 Text(
+                                                  'Location: ${catchDetails['location']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                                Text(
                                                   'Quantity: ${catchDetails['quantity']}kg',
                                                   style: const TextStyle(
                                                       fontSize: 14),
@@ -250,11 +255,14 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                                   style: const TextStyle(
                                                       fontSize: 14),
                                                 ),
-                                                Text(
-                                                  'Location: ${catchDetails['location']}',
+                                                
+                                                if (isBiddingStarted)
+                                                  Text(
+                                                    'Current Highest Bid: ${catchDetails['currentBid']}',
                                                   style: const TextStyle(
                                                       fontSize: 14),
-                                                ),
+                                                  ),
+                                                  
                                                 if (!isBiddingStarted)
                                                   const Text(
                                                     'Bidding is not started yet',
