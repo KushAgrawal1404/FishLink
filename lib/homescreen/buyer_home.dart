@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/screens/catch_details_page.dart';
 import 'dart:async';
+import 'dart:math' as math;
 
 class BuyerHomePage extends StatefulWidget {
   const BuyerHomePage({Key? key}) : super(key: key);
@@ -69,6 +70,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
   }
 
   // Function to toggle sorting order and re-sort catches
+  // Function to toggle sorting order and re-sort catches
   void _sortByPrice() {
     setState(() {
       _sortByPriceAscending = !_sortByPriceAscending;
@@ -76,7 +78,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     });
   }
 
-  // Sort catches based on base price and sorting order
+// Sort catches based on base price and sorting order
   void _sortCatches() {
     if (_sortByPriceAscending) {
       filteredCatches = List.from(catches)
@@ -151,7 +153,13 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.sort),
+                            icon: Transform(
+                              alignment: Alignment.center,
+                              transform: _sortByPriceAscending
+                                  ? Matrix4.identity()
+                                  : Matrix4.rotationX(math.pi),
+                              child: Icon(Icons.sort),
+                            ),
                             onPressed: _sortByPrice,
                           ),
                         ],
@@ -233,7 +241,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  'Location: ${catchDetails['location']}',
+                                                  'Quantity: ${catchDetails['quantity']}kg',
                                                   style: const TextStyle(
                                                       fontSize: 14),
                                                 ),
@@ -243,7 +251,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                                       fontSize: 14),
                                                 ),
                                                 Text(
-                                                  'Quantity: ${catchDetails['quantity']}kg',
+                                                  'Location: ${catchDetails['location']}',
                                                   style: const TextStyle(
                                                       fontSize: 14),
                                                 ),
