@@ -75,7 +75,6 @@ class _LoginPageState extends State<LoginPage> {
       );
       // Decode the response body
       var responseBody = json.decode(response.body);
-      print(responseBody);
 
       if (response.statusCode == 200) {
         // Save login information
@@ -99,7 +98,6 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred'),
@@ -166,7 +164,12 @@ class _LoginPageState extends State<LoginPage> {
         throw Exception('Failed to load user profile');
       }
     } catch (error) {
-      print('Error fetching user profile: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Network error: Failed to load user profile'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -247,11 +250,12 @@ class _LoginPageState extends State<LoginPage> {
                 border: InputBorder.none, // No visible border
                 filled: true,
                 fillColor: Colors.grey[200], // Add background color
-                prefixIcon: Icon(Icons.email), // Add email icon
-                contentPadding: EdgeInsets.all(16), // Add padding
+                prefixIcon: const Icon(Icons.email), // Add email icon
+                contentPadding: const EdgeInsets.all(16), // Add padding
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10.0), // Add border radius
+                  borderRadius:
+                      BorderRadius.circular(10.0), // Add border radius
                 ),
               ),
             ),
@@ -273,11 +277,12 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 filled: true,
                 fillColor: Colors.grey[200], // Add background color
-                prefixIcon: Icon(Icons.lock), // Add lock icon
-                contentPadding: EdgeInsets.all(16), // Add padding
+                prefixIcon: const Icon(Icons.lock), // Add lock icon
+                contentPadding: const EdgeInsets.all(16), // Add padding
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(15.0), // Add border radius
+                  borderRadius:
+                      BorderRadius.circular(15.0), // Add border radius
                 ),
               ),
               obscureText: !_isPasswordVisible,
@@ -308,7 +313,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 minimumSize: MaterialStateProperty.all(const Size(400, 55)),
               ),
-              child: Text(
+              child: const Text(
                 'Login',
                 style: TextStyle(
                   fontSize: 20,

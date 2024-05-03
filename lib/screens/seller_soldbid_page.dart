@@ -98,15 +98,15 @@ class _SoldBidPageState extends State<SoldBidPage> {
       appBar: AppBar(
         title: const Text('Win Details'),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -391,6 +391,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
           'Chat with Seller',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        trailing: const Icon(Icons.arrow_forward), // Add right arrow icon
         onTap: () {
           print(widget.catchId);
           Navigator.push(
