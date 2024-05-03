@@ -62,9 +62,30 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
     return formatter.format(localDatetime);
   }
 
-  Future<void> _deleteCatch(String catchId) async {
-    String apiUrl = Api.deleteCatchUrl;
-    try {
+   Future<void> _deleteCatch(String catchId) async {
+  String apiUrl = Api.deleteCatchUrl;
+  try {
+    final confirmed = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this catch?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != null && confirmed) {
       final response = await http.get(
         Uri.parse('$apiUrl/$catchId'),
         headers: {'Content-Type': 'application/json'},
@@ -86,15 +107,18 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
           ),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred'),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('An error occurred'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -245,17 +269,26 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                           catchDetails['location'],
                                         ),
                                         _buildDetailRow(
-                                          'Auction Base Price',
-                                          '\₹${catchDetails['basePrice']}',
+                                          'Quantity',
+                                          '${catchDetails['quantity'].toString()}kg',
                                         ),
                                         _buildDetailRow(
-                                          'Quantity',
-                                          catchDetails['quantity'].toString(),
+                                          'Auction Base Price',
+                                          '\₹${catchDetails['basePrice']}',
                                         ),
                                          _buildDetailRow(
                                             'Base Rate',
                                             '\₹${(catchDetails['basePrice'] / catchDetails['quantity']).toStringAsFixed(2)}/kg',
                                           ),
+                                          
+                                           _buildDetailRow(
+                                          'Highest Bid',
+                                          '\₹${catchDetails['currentBid']}',
+                                        ),
+                                          _buildDetailRow(
+                                          'Current Highest Bid',
+                                          '\₹${catchDetails['currentBid']}',
+                                        ),
                                         _buildDetailRow(
                                           'Start Time',
                                           formatDateTime(
