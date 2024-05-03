@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
+import 'dart:async';
 
 class ChatPage extends StatefulWidget {
   final String catchId;
@@ -22,6 +23,7 @@ class _ChatPageState extends State<ChatPage> {
   late String userId = ''; // User ID
   late TextEditingController _textController;
   final ScrollController _scrollController = ScrollController();
+  Timer? _timer;
 
   @override
   void initState() {
@@ -29,12 +31,21 @@ class _ChatPageState extends State<ChatPage> {
     fetchUserId();
     fetchWinnerDetails(widget.catchId);
     _textController = TextEditingController();
+
+    //start the timer
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      fetchChatMessages();
+    });
   }
 
   @override
   void dispose() {
     _textController.dispose();
     _scrollController.dispose();
+
+    // Cancel the timer when the widget is disposed
+    _timer?.cancel();
+
     super.dispose();
   }
 
@@ -80,6 +91,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> fetchChatMessages() async {
+    print("fetching");
     try {
       final response = await http.get(
         Uri.parse(Api.getChatMessagesUrl(userId, widget.catchId)),
