@@ -65,26 +65,48 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
   Future<void> _deleteCatch(String catchId) async {
     String apiUrl = Api.deleteCatchUrl;
     try {
-      final response = await http.get(
-        Uri.parse('$apiUrl/$catchId'),
-        headers: {'Content-Type': 'application/json'},
+      final confirmed = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Deletion'),
+            content: Text('Are you sure you want to delete this catch?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text('Delete'),
+              ),
+            ],
+          );
+        },
       );
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Catch deleted successfully'),
-            backgroundColor: Colors.green,
-          ),
+      if (confirmed != null && confirmed) {
+        final response = await http.get(
+          Uri.parse('$apiUrl/$catchId'),
+          headers: {'Content-Type': 'application/json'},
         );
-        _fetchMyCatches();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to delete catch'),
-            backgroundColor: Colors.red,
-          ),
-        );
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Catch deleted successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _fetchMyCatches();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to delete catch'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,8 +168,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
 
                         DateTime endTime =
                             DateTime.parse(catchDetails['endTime']);
-                            // Compare with DateTime.now()
-                            endTime.isBefore(DateTime.now());
+                        // Compare with DateTime.now()
+                        endTime.isBefore(DateTime.now());
 
                         Color boxColor;
                         switch (_selectedStatus) {
@@ -187,14 +209,12 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
                                       color: boxColor,
-                                      borderRadius:
-                                          const BorderRadius.only(
+                                      borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(15.0),
                                         topRight: Radius.circular(15.0),
                                       ),
@@ -221,11 +241,11 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       SoldBidPage(
-                                                    catchId: catchDetails['_id'],
+                                                    catchId:
+                                                        catchDetails['_id'],
                                                     buyerId: catchDetails[
                                                         'highestBidder'],
-                                                    catchDetails:
-                                                        catchDetails,
+                                                    catchDetails: catchDetails,
                                                   ),
                                                 ),
                                               );
@@ -245,16 +265,26 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                           catchDetails['location'],
                                         ),
                                         _buildDetailRow(
+                                          'Quantity',
+                                          '${catchDetails['quantity'].toString()}kg',
+                                        ),
+                                        _buildDetailRow(
+                                          'Base Rate',
+                                          '\₹${(catchDetails['basePrice'] / catchDetails['quantity']).toStringAsFixed(2)}/kg',
+                                        ),
+                                        _buildDetailRow(
                                           'Auction Base Price',
                                           '\₹${catchDetails['basePrice']}',
                                         ),
-                                        _buildDetailRow(
-                                          'Quantity',
-                                          catchDetails['quantity'].toString(),
-                                        ),
-                                         _buildDetailRow(
-                                            'Base Rate',
-                                            '\₹${(catchDetails['basePrice'] / catchDetails['quantity']).toStringAsFixed(2)}/kg',
+                                        if (_selectedStatus == 'available')
+                                          _buildDetailRow(
+                                            'Current Highest Bid',
+                                            '\₹${catchDetails['currentBid']}',
+                                          ),
+                                        if (_selectedStatus == 'sold')
+                                          _buildDetailRow(
+                                            'Winning Bid',
+                                            '\₹${catchDetails['currentBid']}',
                                           ),
                                         _buildDetailRow(
                                           'Start Time',
@@ -268,7 +298,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         _buildDetailRow(
                                           'Status',
-                                          catchDetails['status'],
+                                            '${catchDetails['status'][0].toUpperCase()}${catchDetails['status'].substring(1)}',
                                         ),
                                         if (catchDetails['status'] == 'sold')
                                           _buildDetailRow(
@@ -281,8 +311,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                   ButtonBar(
                                     alignment: MainAxisAlignment.end,
                                     children: [
-                                      if (catchDetails['status'] ==
-                                          'available')
+                                      if (catchDetails['status'] == 'available')
                                         IconButton(
                                           icon: const Icon(Icons.edit),
                                           onPressed: () {
@@ -291,13 +320,11 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                                 arguments: catchDetails);
                                           },
                                         ),
-                                      if (catchDetails['status'] ==
-                                          'available')
+                                      if (catchDetails['status'] == 'available')
                                         IconButton(
                                           icon: const Icon(Icons.delete),
                                           onPressed: () {
-                                            _deleteCatch(
-                                                catchDetails['_id']);
+                                            _deleteCatch(catchDetails['_id']);
                                           },
                                         ),
                                     ],
