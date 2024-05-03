@@ -292,7 +292,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 controller: _quantityController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Quantity',
+                  labelText: 'Quantity (in kgs)',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: BorderSide.none,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fish_link/utils/api.dart';
-
 import 'dart:convert';
 
 class EditCatchPage extends StatefulWidget {
@@ -14,22 +13,22 @@ class EditCatchPage extends StatefulWidget {
 }
 
 class _EditCatchPageState extends State<EditCatchPage> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController locationController = TextEditingController();
-  final TextEditingController basePriceController = TextEditingController();
-  final TextEditingController quantityController = TextEditingController();
-  final TextEditingController startTimeController = TextEditingController();
-  final TextEditingController endTimeController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _basePriceController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _startTimeController = TextEditingController();
+  final TextEditingController _endTimeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.catchDetails['name'];
-    locationController.text = widget.catchDetails['location'];
-    basePriceController.text = widget.catchDetails['basePrice'].toString();
-    quantityController.text = widget.catchDetails['quantity'].toString();
-    startTimeController.text = widget.catchDetails['startTime'];
-    endTimeController.text = widget.catchDetails['endTime'];
+    _nameController.text = widget.catchDetails['name'];
+    _locationController.text = widget.catchDetails['location'];
+    _basePriceController.text = widget.catchDetails['basePrice'].toString();
+    _quantityController.text = widget.catchDetails['quantity'].toString();
+    _startTimeController.text = widget.catchDetails['startTime'];
+    _endTimeController.text = widget.catchDetails['endTime'];
   }
 
   Future<void> _selectStartTime(BuildContext context) async {
@@ -53,7 +52,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
           timePicked.minute,
         );
         setState(() {
-          startTimeController.text = selectedDateTime.toString();
+          _startTimeController.text = selectedDateTime.toString();
         });
       }
     }
@@ -80,19 +79,19 @@ class _EditCatchPageState extends State<EditCatchPage> {
           timePicked.minute,
         );
         setState(() {
-          endTimeController.text = selectedDateTime.toString();
+          _endTimeController.text = selectedDateTime.toString();
         });
       }
     }
   }
 
   Future<void> _saveChanges() async {
-    final String updatedName = nameController.text;
-    final String updatedLocation = locationController.text;
-    final double updatedBasePrice = double.parse(basePriceController.text);
-    final int updatedQuantity = int.parse(quantityController.text);
-    final String updatedStartTime = startTimeController.text;
-    final String updatedEndTime = endTimeController.text;
+    final String updatedName = _nameController.text;
+    final String updatedLocation = _locationController.text;
+    final double updatedBasePrice = double.parse(_basePriceController.text);
+    final int updatedQuantity = int.parse(_quantityController.text);
+    final String updatedStartTime = _startTimeController.text;
+    final String updatedEndTime = _endTimeController.text;
 
     final Map<String, dynamic> updatedCatchData = {
       'name': updatedName,
@@ -103,7 +102,6 @@ class _EditCatchPageState extends State<EditCatchPage> {
       'endTime': updatedEndTime,
     };
 
-    // Replace with your API endpoint for updating a catch
     String apiUrl = '${Api.editCatchUrl}/${widget.catchDetails['_id']}';
 
     try {
@@ -121,8 +119,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
           ),
         );
 
-        Navigator.pop(
-            context); // Navigate back to the previous page after successful update
+        Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -147,60 +144,149 @@ class _EditCatchPageState extends State<EditCatchPage> {
       appBar: AppBar(
         title: const Text('Edit Catch'),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextFormField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                hintText: 'Enter name',
+                hintStyle: TextStyle(color: Colors.grey),
+                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+              ),
             ),
-            TextFormField(
-              controller: locationController,
-              decoration: const InputDecoration(labelText: 'Location'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _locationController,
+              decoration: InputDecoration(
+                labelText: 'Location',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                hintText: 'Enter location',
+                hintStyle: TextStyle(color: Colors.grey),
+                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+              ),
             ),
-            TextFormField(
-              controller: basePriceController,
-              decoration: const InputDecoration(labelText: 'Base Price'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _basePriceController,
               keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Base Price',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                hintText: 'Enter base price',
+                hintStyle: TextStyle(color: Colors.grey),
+                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+              ),
             ),
-            TextFormField(
-              controller: quantityController,
-              decoration: const InputDecoration(labelText: 'Quantity'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _quantityController,
               keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Quantity (in kgs)',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                hintText: 'Enter quantity',
+                hintStyle: TextStyle(color: Colors.grey),
+                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+              ),
             ),
-            TextButton(
+            const SizedBox(height: 16),
+            ElevatedButton(
               onPressed: () => _selectStartTime(context),
-              child: const Text('Select Start Time'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Select Start Time',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
             TextFormField(
-              controller: startTimeController,
+              controller: _startTimeController,
               enabled: false,
               decoration: const InputDecoration(labelText: 'Start Time'),
             ),
-            TextButton(
+            const SizedBox(height: 16),
+            ElevatedButton(
               onPressed: () => _selectEndTime(context),
-              child: const Text('Select End Time'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Select End Time',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
             TextFormField(
-              controller: endTimeController,
+              controller: _endTimeController,
               enabled: false,
               decoration: const InputDecoration(labelText: 'End Time'),
             ),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _saveChanges,
-              child: const Text('Save'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ],
         ),
