@@ -1,5 +1,5 @@
 class Api {
-  static const String baseUrl = 'http://192.168.15.82:5000';
+  static const String baseUrl = 'http://35.200.185.39:8080';
   static const String loginUrl = '$baseUrl/api/login';
   static const String signupPath = '$baseUrl/api/signup';
   static const String forgotPasswordUrl = '$baseUrl/api/forgot-password';

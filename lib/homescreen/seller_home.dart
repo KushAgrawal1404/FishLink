@@ -48,7 +48,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
             soldCatches = data['soldCatches'];
             expiredCatches = data['expiredCatches'];
             totalRevenue = data['totalRevenue'];
-            ratings = data['ratings'];
+            ratings = data['ratings'].toString();
           });
         } else {
           print('Failed to fetch analytics');
@@ -86,12 +86,19 @@ class _SellerHomePageState extends State<SellerHomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildAnalyticsCard(Icons.shopping_basket, 'Total Catches', totalCatches),
-                _buildAnalyticsCard(Icons.access_time, 'Active Catches', activeCatches),
-                _buildAnalyticsCard(Icons.check_circle, 'Sold Catches', soldCatches),
-                _buildAnalyticsCard(Icons.error_outline, 'Expired Catches', expiredCatches),
-                _buildAnalyticsCard(Icons.attach_money, 'Total Revenue', totalRevenue, currency: true),
-                _buildAnalyticsCard(Icons.star, 'Average Ratings', double.parse(ratings)),
+                _buildAnalyticsCard(
+                    Icons.shopping_basket, 'Total Catches', totalCatches),
+                _buildAnalyticsCard(
+                    Icons.access_time, 'Active Catches', activeCatches),
+                _buildAnalyticsCard(
+                    Icons.check_circle, 'Sold Catches', soldCatches),
+                _buildAnalyticsCard(
+                    Icons.error_outline, 'Expired Catches', expiredCatches),
+                _buildAnalyticsCard(
+                    Icons.attach_money, 'Total Revenue', totalRevenue,
+                    currency: true),
+                _buildAnalyticsCard(
+                    Icons.star, 'Average Ratings', double.parse(ratings)),
               ],
             ),
           ),
@@ -100,64 +107,63 @@ class _SellerHomePageState extends State<SellerHomePage> {
     );
   }
 
-  Widget _buildAnalyticsCard(IconData icon, String label, dynamic value, {bool currency = false}) {
-  Color iconColor;
-  switch (icon) {
-    case Icons.shopping_basket:
-      iconColor = Colors.green;
-      break;
-    case Icons.access_time:
-      iconColor = Colors.orange;
-      break;
-    case Icons.check_circle:
-      iconColor = Colors.blue;
-      break;
-    case Icons.error_outline:
-      iconColor = Colors.red;
-      break;
-    case Icons.attach_money:
-      iconColor = Colors.purple;
-      break;
-    case Icons.star:
-      iconColor = Colors.yellow;
-      break;
-    default:
-      iconColor = Colors.blue; // Default color if icon doesn't match any case
-  }
+  Widget _buildAnalyticsCard(IconData icon, String label, dynamic value,
+      {bool currency = false}) {
+    Color iconColor;
+    switch (icon) {
+      case Icons.shopping_basket:
+        iconColor = Colors.green;
+        break;
+      case Icons.access_time:
+        iconColor = Colors.orange;
+        break;
+      case Icons.check_circle:
+        iconColor = Colors.blue;
+        break;
+      case Icons.error_outline:
+        iconColor = Colors.red;
+        break;
+      case Icons.attach_money:
+        iconColor = Colors.purple;
+        break;
+      case Icons.star:
+        iconColor = Colors.yellow;
+        break;
+      default:
+        iconColor = Colors.blue; // Default color if icon doesn't match any case
+    }
 
-  return Card(
-    elevation: 3,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12.0),
-    ),
-    color: Colors.white, // Set the background color to white
-    child: Padding(
-      padding: const EdgeInsets.all(12),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: iconColor,
-        ),
-        title: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-            fontSize: 16,
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      color: Colors.white, // Set the background color to white
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: ListTile(
+          leading: Icon(
+            icon,
+            color: iconColor,
           ),
-        ),
-        trailing: Text(
-          currency ? '₹$value' : value.toString(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.blue,
-            fontSize: 16,
+          title: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+          trailing: Text(
+            currency ? '₹$value' : value.toString(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+              fontSize: 16,
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
-
+    );
+  }
 }
