@@ -69,8 +69,6 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     }
   }
 
-  // Function to toggle sorting order and re-sort catches
-  // Function to toggle sorting order and re-sort catches
   void _sortByPrice() {
     setState(() {
       _sortByPriceAscending = !_sortByPriceAscending;
@@ -78,7 +76,6 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     });
   }
 
-// Sort catches based on base price and sorting order
   void _sortCatches() {
     if (_sortByPriceAscending) {
       filteredCatches = List.from(catches)
@@ -94,7 +91,8 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     return FutureBuilder<String>(
       future: _getNameFromSharedPreferences(),
       builder: (context, snapshot) {
-        String title = snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
+        String title =
+            snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
         return Scaffold(
           appBar: AppBar(
             title: Text(title),
@@ -115,6 +113,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                   child: Text('No catches found'),
                 )
               : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -136,16 +135,14 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey[200],
-                                prefixIcon: const Icon(Icons.search,
-                                    color: Colors.grey),
+                                prefixIcon:
+                                    const Icon(Icons.search, color: Colors.grey),
                                 suffixIcon: searchController.text.isNotEmpty
                                     ? IconButton(
                                         icon: const Icon(Icons.clear),
                                         onPressed: () {
-                                          // Clear search text and filter catches
                                           searchController.clear();
                                           _filterCatches();
-                                          // FocusScope.of(context).unfocus(); // Close keyboard
                                         },
                                       )
                                     : null,
@@ -166,120 +163,100 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                       ),
                     ),
                     Expanded(
-                      child: filteredCatches.isEmpty
-                          ? const Center(
-                              child: Text('No catches found'),
-                            )
-                          : ListView.builder(
-                              itemCount: filteredCatches.length,
-                              itemBuilder: (context, index) {
-                                var catchDetails = filteredCatches[index];
-                                List<dynamic> images = catchDetails['images'];
-                                String firstImageUrl = images.isNotEmpty
-                                    ? Api.baseUrl + images[0]
-                                    : '';
-                                // Get the current time
-                                DateTime currentTime = DateTime.now();
-                                // Convert the start time string to DateTime object
-                                DateTime bidStartTime =
-                                    DateTime.parse(catchDetails['startTime']);
-
-                                // Check if the current time is less than the bid start time
-                                bool isBiddingStarted =
-                                    currentTime.isAfter(bidStartTime);
-                                return GestureDetector(
-                                  onTap: isBiddingStarted || !isBiddingStarted
-                                      ? () {
-                                          // Navigate to the CatchDetailsPage when the item is tapped
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CatchDetailsPage(
-                                                      catchId:
-                                                          catchDetails['_id']),
-                                            ),
-                                          );
-                                        }
-                                      : null,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    margin: const EdgeInsets.only(
-                                        left: 7, right: 7, bottom: 10),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
+                      child: ListView.builder(
+                        itemCount: filteredCatches.length,
+                        itemBuilder: (context, index) {
+                          var catchDetails = filteredCatches[index];
+                          List<dynamic> images = catchDetails['images'];
+                          String firstImageUrl = images.isNotEmpty
+                              ? Api.baseUrl + images[0]
+                              : '';
+                          DateTime currentTime = DateTime.now();
+                          DateTime bidStartTime =
+                              DateTime.parse(catchDetails['startTime']);
+                          bool isBiddingStarted =
+                              currentTime.isAfter(bidStartTime);
+                          return GestureDetector(
+                            onTap: isBiddingStarted || !isBiddingStarted
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CatchDetailsPage(
+                                            catchId: catchDetails['_id']),
+                                      ),
+                                    );
+                                  }
+                                : null,
+                            child: Card(
+                              margin: const EdgeInsets.all(8.0),
+                              elevation: 2.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              color: Colors.blue.shade50, // Set the background color here
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (firstImageUrl.isNotEmpty)
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        child: Image.network(
+                                          firstImageUrl,
+                                          width: 130,
+                                          height: 130,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // Display the first image if available
-                                          if (firstImageUrl.isNotEmpty)
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                              child: Image.network(
-                                                firstImageUrl,
-                                                width: 130,
-                                                height: 130,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  catchDetails['name'],
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  'Location: ${catchDetails['location']}',
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
-                                                ),
-                                                Text(
-                                                  'Quantity: ${catchDetails['quantity']}kg',
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
-                                                ),
-                                                Text(
-                                                  'Base Price: ₹${catchDetails['basePrice']}',
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
-                                                ),
-                                                
-                                                if (isBiddingStarted)
-                                                  Text(
-                                                    'Current Highest Bid: ${catchDetails['currentBid']}',
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
-                                                  ),
-                                                  
-                                                if (!isBiddingStarted)
-                                                  const Text(
-                                                    'Bidding is not started yet',
-                                                    style: TextStyle(
-                                                        color: Colors.red,
-                                                        fontSize: 14),
-                                                  ),
-                                              ],
+                                          Text(
+                                            catchDetails['name'],
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
+                                          Text(
+                                            'Location: ${catchDetails['location']}',
+                                            style: const TextStyle(fontSize: 14),
+                                          ),
+                                          Text(
+                                            'Quantity: ${catchDetails['quantity']}kg',
+                                            style: const TextStyle(fontSize: 14),
+                                          ),
+                                          Text(
+                                            'Base Price: ₹${catchDetails['basePrice']}',
+                                            style: const TextStyle(fontSize: 14),
+                                          ),
+                                          if (isBiddingStarted)
+                                            Text(
+                                              'Current Highest Bid: ${catchDetails['currentBid']}',
+                                              style: const TextStyle(fontSize: 14),
+                                            ),
+                                          if (!isBiddingStarted)
+                                            const Text(
+                                              'Bidding is not started yet',
+                                              style: TextStyle(
+                                                  color: Colors.red, fontSize: 14),
+                                            ),
                                         ],
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  ],
+                                ),
+                              ),
                             ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

@@ -3,10 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fish_link/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:fish_link/screens/catch_details_page.dart';
-//import 'package:fish_link/screens/seller_rating.dart'; // Remove import statement for SellerRatingPage
 import 'package:fish_link/screens/buyer_win_details.dart';
-//import 'package:fish_link/screens/buyer_win_details.dart'; // Import the WinDetailsPage
 
 class BuyerWonCatchesPage extends StatefulWidget {
   const BuyerWonCatchesPage({Key? key}) : super(key: key);
@@ -61,7 +58,7 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 10.0), // Add padding to the top
+        padding: const EdgeInsets.only(top: 10.0),
         child: wonCatches.isEmpty
             ? const Center(
                 child: Text('No won catches found'),
@@ -78,44 +75,21 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        PageRouteBuilder(
-                          transitionDuration: Duration(
-                              milliseconds: 400), // Adjust duration as needed
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: ScaleTransition(
-                                scale: Tween<double>(
-                                  begin: 0.5,
-                                  end: 1.0,
-                                ).animate(
-                                  CurvedAnimation(
-                                    parent: animation,
-                                    curve: Curves.easeInOut,
-                                  ),
-                                ),
-                                child: child,
-                              ),
-                            );
-                          },
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  WinDetailsPage(
+                        MaterialPageRoute(
+                          builder: (context) => WinDetailsPage(
                             catchId: catchDetails['_id'],
-                            sellerId: catchDetails[
-                                'seller'], // Pass sellerId to WinDetailsPage
+                            sellerId: catchDetails['seller'],
                           ),
                         ),
                       );
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
+                    child: Card(
+                      margin: const EdgeInsets.all(8.0),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      margin:
-                          const EdgeInsets.only(left: 7, right: 7, bottom: 10),
+                      color: Colors.green.shade50,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -146,7 +120,9 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                                   Text('Location: ${catchDetails['location']}'),
                                   Text('Quantity: ${catchDetails['quantity']}kg'),
                                   Text(
-                                      'Winning Price: ₹${catchDetails['currentBid']}'),
+                                    'Winning Price: ₹${catchDetails['currentBid']}',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
                                 ],
                               ),
                             ),
