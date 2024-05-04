@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:fish_link/screens/view_profile.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CatchDetailsPage extends StatefulWidget {
   final String catchId;
@@ -150,7 +153,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(catchDetails['name'] ?? ''),
+        title: const Text('Auction Details'),
         backgroundColor: Colors.transparent,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -164,104 +167,141 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
       ),
       body: catchDetails.isNotEmpty
           ? ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          // Display images
-          SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: catchDetails['images'].length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Image.network(
-                    Api.baseUrl + catchDetails['images'][index],
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                // Display images
+                SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: catchDetails['images'].length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Image.network(
+                          Api.baseUrl + catchDetails['images'][index],
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          // Display other catch details
-          _buildListItem('Location:', catchDetails['location']),
-          _buildListItem('Quantity:', '${catchDetails['quantity']}kg'),
-          _buildListItem('Base Price:', '₹${catchDetails['basePrice']}'),
-          _buildListItem(
-              'Current Price:', '₹${catchDetails['currentBid']}'),
-          _buildListItem(
-              'Highest bidder:', catchDetails['highestBidder']),
-          
-          _buildListItem(
-              'Starts:', formatDateTime(catchDetails['startTime'])),
-          _buildListItem(
-              'Ends:', formatDateTime(catchDetails['endTime'])),
-
-          // Button to view seller details
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfileViewPage(
-                      userId: catchDetails['seller']['_id']),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: const Text('Seller Details'),
-          ),
+                const SizedBox(
+                  height: 16,
+                ),
+                // Display other catch details
+                _buildCardItem(Icons.label, 'Catch Name:', catchDetails['name']),
+                _buildCardItem(Icons.location_on, 'Location:', catchDetails['location']),
+                _buildCardItem(Icons.format_list_numbered, 'Quantity:', '${catchDetails['quantity']}kg'),
+                _buildCardItem(Icons.attach_money, 'Base Price:', '₹${catchDetails['basePrice']}'),
+                _buildCardItem(Icons.attach_money, 'Current Price:', '₹${catchDetails['currentBid']}'),
+                _buildCardItem(Icons.person, 'Highest bidder:', catchDetails['highestBidder']),
+                _buildCardItem(Icons.access_time, 'Starts:', formatDateTime(catchDetails['startTime'])),
+                _buildCardItem(Icons.access_time, 'Ends:', formatDateTime(catchDetails['endTime'])),
 
-          // Add a button to place bid
-          _buildPlaceBidButton(),
-        ],
-      )
+                // Button to view seller details
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileViewPage(
+                            userId: catchDetails['seller']['_id']),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text('Seller Details'),
+                ),
+
+                // Add a button to place bid
+                _buildPlaceBidButton(),
+              ],
+            )
           : const Center(
-        child: CircularProgressIndicator(),
-      ),
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 
-  Widget _buildListItem(String label, dynamic value) {
-    return Container(
+  Widget _buildCardItem(IconData icon, String label, dynamic value) {
+  Color iconColor;
+  switch (label) {
+    case 'Location:':
+      iconColor = Colors.red;
+      break;
+    case 'Quantity:':
+      iconColor = Colors.green;
+      break;
+    case 'Base Price:':
+      iconColor = Colors.blue;
+      break;
+    case 'Current Price:':
+      iconColor = Colors.orange;
+      break;
+    case 'Highest bidder:':
+      iconColor = Colors.purple;
+      break;
+    case 'Starts:':
+    case 'Ends:':
+      iconColor = Colors.blueGrey;
+      break;
+    default:
+      iconColor = Colors.black;
+  }
+
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 10.0), // Add space between cards
+    child: Container(
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.0),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
       child: ListTile(
+        leading: Icon(
+          icon,
+          color: iconColor, // Use the determined icon color
+        ),
         title: Text(
           label,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 16, // Decreased font size to 16
           ),
         ),
-        trailing: Text(
+        subtitle: Text(
           label == 'Total Revenue:' ? '₹ $value' : value.toString(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.blue,
-            fontSize: 18,
+            fontSize: 16, // Decreased font size to 16
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+
+
 
   Widget _buildPlaceBidButton() {
     // Get the current time
@@ -282,8 +322,8 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
     return ElevatedButton(
       onPressed: isPlaceBidEnabled
           ? () {
-        _postBid(context);
-      }
+              _postBid(context);
+            }
           : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: isPlaceBidEnabled ? Colors.green : Colors.grey,
