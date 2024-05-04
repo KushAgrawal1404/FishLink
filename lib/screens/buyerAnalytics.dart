@@ -132,7 +132,7 @@ class _BuyerAnalyticsPageState extends State<BuyerAnalyticsPage> {
             children: [
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,

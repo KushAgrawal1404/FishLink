@@ -16,7 +16,7 @@ import 'package:fish_link/screens/add_catch.dart';
 import 'package:fish_link/screens/my_catches.dart';
 import 'package:fish_link/screens/edit_catches.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:fish_link/screens/mybids.dart';
+import 'package:fish_link/screens/buyer_mybids.dart';
 import 'package:fish_link/screens/buyerAnalytics.dart';
 import 'package:fish_link/screens/buyer_my_wins.dart';
 import 'package:fish_link/screens/buyer_win_details.dart';
