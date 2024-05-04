@@ -28,12 +28,14 @@ class _SoldBidPageState extends State<SoldBidPage> {
   bool isCatchDetailsExpanded = false;
   List<dynamic> buyerRatings = [];
   bool isLoadingRatings = false;
+  String catchStatus = '';
 
   @override
   void initState() {
     super.initState();
     fetchUserProfile();
     _getBuyerRatings();
+    fetchStatus();
   }
 
   Future<void> fetchUserProfile() async {
@@ -92,6 +94,25 @@ class _SoldBidPageState extends State<SoldBidPage> {
     }
   }
 
+  Future<void> fetchStatus() async {
+    try {
+      final response = await http.get(
+        Uri.parse('${Api.winnerUrl}/${widget.catchId}'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        setState(() {
+          catchStatus = data['status'];
+        });
+      } else {
+        print('Failed to fetch catch status: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error fetching catch status: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,6 +138,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
               _buildDetailsCard(),
               _buildProfileCard(),
               _buildRatingsCard(),
+              _buildStatusCard(),
               _buildChatCard(),
               if (isLoadingRatings) _buildLoadingIndicator(),
             ],
@@ -381,6 +403,78 @@ class _SoldBidPageState extends State<SoldBidPage> {
     );
   }
 
+  Widget _buildStatusCard() {
+    List<String> statusOptions = ['payment', 'ready to collect', 'collected'];
+
+    return Card(
+      color: Colors.white,
+      child: ListTile(
+        leading: const Icon(Icons.timeline, color: Colors.orange),
+        title: const Text(
+          'Catch Status',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Row(
+          children: [
+            Expanded(
+              child: LinearProgressIndicator(
+                value: _getStatusProgress(catchStatus),
+                backgroundColor: Colors.grey[300],
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+            ),
+            DropdownButton<String>(
+              value: catchStatus,
+              onChanged: (newValue) {
+                _updateStatus(newValue!);
+              },
+              items: statusOptions.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  double _getStatusProgress(String status) {
+    switch (status) {
+      case 'payment':
+        return 0.33;
+      case 'ready to collect':
+        return 0.67;
+      case 'collected':
+        return 1.0;
+      default:
+        return 0.0;
+    }
+  }
+
+  void _updateStatus(String newStatus) async {
+    try {
+      final response = await http.post(
+        Uri.parse(Api.winnerUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'status': newStatus, 'catchId': widget.catchId}),
+      );
+      if (response.statusCode == 200) {
+        // Success
+        print('Status updated successfully');
+        setState(() {
+          catchStatus = newStatus;
+        });
+      } else {
+        print('Failed to update status: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error updating status: $error');
+    }
+  }
+
   Widget _buildChatCard() {
     return Card(
       color: Colors.white, // Set background color to white
@@ -388,7 +482,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
         leading: const Icon(Icons.chat,
             color: Colors.green), // Added color to the icon
         title: const Text(
-          'Chat with Buyer',
+          'Chat with Seller',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         trailing: const Icon(Icons.arrow_forward), // Add right arrow icon
