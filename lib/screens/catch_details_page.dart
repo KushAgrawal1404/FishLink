@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:fish_link/screens/view_profile.dart';
@@ -8,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class CatchDetailsPage extends StatefulWidget {
   final String catchId;
@@ -21,16 +18,12 @@ class CatchDetailsPage extends StatefulWidget {
 
 class _CatchDetailsPageState extends State<CatchDetailsPage> {
   late Map<String, dynamic> catchDetails = {};
-  String sid = "";
   late Timer timer;
 
   @override
   void initState() {
     super.initState();
-    // Fetch catch details initially
     _fetchCatchDetails();
-
-    // Set up a timer to refresh catch details every second
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       _fetchCatchDetails();
     });
@@ -38,7 +31,6 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
 
   @override
   void dispose() {
-    // Dispose the timer when the widget is disposed
     timer.cancel();
     super.dispose();
   }
@@ -98,12 +90,9 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                // Get the bid amount from the text field
                 String bidAmount = bidController.text.trim();
 
-                // Check if the bid amount is valid
                 if (bidAmount.isNotEmpty) {
-                  // Post the bid amount to the server
                   try {
                     final response = await http.post(
                       Uri.parse(Api.placeBidUrl),
@@ -123,7 +112,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                           backgroundColor: Colors.green,
                         ),
                       );
-                      Navigator.pop(context); // Close the dialog
+                      Navigator.pop(context);
                     } else {
                       String msg = responseBody['error'];
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -188,9 +177,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 // Display other catch details
                 _buildCardItem(Icons.label, 'Catch Name:', catchDetails['name']),
                 _buildCardItem(Icons.location_on, 'Location:', catchDetails['location']),
@@ -200,7 +187,8 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                 _buildCardItem(Icons.person, 'Highest bidder:', catchDetails['highestBidder']),
                 _buildCardItem(Icons.access_time, 'Starts:', formatDateTime(catchDetails['startTime'])),
                 _buildCardItem(Icons.access_time, 'Ends:', formatDateTime(catchDetails['endTime'])),
-
+                // Display the auction timer
+                _buildAuctionTimer(),
                 // Button to view seller details
                 ElevatedButton(
                   onPressed: () {
@@ -208,7 +196,8 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ProfileViewPage(
-                            userId: catchDetails['seller']['_id']),
+                          userId: catchDetails['seller']['_id'],
+                        ),
                       ),
                     );
                   },
@@ -222,7 +211,6 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                   ),
                   child: const Text('Seller Details'),
                 ),
-
                 // Add a button to place bid
                 _buildPlaceBidButton(),
               ],
@@ -234,89 +222,78 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
   }
 
   Widget _buildCardItem(IconData icon, String label, dynamic value) {
-  Color iconColor;
-  switch (label) {
-    case 'Location:':
-      iconColor = Colors.red;
-      break;
-    case 'Quantity:':
-      iconColor = Colors.green;
-      break;
-    case 'Base Price:':
+    Color iconColor;
+    switch (label) {
+      case 'Location:':
+        iconColor = Colors.red;
+        break;
+      case 'Quantity:':
+        iconColor = Colors.green;
+        break;
+      case 'Base Price:':
+        iconColor = Colors.blue;
+        break;
+      case 'Current Price:':
+        iconColor = Colors.orange;
+        break;
+      case 'Highest bidder:':
+        iconColor = Colors.purple;
+        break;
+      case 'Starts:':
       iconColor = Colors.blue;
-      break;
-    case 'Current Price:':
-      iconColor = Colors.orange;
-      break;
-    case 'Highest bidder:':
-      iconColor = Colors.purple;
-      break;
-    case 'Starts:':
-    case 'Ends:':
-      iconColor = Colors.blueGrey;
-      break;
-    default:
-      iconColor = Colors.black;
+      case 'Ends:':
+        iconColor = Colors.red;
+        break;
+      default:
+        iconColor = Colors.black;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ListTile(
+          leading: Icon(
+            icon,
+            color: iconColor,
+          ),
+          title: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+          subtitle: Text(
+            label == 'Total Revenue:' ? '₹ $value' : value.toString(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 10.0), // Add space between cards
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: iconColor, // Use the determined icon color
-        ),
-        title: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-            fontSize: 16, // Decreased font size to 16
-          ),
-        ),
-        subtitle: Text(
-          label == 'Total Revenue:' ? '₹ $value' : value.toString(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.blue,
-            fontSize: 16, // Decreased font size to 16
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-
-
-
   Widget _buildPlaceBidButton() {
-    // Get the current time
     DateTime currentTime = DateTime.now();
-    // Convert the start time string to DateTime object
     DateTime bidStartTime = DateTime.parse(catchDetails['startTime']);
-
-    // Check if bidding has started
     bool isBiddingStarted = currentTime.isAfter(bidStartTime);
-
-    // Check if bidding has ended
-    bool isBiddingEnded = catchDetails['endTime'] != null &&
-        DateTime.now().isAfter(DateTime.parse(catchDetails['endTime']));
-
-    // Determine if the Place Bid button should be enabled
+    bool isBiddingEnded = catchDetails['endTime'] != null && DateTime.now().isAfter(DateTime.parse(catchDetails['endTime']));
     bool isPlaceBidEnabled = isBiddingStarted && !isBiddingEnded;
 
     return ElevatedButton(
@@ -338,6 +315,80 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
       ),
     );
   }
+
+Widget _buildAuctionTimer() {
+  DateTime currentTime = DateTime.now();
+  DateTime bidStartTime = DateTime.parse(catchDetails['startTime']);
+  DateTime bidEndTime = DateTime.parse(catchDetails['endTime']);
+  bool hasAuctionStarted = currentTime.isAfter(bidStartTime);
+  bool hasAuctionEnded = bidEndTime != null && currentTime.isAfter(bidEndTime);
+  
+  // Return an empty container if auction has ended
+  if (hasAuctionEnded) {
+    return Container();
+  }
+  
+  Duration remainingTime = Duration.zero;
+  String timerText = '';
+  if (!hasAuctionStarted) {
+    remainingTime = bidStartTime.difference(currentTime);
+    timerText = 'Auction Starts in:';
+  } else if (!hasAuctionEnded) {
+    remainingTime = bidEndTime.difference(currentTime);
+    timerText = 'Auction Ends in:';
+  }
+  String formattedTime = '${remainingTime.inHours}:${remainingTime.inMinutes.remainder(60)}:${remainingTime.inSeconds.remainder(60)}';
+  Color timerColor = hasAuctionStarted && !hasAuctionEnded
+      ? remainingTime.inMinutes < 2
+          ? Colors.black
+          : Colors.black
+      : Colors.black;
+  Color timerBackgroundColor = !hasAuctionStarted
+      ? Colors.blue.withOpacity(0.65)
+      : Colors.red.withOpacity(0.65);
+
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 10.0),
+    child: Container(
+      decoration: BoxDecoration(
+        color: timerBackgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ListTile(
+        leading: const Icon(
+          Icons.timer,
+          color: Colors.black,
+        ),
+        title: Text(
+          timerText,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 16,
+          ),
+        ),
+        subtitle: Text(
+          formattedTime,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: timerColor,
+            fontSize: 16,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
 
   String formatDateTime(String datetimeString) {
     DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');
