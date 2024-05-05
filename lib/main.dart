@@ -21,6 +21,7 @@ import 'package:fish_link/screens/buyerAnalytics.dart';
 import 'package:fish_link/screens/buyer_my_wins.dart';
 import 'package:fish_link/screens/buyer_win_details.dart';
 import 'package:fish_link/screens/seller_soldbid_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
           shadowColor: Colors.black87,
           foregroundColor: Colors.white,
         ),
+        fontFamily: GoogleFonts.openSans().fontFamily,
       ),
       home: const AuthChecker(),
       onGenerateRoute: (settings) {
