@@ -25,6 +25,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   bool isCatchDetailsExpanded = false;
   List<dynamic> sellerRatings = [];
   bool isLoadingRatings = false;
+  String catchStatus = '';
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     _fetchCatchDetails();
     fetchUserProfile();
     _getSellerRatings();
+    fetchStatus();
   }
 
   Future<void> _fetchCatchDetails() async {
@@ -122,6 +124,25 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     }
   }
 
+  Future<void> fetchStatus() async {
+    try {
+      final response = await http.get(
+        Uri.parse('${Api.winnerUrl}/${widget.catchId}'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        setState(() {
+          catchStatus = data['status'];
+        });
+      } else {
+        print('Failed to fetch catch status: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error fetching catch status: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,6 +168,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
               _buildDetailsCard(),
               _buildProfileCard(),
               _buildRatingsCard(),
+              _buildStatusCard(),
               _buildChatCard(),
               if (isLoadingRatings) _buildLoadingIndicator(),
             ],
@@ -405,6 +427,73 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
               padding: EdgeInsets.all(16.0),
               child: CircularProgressIndicator(),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusCard() {
+    List<String> statusOptions = ['payment', 'ready to collect', 'collected'];
+
+    // Define colors and icons based on completeness
+    Map<String, Color> statusColors = {
+      'payment': Colors.red,
+      'ready to collect': Colors.red,
+      'collected': Colors.red,
+    };
+
+    Map<String, IconData> statusIcons = {
+      'payment': Icons.payment,
+      'ready to collect': Icons.assignment_turned_in_outlined,
+      'collected': Icons.check_circle_outline,
+    };
+
+    // Update colors and icons based on completeness
+    if (catchStatus == 'payment') {
+      statusColors['payment'] = Colors.green;
+    } else if (catchStatus == 'ready to collect') {
+      statusColors['payment'] = Colors.green;
+      statusColors['ready to collect'] = Colors.green;
+    } else if (catchStatus == 'collected') {
+      statusColors['payment'] = Colors.green;
+      statusColors['ready to collect'] = Colors.green;
+      statusColors['collected'] = Colors.green;
+    }
+
+    return Card(
+      color: Colors.white,
+      child: ExpansionTile(
+        title: const ListTile(
+          leading: Icon(Icons.timeline, color: Colors.orange),
+          title: Text(
+            'Catch Status',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: statusOptions.length,
+            itemBuilder: (context, index) {
+              String status = statusOptions[index];
+              IconData iconData = statusIcons[status]!;
+              Color iconColor = statusColors[status]!;
+              return Column(
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      iconData,
+                      color: iconColor,
+                    ),
+                    title: Text(
+                      status,
+                      style: TextStyle(color: iconColor),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );

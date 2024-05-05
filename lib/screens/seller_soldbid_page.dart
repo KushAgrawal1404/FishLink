@@ -406,52 +406,99 @@ class _SoldBidPageState extends State<SoldBidPage> {
   Widget _buildStatusCard() {
     List<String> statusOptions = ['payment', 'ready to collect', 'collected'];
 
+    // Define colors and icons based on completeness
+    Map<String, Color> statusColors = {
+      'payment': Colors.red,
+      'ready to collect': Colors.red,
+      'collected': Colors.red,
+    };
+
+    Map<String, IconData> statusIcons = {
+      'payment': Icons.payment,
+      'ready to collect': Icons.assignment_turned_in_outlined,
+      'collected': Icons.check_circle_outline,
+    };
+
+    // Update colors and icons based on completeness
+    if (catchStatus == 'payment') {
+      statusColors['payment'] = Colors.green;
+    } else if (catchStatus == 'ready to collect') {
+      statusColors['payment'] = Colors.green;
+      statusColors['ready to collect'] = Colors.green;
+    } else if (catchStatus == 'collected') {
+      statusColors['payment'] = Colors.green;
+      statusColors['ready to collect'] = Colors.green;
+      statusColors['collected'] = Colors.green;
+    }
+
     return Card(
       color: Colors.white,
-      child: ListTile(
-        leading: const Icon(Icons.timeline, color: Colors.orange),
-        title: const Text(
-          'Catch Status',
-          style: TextStyle(fontWeight: FontWeight.bold),
+      child: ExpansionTile(
+        title: const ListTile(
+          leading: Icon(Icons.timeline, color: Colors.orange),
+          title: Text(
+            'Catch Status',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
-        subtitle: Row(
-          children: [
-            Expanded(
-              child: LinearProgressIndicator(
-                value: _getStatusProgress(catchStatus),
-                backgroundColor: Colors.grey[300],
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-              ),
-            ),
-            DropdownButton<String>(
-              value: catchStatus,
-              onChanged: (newValue) {
-                _updateStatus(newValue!);
-              },
-              items: statusOptions.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: statusOptions.length,
+            itemBuilder: (context, index) {
+              String status = statusOptions[index];
+              IconData iconData = statusIcons[status]!;
+              Color iconColor = statusColors[status]!;
+              return Column(
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      iconData,
+                      color: iconColor,
+                    ),
+                    title: Text(
+                      status,
+                      style: TextStyle(color: iconColor),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          _buildStatusUpdateDropdown(catchStatus),
+        ],
       ),
     );
   }
 
-  double _getStatusProgress(String status) {
-    switch (status) {
-      case 'payment':
-        return 0.33;
-      case 'ready to collect':
-        return 0.67;
-      case 'collected':
-        return 1.0;
-      default:
-        return 0.0;
+  Widget _buildStatusUpdateDropdown(String currentStatus) {
+    List<String> statusOptions = [
+      'initial',
+      'payment',
+      'ready to collect',
+      'collected',
+    ];
+
+    // Ensure currentStatus is included in statusOptions
+    if (!statusOptions.contains(currentStatus)) {
+      statusOptions.add(currentStatus);
     }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: DropdownButtonFormField<String>(
+        value: currentStatus,
+        onChanged: (newValue) {
+          _updateStatus(newValue!);
+        },
+        items: statusOptions.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   void _updateStatus(String newStatus) async {
