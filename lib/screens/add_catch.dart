@@ -25,8 +25,12 @@ class _AddCatchPageState extends State<AddCatchPage> {
   DateTime? _startTime;
   DateTime? _endTime;
   List<XFile> images = <XFile>[];
+  bool _isLoading = false;
 
   Future<void> _addCatch(String email) async {
+    setState(() {
+      _isLoading = true;
+    });
     String name = _nameController.text.trim();
     String location = _locationController.text.trim();
     double basePrice = double.parse(_basePriceController.text.trim());
@@ -34,6 +38,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
 
     // Check if start time and end time are selected
     if (_startTime == null || _endTime == null) {
+      setState(() {
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select start date and end date'),
@@ -45,6 +52,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
 
     // Check if end time is before start time
     if (_endTime!.isBefore(_startTime!)) {
+      setState(() {
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('End date cannot be before start date'),
@@ -55,15 +65,18 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
 
     // Check if the difference between start time and end time is less than 1 minute
-  if (_endTime!.difference(_startTime!).inMinutes < 1) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Minimum auction duration is 1 min'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
-  }
+    if (_endTime!.difference(_startTime!).inMinutes < 1) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Minimum auction duration is 1 min'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     // Your add catch API endpoint
     String apiUrl = Api.addCatchUrl;
@@ -95,6 +108,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
         Navigator.pop(context);
       } else {
         // Catch addition failed, show error message
+        setState(() {
+          _isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to add catch'),
@@ -103,6 +119,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
         );
       }
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred'),
@@ -258,9 +277,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter name',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -275,9 +294,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter location',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -293,9 +312,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter base price',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -311,9 +330,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter quantity',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
 
@@ -441,9 +460,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                       width: 400, // <-- Your width
                       height: 50, // <-- Your height
                       child: ElevatedButton(
-                        onPressed: () {
-                          _addCatch(snapshot.data!);
-                        },
+                        onPressed:
+                            _isLoading ? null : () => _addCatch(snapshot.data!),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green.shade500,
                           elevation: 3,
