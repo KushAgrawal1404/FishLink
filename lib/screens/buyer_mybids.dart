@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:fish_link/screens/catch_details_page.dart';
+import 'dart:async';
 
 class MyBidsPage extends StatefulWidget {
   const MyBidsPage({Key? key}) : super(key: key);
@@ -14,11 +15,24 @@ class MyBidsPage extends StatefulWidget {
 
 class _MyBidsPageState extends State<MyBidsPage> {
   List<dynamic> myBids = [];
+  late Timer _timer;
+  late DateTime _currentTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _fetchMyBids();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _currentTime = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchMyBids() async {
@@ -108,9 +122,30 @@ class _MyBidsPageState extends State<MyBidsPage> {
                           bidColor =
                               Colors.blue.shade50; // Blue for bids not won
                         } else {
-                          bidColor =
-                              Colors.red.shade50; // Red for ongoing bids
+                          bidColor = Colors.red.shade50; // Red for ongoing bids
                         }
+
+                        // Calculate remaining time
+                        DateTime bidEndTime =
+                            DateTime.parse(catchDetails['endTime']);
+                        Duration remainingTime =
+                            bidEndTime.difference(_currentTime);
+
+                        // Determine color for timer text
+                        // Color timerColor;
+                        // if (remainingTime < Duration(minutes: 2)) {
+                        //   timerColor = Colors.red; // Less than 2 minutes, red color
+                        // } else if (remainingTime < Duration(minutes: 5)) {
+                        //   timerColor = Colors.yellow; // Between 2 and 5 minutes, yellow color
+                        // } else {
+                        //   timerColor = Colors.blue; // Everything else, blue color
+                        // }
+// Determine color for timer text
+// Determine color for timer text
+                        Color timerColor = remainingTime <= Duration(minutes: 2)
+                            ? Colors
+                                .red // Less than or equal to 2 minutes, red color
+                            : Colors.green; // Otherwise, green color
 
                         return GestureDetector(
                           onTap: () {
@@ -129,10 +164,13 @@ class _MyBidsPageState extends State<MyBidsPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            color: Colors.white, // Set the background color to white
-                            child: Material( // Wrap your content with Material widget
+                            color: Colors
+                                .white, // Set the background color to white
+                            child: Material(
+                              // Wrap your content with Material widget
                               color: bidColor, // Set the overlay color
-                              borderRadius: BorderRadius.circular(12.0), // Ensure the same corner radius
+                              borderRadius: BorderRadius.circular(
+                                  12.0), // Ensure the same corner radius
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
@@ -140,7 +178,8 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                   children: [
                                     if (firstImageUrl.isNotEmpty)
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                         child: Image.network(
                                           firstImageUrl,
                                           width: 130,
@@ -173,8 +212,8 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                               ),
                                               Text(
                                                 '₹${bid['bidAmount']}',
-                                                style:
-                                                    const TextStyle(fontSize: 14),
+                                                style: const TextStyle(
+                                                    fontSize: 14),
                                               ),
                                             ],
                                           ),
@@ -190,11 +229,36 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                               ),
                                               Text(
                                                 '₹${catchDetails['currentBid']}',
-                                                style:
-                                                    const TextStyle(fontSize: 14),
+                                                style: const TextStyle(
+                                                    fontSize: 14),
                                               ),
                                             ],
                                           ),
+                                          if (remainingTime >
+                                              Duration
+                                                  .zero) // Only display timer if remaining time is positive
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Time Left: ',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight
+                                                        .bold, // Making the text bold
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${remainingTime.inHours}:${remainingTime.inMinutes.remainder(60)}:${remainingTime.inSeconds.remainder(60)}',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight
+                                                        .bold, // Making the timer text bold
+                                                    color:
+                                                        timerColor, // Apply the determined color to the timer text
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                         ],
                                       ),
                                     ),
