@@ -433,31 +433,31 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   }
 
   Widget _buildStatusCard() {
-    List<String> statusOptions = ['payment', 'ready to collect', 'collected'];
+    List<String> statusOptions = ['Payment', 'Ready to collect', 'Collected'];
 
     // Define colors and icons based on completeness
     Map<String, Color> statusColors = {
-      'payment': Colors.red,
-      'ready to collect': Colors.red,
-      'collected': Colors.red,
+      'Payment': Colors.red,
+      'Ready to collect': Colors.red,
+      'Collected': Colors.red,
     };
 
     Map<String, IconData> statusIcons = {
-      'payment': Icons.payment,
-      'ready to collect': Icons.assignment_turned_in_outlined,
-      'collected': Icons.check_circle_outline,
+      'Payment': Icons.payment,
+      'Ready to collect': Icons.assignment_turned_in_outlined,
+      'Collected': Icons.check_circle_outline,
     };
 
     // Update colors and icons based on completeness
-    if (catchStatus == 'payment') {
-      statusColors['payment'] = Colors.green;
-    } else if (catchStatus == 'ready to collect') {
-      statusColors['payment'] = Colors.green;
-      statusColors['ready to collect'] = Colors.green;
-    } else if (catchStatus == 'collected') {
-      statusColors['payment'] = Colors.green;
-      statusColors['ready to collect'] = Colors.green;
-      statusColors['collected'] = Colors.green;
+    if (catchStatus == 'Payment') {
+      statusColors['Payment'] = Colors.green;
+    } else if (catchStatus == 'Ready to collect') {
+      statusColors['Payment'] = Colors.green;
+      statusColors['Ready to collect'] = Colors.green;
+    } else if (catchStatus == 'Collected') {
+      statusColors['Payment'] = Colors.green;
+      statusColors['Ready to collect'] = Colors.green;
+      statusColors['Collected'] = Colors.green;
     }
 
     return Card(
