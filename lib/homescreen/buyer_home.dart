@@ -91,8 +91,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
     return FutureBuilder<String>(
       future: _getNameFromSharedPreferences(),
       builder: (context, snapshot) {
-        String title =
-            snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
+        String title = snapshot.hasData ? 'Hi, ${snapshot.data}' : 'Buyer Home';
         return Scaffold(
           appBar: AppBar(
             title: Text(title),
@@ -135,8 +134,8 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                 ),
                                 filled: true,
                                 fillColor: Colors.grey[200],
-                                prefixIcon:
-                                    const Icon(Icons.search, color: Colors.grey),
+                                prefixIcon: const Icon(Icons.search,
+                                    color: Colors.grey),
                                 suffixIcon: searchController.text.isNotEmpty
                                     ? IconButton(
                                         icon: const Icon(Icons.clear),
@@ -168,9 +167,8 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                         itemBuilder: (context, index) {
                           var catchDetails = filteredCatches[index];
                           List<dynamic> images = catchDetails['images'];
-                          String firstImageUrl = images.isNotEmpty
-                              ? Api.baseUrl + images[0]
-                              : '';
+                          String firstImageUrl =
+                              images.isNotEmpty ? Api.baseUrl + images[0] : '';
                           DateTime currentTime = DateTime.now();
                           DateTime bidStartTime =
                               DateTime.parse(catchDetails['startTime']);
@@ -194,63 +192,122 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
-                              color: Colors.blue.shade50, // Set the background color here
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (firstImageUrl.isNotEmpty)
-                                      ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        child: Image.network(
-                                          firstImageUrl,
-                                          width: 130,
-                                          height: 130,
-                                          fit: BoxFit.cover,
+                              color: Colors.white, // Set the background color to white
+                              child: Material( // Wrap your content with Material widget
+                                color: Colors.blue.shade50, // Set the overlay color
+                                borderRadius: BorderRadius.circular(12.0), // Ensure the same corner radius
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (firstImageUrl.isNotEmpty)
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          child: Image.network(
+                                            firstImageUrl,
+                                            width: 130,
+                                            height: 130,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              catchDetails['name'],
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Text(
+                                                  'Location: ',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight
+                                                        .bold, // Making the text bold
+                                                  ),
+                                                ),
+                                                Text(
+                                                  catchDetails['location'],
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Text(
+                                                  'Quantity: ',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight
+                                                        .bold, // Making the text bold
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${catchDetails['quantity']}kg',
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Text(
+                                                  'Base Price: ',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight
+                                                        .bold, // Making the text bold
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '₹${catchDetails['basePrice']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                            if (isBiddingStarted)
+                                              Row(
+                                                children: [
+                                                  const Text(
+                                                    'Current Highest Bid: ',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight
+                                                          .bold, // Making the text bold
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '₹${catchDetails['currentBid']}',
+                                                    style: const TextStyle(
+                                                        fontSize: 14),
+                                                  ),
+                                                ],
+                                              ),
+                                            if (!isBiddingStarted)
+                                              const Text(
+                                                'Bidding is not started yet',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                          ],
                                         ),
                                       ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            catchDetails['name'],
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Location: ${catchDetails['location']}',
-                                            style: const TextStyle(fontSize: 14),
-                                          ),
-                                          Text(
-                                            'Quantity: ${catchDetails['quantity']}kg',
-                                            style: const TextStyle(fontSize: 14),
-                                          ),
-                                          Text(
-                                            'Base Price: ₹${catchDetails['basePrice']}',
-                                            style: const TextStyle(fontSize: 14),
-                                          ),
-                                          if (isBiddingStarted)
-                                            Text(
-                                              'Current Highest Bid: ${catchDetails['currentBid']}',
-                                              style: const TextStyle(fontSize: 14),
-                                            ),
-                                          if (!isBiddingStarted)
-                                            const Text(
-                                              'Bidding is not started yet',
-                                              style: TextStyle(
-                                                  color: Colors.red, fontSize: 14),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

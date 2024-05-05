@@ -106,9 +106,10 @@ class _MyBidsPageState extends State<MyBidsPage> {
                           bidColor = Colors.green.shade50; // Green for won bids
                         } else if (catchDetails['status'] == 'available') {
                           bidColor =
-                              Colors.blue.shade50; // Red for bids not won
+                              Colors.blue.shade50; // Blue for bids not won
                         } else {
-                          bidColor = Colors.red.shade50; // Blue for ongoing bids
+                          bidColor =
+                              Colors.red.shade50; // Red for ongoing bids
                         }
 
                         return GestureDetector(
@@ -128,47 +129,77 @@ class _MyBidsPageState extends State<MyBidsPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            color: bidColor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (firstImageUrl.isNotEmpty)
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      child: Image.network(
-                                        firstImageUrl,
-                                        width: 130,
-                                        height: 130,
-                                        fit: BoxFit.cover,
+                            color: Colors.white, // Set the background color to white
+                            child: Material( // Wrap your content with Material widget
+                              color: bidColor, // Set the overlay color
+                              borderRadius: BorderRadius.circular(12.0), // Ensure the same corner radius
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (firstImageUrl.isNotEmpty)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        child: Image.network(
+                                          firstImageUrl,
+                                          width: 130,
+                                          height: 130,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${catchDetails['name']}',
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Text(
+                                                'My Current Bid: ',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight
+                                                      .bold, // Making the text bold
+                                                ),
+                                              ),
+                                              Text(
+                                                '₹${bid['bidAmount']}',
+                                                style:
+                                                    const TextStyle(fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Highest Current Bid: ',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight
+                                                      .bold, // Making the text bold
+                                                ),
+                                              ),
+                                              Text(
+                                                '₹${catchDetails['currentBid']}',
+                                                style:
+                                                    const TextStyle(fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${catchDetails['name']}',
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          'My Current Bid: ₹${bid['bidAmount']}',
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                        Text(
-                                          'Highest Current Bid: ₹${catchDetails['currentBid']}',
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

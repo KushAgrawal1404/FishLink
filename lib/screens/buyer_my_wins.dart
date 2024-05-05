@@ -89,44 +89,90 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      color: Colors.green.shade50,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (firstImageUrl.isNotEmpty)
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: Image.network(
-                                  firstImageUrl,
-                                  width: 130,
-                                  height: 130,
-                                  fit: BoxFit.cover,
+                      color: Colors.white, // Set the background color to white
+                      child: Material( // Wrap your content with Material widget
+                        color: Colors.green.shade50, // Set the overlay color
+                        borderRadius: BorderRadius.circular(12.0), // Ensure the same corner radius
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (firstImageUrl.isNotEmpty)
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Image.network(
+                                    firstImageUrl,
+                                    width: 130,
+                                    height: 130,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${catchDetails['name']}',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Location: ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight
+                                                .bold, // Making the text bold
+                                          ),
+                                        ),
+                                        Text(
+                                          '${catchDetails['location']}',
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Quantity: ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight
+                                                .bold, // Making the text bold
+                                          ),
+                                        ),
+                                        Text(
+                                          '${catchDetails['quantity']}kg',
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Winning Price: ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight
+                                                .bold, // Making the text bold
+                                          ),
+                                        ),
+                                        Text(
+                                          '₹${catchDetails['currentBid']}',
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${catchDetails['name']}',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text('Location: ${catchDetails['location']}'),
-                                  Text('Quantity: ${catchDetails['quantity']}kg'),
-                                  Text(
-                                    'Winning Price: ₹${catchDetails['currentBid']}',
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
