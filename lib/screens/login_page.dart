@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
@@ -83,9 +84,9 @@ class _LoginPageState extends State<LoginPage> {
         _prefs.setString('userId', responseBody['userId']);
         _prefs.setString('userType', responseBody['userType']);
         _prefs.setString('token', responseBody['token']);
-        String? deviceToken = _prefs.getString('deviceToken');
+        final deviceState = await OneSignal.shared.getDeviceState();
+        String? deviceToken = deviceState?.userId;
         sendDeviceId('${responseBody['userId']}', deviceToken!);
-        fetchUserProfile();
         _redirectToHome(responseBody['userType']);
       } else {
         // Login failed, show error message
@@ -99,8 +100,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred'),
+        SnackBar(
+          content: Text(e.toString()),
           backgroundColor: Colors.red,
         ),
       );
@@ -144,29 +145,6 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Network error'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> fetchUserProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userId = prefs.getString('userId') ?? '';
-
-    try {
-      final response =
-          await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decodedResponse = json.decode(response.body);
-        await prefs.setString('userProfile', json.encode(decodedResponse));
-      } else {
-        throw Exception('Failed to load user profile');
-      }
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Network error: Failed to load user profile'),
           backgroundColor: Colors.red,
         ),
       );
