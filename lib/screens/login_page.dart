@@ -100,8 +100,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
+        const SnackBar(
+          content: Text("An error occured"),
           backgroundColor: Colors.red,
         ),
       );
