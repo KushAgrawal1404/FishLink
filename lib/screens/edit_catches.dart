@@ -82,6 +82,19 @@ class _EditCatchPageState extends State<EditCatchPage> {
           timePicked.hour,
           timePicked.minute,
         );
+
+        // Ensure end time is after start time
+        if (selectedDateTime
+            .isBefore(DateTime.parse(_startTimeController.text))) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("End time must be after start time"),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
         setState(() {
           _endTimeController.text =
               DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
@@ -120,6 +133,18 @@ class _EditCatchPageState extends State<EditCatchPage> {
 
     final String updatedStartTime = _startTimeController.text;
     final String updatedEndTime = _endTimeController.text;
+
+    // Ensure start time is less than end time
+    if (DateTime.parse(updatedStartTime)
+        .isAfter(DateTime.parse(updatedEndTime))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Start time must be before end time"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     final Map<String, dynamic> updatedCatchData = {
       'name': updatedName,

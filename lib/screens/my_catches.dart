@@ -333,8 +333,13 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                   ButtonBar(
                                     alignment: MainAxisAlignment.end,
                                     children: [
-                                      if (catchDetails['status'] == 'available')
-                                        IconButton(
+                                      Visibility(
+                                        visible: catchDetails['status'] ==
+                                                'available' &&
+                                            DateTime.now().isBefore(
+                                                DateTime.parse(
+                                                    catchDetails['startTime'])),
+                                        child: IconButton(
                                           icon: const Icon(Icons.edit),
                                           onPressed: () {
                                             Navigator.pushNamed(
@@ -342,13 +347,20 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                                 arguments: catchDetails);
                                           },
                                         ),
-                                      if (catchDetails['status'] == 'available')
-                                        IconButton(
+                                      ),
+                                      Visibility(
+                                        visible: catchDetails['status'] ==
+                                                'available' &&
+                                            DateTime.now().isBefore(
+                                                DateTime.parse(
+                                                    catchDetails['startTime'])),
+                                        child: IconButton(
                                           icon: const Icon(Icons.delete),
                                           onPressed: () {
                                             _deleteCatch(catchDetails['_id']);
                                           },
                                         ),
+                                      ),
                                     ],
                                   ),
                                 ],
