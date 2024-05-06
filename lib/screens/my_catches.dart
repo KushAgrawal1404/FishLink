@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
@@ -193,8 +194,31 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                               if (catchDetails['status'] == 'sold') {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SoldBidPage(
+                                  PageRouteBuilder(
+                                    transitionDuration:
+                                        Duration(milliseconds: 500),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      // Transition animation for page navigation
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: ScaleTransition(
+                                          scale: Tween<double>(
+                                            begin: 0.5,
+                                            end: 1.0,
+                                          ).animate(
+                                            CurvedAnimation(
+                                              parent: animation,
+                                              curve: Curves.easeInOut,
+                                            ),
+                                          ),
+                                          child: child,
+                                        ),
+                                      );
+                                    },
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        SoldBidPage(
                                       catchId: catchDetails['_id'],
                                       buyerId: catchDetails['highestBidder'],
                                       catchDetails: catchDetails,
@@ -212,6 +236,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Container(
+                                    width: 40, // Adjust the width as needed
+                                    height: 40, // Adjust the height as needed
                                     decoration: BoxDecoration(
                                       color: boxColor,
                                       borderRadius: const BorderRadius.only(
@@ -234,7 +260,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         if (catchDetails['status'] == 'sold')
                                           IconButton(
-                                            icon: Icon(Icons.arrow_forward),
+                                            icon: Icon(Icons.arrow_forward,
+                                                size: 20),
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
@@ -298,13 +325,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         _buildDetailRow(
                                           'Status',
-                                            '${catchDetails['status'][0].toUpperCase()}${catchDetails['status'].substring(1)}',
+                                          '${catchDetails['status'][0].toUpperCase()}${catchDetails['status'].substring(1)}',
                                         ),
-                                        if (catchDetails['status'] == 'sold')
-                                          _buildDetailRow(
-                                            'Winner',
-                                            catchDetails['highestBidder'],
-                                          ),
                                       ],
                                     ),
                                   ),
