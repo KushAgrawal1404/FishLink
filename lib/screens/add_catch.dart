@@ -31,10 +31,54 @@ class _AddCatchPageState extends State<AddCatchPage> {
     setState(() {
       _isLoading = true;
     });
+
+    // Check for empty fields
+    if (_nameController.text.trim().isEmpty ||
+        _locationController.text.trim().isEmpty ||
+        _basePriceController.text.trim().isEmpty ||
+        _quantityController.text.trim().isEmpty) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all fields'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     String name = _nameController.text.trim();
     String location = _locationController.text.trim();
-    double basePrice = double.parse(_basePriceController.text.trim());
-    int quantity = int.parse(_quantityController.text.trim());
+    double? basePrice;
+    int? quantity;
+
+    try {
+      basePrice = double.parse(_basePriceController.text.trim());
+      quantity = int.parse(_quantityController.text.trim());
+
+      // Check if the base price is non-negative
+      if (basePrice <= 0) {
+        throw Exception('Base price must be greater than 0.');
+      }
+
+      // Check if the quantity is non-negative
+      if (quantity <= 0) {
+        throw Exception('Quantity must be greater than 0.');
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     // Check if start time and end time are selected
     if (_startTime == null || _endTime == null) {
@@ -131,6 +175,84 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
+  void _validateAndShowConfirmationDialog(String email) {
+    // Check for empty fields
+    if (_nameController.text.trim().isEmpty ||
+        _locationController.text.trim().isEmpty ||
+        _basePriceController.text.trim().isEmpty ||
+        _quantityController.text.trim().isEmpty ||
+        _startTime == null ||
+        _endTime == null ||
+        images.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Please fill in all fields, select dates, and pick images'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if end time is before start time
+    if (_endTime!.isBefore(_startTime!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('End date cannot be before start date'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if the difference between start time and end time is less than 1 minute
+    if (_endTime!.difference(_startTime!).inMinutes < 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Minimum auction duration is 1 min'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    _showConfirmationDialog(email);
+  }
+
+  Future<void> _showConfirmationDialog(String email) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Are you sure you want to add this catch?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _addCatch(email);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<String> _loadEmail() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('email') ?? '';
@@ -184,22 +306,55 @@ class _AddCatchPageState extends State<AddCatchPage> {
   }
 
   Future<void> _selectStartTime() async {
+    final DateTime now = DateTime.now();
+    final DateTime maxStartDate = now.add(const Duration(days: 2));
+
+    DateTime initialDate = now;
+
+    // Check if the current time is in the past
+    if (_startTime != null && _startTime!.isAfter(now)) {
+      initialDate = _startTime!;
+    }
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
+      initialDate: initialDate,
+      firstDate: now,
+      // Limit the maximum selectable start date to 2 days in advance
+      lastDate: maxStartDate,
     );
+
     if (picked != null) {
       final TimeOfDay? timePicked = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.now(),
+        initialTime: TimeOfDay(
+            hour: now.hour, minute: now.minute), // Set initial time to now
       );
+
       if (timePicked != null) {
-        setState(() {
-          _startTime = DateTime(picked.year, picked.month, picked.day,
-              timePicked.hour, timePicked.minute);
-        });
+        final DateTime selectedDateTime = DateTime(picked.year, picked.month,
+            picked.day, timePicked.hour, timePicked.minute);
+
+        if (selectedDateTime.isBefore(now)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select a future date and time'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (selectedDateTime.isAfter(maxStartDate)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content:
+                  Text('You can only place catches up to 2 days in advance'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          setState(() {
+            _startTime = selectedDateTime;
+          });
+        }
       }
     }
   }
@@ -215,22 +370,53 @@ class _AddCatchPageState extends State<AddCatchPage> {
       return;
     }
 
+    final DateTime maxEndDate = _startTime!.add(const Duration(days: 3));
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _startTime ?? DateTime.now(),
       firstDate: _startTime ?? DateTime.now(),
-      lastDate: DateTime(2101),
+      // Limit the maximum selectable end date to 3 days after the start date
+      lastDate: maxEndDate,
     );
+
     if (picked != null) {
       final TimeOfDay? timePicked = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
       );
+
       if (timePicked != null) {
-        setState(() {
-          _endTime = DateTime(picked.year, picked.month, picked.day,
-              timePicked.hour, timePicked.minute);
-        });
+        final DateTime selectedDateTime = DateTime(picked.year, picked.month,
+            picked.day, timePicked.hour, timePicked.minute);
+
+        if (selectedDateTime.isBefore(_startTime!)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('End date cannot be before start date'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (selectedDateTime.isAfter(maxEndDate)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'The difference between start and end dates must not exceed 3 days'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (selectedDateTime.isBefore(DateTime.now())) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select a future date and time'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          setState(() {
+            _endTime = selectedDateTime;
+          });
+        }
       }
     }
   }
@@ -338,8 +524,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
 
               const SizedBox(height: 16),
               SizedBox(
-                width: 400, // <-- Your width
-                height: 50, // <-- Your height
+                width: 400,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _selectStartTime,
                   style: ElevatedButton.styleFrom(
@@ -362,8 +548,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 Text('Start Date: ${formatDateTime(_startTime)}'),
               const SizedBox(height: 16),
               SizedBox(
-                width: 400, // <-- Your width
-                height: 50, // <-- Your height
+                width: 400,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _selectEndTime,
                   style: ElevatedButton.styleFrom(
@@ -386,8 +572,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 Text('End Date: ${formatDateTime(_endTime)}'),
               const SizedBox(height: 16),
               SizedBox(
-                width: 400, // <-- Your width
-                height: 50, // <-- Your height
+                width: 400,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _selectImages,
                   style: ElevatedButton.styleFrom(
@@ -457,11 +643,13 @@ class _AddCatchPageState extends State<AddCatchPage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return SizedBox(
-                      width: 400, // <-- Your width
-                      height: 50, // <-- Your height
+                      width: 400,
+                      height: 50,
                       child: ElevatedButton(
-                        onPressed:
-                            _isLoading ? null : () => _addCatch(snapshot.data!),
+                        onPressed: _isLoading
+                            ? null
+                            : () => _validateAndShowConfirmationDialog(
+                                snapshot.data!),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green.shade500,
                           elevation: 3,

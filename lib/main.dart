@@ -45,8 +45,10 @@ class MyApp extends StatelessWidget {
       ),
       home: const AuthChecker(),
       onGenerateRoute: (settings) {
+        // Route generator for dynamic routing
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
+            // Switch statement to determine which screen to navigate to based on route settings
             switch (settings.name) {
               case '/login':
                 return const LoginPage();
@@ -102,6 +104,7 @@ class MyApp extends StatelessWidget {
             }
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Transition animation for page navigation
             return FadeTransition(
               opacity: animation,
               child: ScaleTransition(
@@ -118,16 +121,6 @@ class MyApp extends StatelessWidget {
               ),
             );
           },
-
-          // transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          //   return SlideTransition(
-          //     position: Tween<Offset>(
-          //       begin: const Offset(1.0, 0.0),
-          //       end: Offset.zero,
-          //     ).animate(animation),
-          //     child: child,
-          //   );
-          // },
         );
       },
     );
@@ -148,19 +141,23 @@ class _AuthCheckerState extends State<AuthChecker> {
   @override
   void initState() {
     super.initState();
+    // Initialize OneSignal and check authentication status
     initOneSignal();
     _checkAuth();
   }
 
   Future<void> _checkAuth() async {
+    // Check if user is authenticated by fetching user type from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userType = prefs.getString('userType');
     if (userType != null) {
+      // If user type is available, set state to reflect authentication status
       setState(() {
         _userType = userType;
         _isLoading = false;
       });
     } else {
+      // If user type is not available, set state to reflect authentication status
       setState(() {
         _isLoading = false;
       });
@@ -168,6 +165,7 @@ class _AuthCheckerState extends State<AuthChecker> {
   }
 
   Future<void> initOneSignal() async {
+    // Initialize OneSignal for push notifications
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!mounted) return;
 
@@ -179,6 +177,7 @@ class _AuthCheckerState extends State<AuthChecker> {
       print("Accepted permission: $accepted");
     });
 
+    // Get device token for push notifications
     OneSignal.shared.getDeviceState().then((deviceState) {
       if (deviceState == null || deviceState.userId == null) return;
 
@@ -189,18 +188,20 @@ class _AuthCheckerState extends State<AuthChecker> {
 
   @override
   Widget build(BuildContext context) {
+    // Check authentication status and navigate to appropriate screen
     if (_isLoading) {
-      return const CircularProgressIndicator(); // Show loading indicator
+      // Show loading indicator if authentication status is being checked
+      return const CircularProgressIndicator();
     } else {
       if (_userType != null) {
-        // User is logged in, navigate to respective page based on userType
+        // If user type is available, navigate to respective home page
         if (_userType == 'buyer') {
           return const BuyerHomePage();
         } else if (_userType == 'seller') {
           return const SellerHomePage();
         }
       }
-      // User is not logged in, redirect to login page
+      // If user is not authenticated, redirect to login page
       return const LoginPage();
     }
   }
