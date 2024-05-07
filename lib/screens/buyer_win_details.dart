@@ -26,6 +26,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   List<dynamic> sellerRatings = [];
   bool isLoadingRatings = false;
   String catchStatus = '';
+  List<dynamic> buyerRatings = []; // New variable for buyer ratings
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     fetchUserProfile();
     _getSellerRatings();
     fetchStatus();
+    _getBuyerRatings(); // Call getBuyerRatings here
   }
 
   Future<void> _fetchCatchDetails() async {
@@ -143,6 +145,46 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     }
   }
 
+  Future<void> _getBuyerRatings() async {
+    setState(() {
+      isLoadingRatings = true;
+    });
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+
+      if (userId != null) {
+        final response = await http.get(
+          Uri.parse(
+              '${Api.getRatingsByCatchIdUrl}/${userId}/${widget.catchId}'),
+          headers: {'Content-Type': 'application/json'},
+        );
+        if (response.statusCode == 200) {
+          setState(() {
+            buyerRatings = jsonDecode(response.body);
+            isLoadingRatings = false;
+          });
+        } else {
+          print('Failed to fetch buyer ratings: ${response.statusCode}');
+          setState(() {
+            isLoadingRatings = false;
+          });
+        }
+      } else {
+        print('User ID is null');
+        setState(() {
+          isLoadingRatings = false;
+        });
+      }
+    } catch (error) {
+      print('Error fetching buyer ratings: $error');
+      setState(() {
+        isLoadingRatings = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,8 +209,9 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
             children: <Widget>[
               _buildDetailsCard(),
               _buildProfileCard(),
-              _buildRatingsCard(),
               _buildStatusCard(),
+              _buildRatingsCard(),
+              _buildBuyerRatingsCard(),
               _buildChatCard(),
               if (isLoadingRatings) _buildLoadingIndicator(),
             ],
@@ -375,9 +418,10 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
       color: Colors.white, // Set background color to white
       child: ExpansionTile(
         leading: const Icon(Icons.star,
-            color: Colors.yellow), // Added color to the icon
+            color:
+                Color.fromARGB(255, 234, 214, 40)), // Added color to the icon
         title: const Text(
-          'Seller Rating',
+          'Ratings by Buyer',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -425,6 +469,55 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
           else
             const Padding(
               padding: EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBuyerRatingsCard() {
+    return Card(
+      color: Colors.white,
+      child: ExpansionTile(
+        leading:
+            Icon(Icons.star, color: const Color.fromARGB(255, 59, 137, 255)),
+        title: Text(
+          'Ratings by Seller',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        children: <Widget>[
+          if (!isLoadingRatings)
+            if (buyerRatings.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: buyerRatings.map((rating) {
+                    return ListTile(
+                      title: Text(
+                        'Rating: ${rating['rating']}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        'Comment: ${rating['comment'] ?? 'No comment'}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'No rating given',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              )
+          else
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: CircularProgressIndicator(),
             ),
         ],
