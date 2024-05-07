@@ -87,7 +87,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
         if (selectedDateTime
             .isBefore(DateTime.parse(_startTimeController.text))) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text("End time must be after start time"),
               backgroundColor: Colors.red,
             ),
@@ -138,7 +138,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
     if (DateTime.parse(updatedStartTime)
         .isAfter(DateTime.parse(updatedEndTime))) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Start time must be before end time"),
           backgroundColor: Colors.red,
         ),
@@ -160,14 +160,14 @@ class _EditCatchPageState extends State<EditCatchPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Changes"),
-          content: Text("Are you sure you want to save the changes?"),
+          title: const Text("Confirm Changes"),
+          content: const Text("Are you sure you want to save the changes?"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () async {
@@ -209,7 +209,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
                   );
                 }
               },
-              child: Text("Save Changes"),
+              child: const Text("Save Changes"),
             ),
           ],
         );

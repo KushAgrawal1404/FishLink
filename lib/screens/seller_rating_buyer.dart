@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'buyer_rating.dart'; // Importing StarRating from buyer_rating.dart
+import 'buyer_rating_seller.dart'; // Importing StarRating from buyer_rating.dart
 
 class SellerRatingPage extends StatefulWidget {
   final catchDetails;
@@ -80,15 +80,15 @@ class _SellerRatingPageState extends State<SellerRatingPage> {
       appBar: AppBar(
         title: const Text('Rate Seller'),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

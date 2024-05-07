@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:fish_link/screens/view_profile.dart';
+import 'package:fish_link/screens/common_view_profile.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

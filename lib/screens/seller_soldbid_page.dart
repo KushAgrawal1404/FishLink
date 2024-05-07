@@ -1,5 +1,5 @@
-import 'package:fish_link/screens/buyer_rating.dart';
-import 'package:fish_link/screens/chat.dart';
+import 'package:fish_link/screens/buyer_rating_seller.dart';
+import 'package:fish_link/screens/common_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -394,7 +394,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
             color:
                 Color.fromARGB(2255, 234, 214, 40)), // Added color to the icon
         title: const Text(
-          'Ratings by Seller',
+          'Rate the Buyer',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -453,12 +453,12 @@ class _SoldBidPageState extends State<SoldBidPage> {
     return Card(
       color: Colors.white,
       child: ExpansionTile(
-        leading: Icon(
+        leading: const Icon(
           Icons.star,
-          color: const Color.fromARGB(255, 59, 137, 255),
+          color: Color.fromARGB(255, 59, 137, 255),
         ),
-        title: Text(
-          'Ratings By Buyer',
+        title: const Text(
+          'Ratings from the Buyer',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -466,7 +466,7 @@ class _SoldBidPageState extends State<SoldBidPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: sellerRatings.isEmpty
-                  ? Text(
+                  ? const Text(
                       'No ratings given',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     )
@@ -476,19 +476,19 @@ class _SoldBidPageState extends State<SoldBidPage> {
                         return ListTile(
                           title: Text(
                             'Rating: ${rating['rating']}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
                             'Comment: ${rating['comment'] ?? 'No comment'}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         );
                       }).toList(),
                     ),
             )
           else
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: CircularProgressIndicator(),
             ),
         ],
@@ -527,12 +527,10 @@ class _SoldBidPageState extends State<SoldBidPage> {
     return Card(
       color: Colors.white,
       child: ExpansionTile(
-        title: const ListTile(
-          leading: Icon(Icons.timeline, color: Colors.orange),
-          title: Text(
-            'Catch Status',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        leading: const Icon(Icons.timeline, color: Colors.orange),
+        title: const Text(
+          'Catch Status',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: [
           ListView.builder(

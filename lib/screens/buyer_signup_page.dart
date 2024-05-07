@@ -75,15 +75,15 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
       appBar: AppBar(
         title: const Text('Registering as Buyer'),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -103,9 +103,9 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter your name',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -120,9 +120,9 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter your email',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -137,9 +137,9 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Choose a username',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -160,9 +160,9 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter your phone number',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                 ),
               ),
               const SizedBox(height: 16),
@@ -177,9 +177,9 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                   hintText: 'Enter your password',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 18.0),
                   suffixIcon: IconButton(
                     icon: Icon(_isPasswordVisible
                         ? Icons.visibility
@@ -197,8 +197,8 @@ class _BuyerSignupPageState extends State<BuyerSignupPage> {
               ElevatedButton(
                 onPressed: _signup,
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Color.fromARGB(255, 218, 244, 157)),
+                  backgroundColor: MaterialStateProperty.all(
+                      const Color.fromARGB(255, 218, 244, 157)),
                   elevation: MaterialStateProperty.all(8.0),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(

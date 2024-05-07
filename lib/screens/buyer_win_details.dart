@@ -1,11 +1,11 @@
-import 'package:fish_link/screens/chat.dart';
+import 'package:fish_link/screens/common_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:intl/intl.dart';
-import 'package:fish_link/screens/seller_rating.dart';
+import 'package:fish_link/screens/seller_rating_buyer.dart';
 
 class WinDetailsPage extends StatefulWidget {
   final String catchId;
@@ -421,7 +421,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
             color:
                 Color.fromARGB(255, 234, 214, 40)), // Added color to the icon
         title: const Text(
-          'Ratings by Buyer',
+          'Rate the Seller',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -481,9 +481,9 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
       color: Colors.white,
       child: ExpansionTile(
         leading:
-            Icon(Icons.star, color: const Color.fromARGB(255, 59, 137, 255)),
-        title: Text(
-          'Ratings by Seller',
+            const Icon(Icons.star, color: Color.fromARGB(255, 59, 137, 255)),
+        title: const Text(
+          'Ratings from the Seller',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -497,27 +497,27 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
                     return ListTile(
                       title: Text(
                         'Rating: ${rating['rating']}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         'Comment: ${rating['comment'] ?? 'No comment'}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     );
                   }).toList(),
                 ),
               )
             else
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Text(
                   'No rating given',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               )
           else
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: CircularProgressIndicator(),
             ),
         ],
@@ -556,12 +556,10 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     return Card(
       color: Colors.white,
       child: ExpansionTile(
-        title: const ListTile(
-          leading: Icon(Icons.timeline, color: Colors.orange),
-          title: Text(
-            'Catch Status',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        leading: const Icon(Icons.timeline, color: Colors.orange),
+        title: const Text(
+          'Catch Status',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: [
           ListView.builder(
@@ -606,8 +604,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
           Navigator.push(
             context,
             PageRouteBuilder(
-              transitionDuration:
-                  Duration(milliseconds: 400), // Adjust duration as needed
+              transitionDuration: const Duration(
+                  milliseconds: 400), // Adjust duration as needed
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return FadeTransition(

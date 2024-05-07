@@ -104,15 +104,15 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
       appBar: AppBar(
         title: const Text('My Profile'),
         backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.green],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+          ),
+        ),
       ),
       body: userProfile == null
           ? const Center(child: CircularProgressIndicator())
@@ -190,7 +190,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
@@ -198,7 +198,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                 ),
                 Text(
                   value,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
                   ),
@@ -238,13 +238,13 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                SizedBox(height: 0),
+                const SizedBox(height: 0),
                 TextFormField(
                   controller: controller,
                   decoration: InputDecoration(
@@ -261,7 +261,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () {
               showDialog(
                 context: context,
@@ -279,14 +279,14 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('Cancel'),
+                        child: const Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () {
                           updateUserProfile();
                           Navigator.pop(context);
                         },
-                        child: Text('Save'),
+                        child: const Text('Save'),
                       ),
                     ],
                   );

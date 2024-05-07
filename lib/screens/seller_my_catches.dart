@@ -70,16 +70,16 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Confirm Deletion'),
-            content: Text('Are you sure you want to delete this catch?'),
+            title: const Text('Confirm Deletion'),
+            content: const Text('Are you sure you want to delete this catch?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Delete'),
+                child: const Text('Delete'),
               ),
             ],
           );
@@ -196,7 +196,7 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                   context,
                                   PageRouteBuilder(
                                     transitionDuration:
-                                        Duration(milliseconds: 500),
+                                        const Duration(milliseconds: 500),
                                     transitionsBuilder: (context, animation,
                                         secondaryAnimation, child) {
                                       // Transition animation for page navigation
@@ -260,7 +260,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         if (catchDetails['status'] == 'sold')
                                           IconButton(
-                                            icon: Icon(Icons.arrow_forward,
+                                            icon: const Icon(
+                                                Icons.arrow_forward,
                                                 size: 20),
                                             onPressed: () {
                                               Navigator.push(
@@ -297,21 +298,21 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         _buildDetailRow(
                                           'Base Rate',
-                                          '\₹${(catchDetails['basePrice'] / catchDetails['quantity']).toStringAsFixed(2)}/kg',
+                                          '₹${(catchDetails['basePrice'] / catchDetails['quantity']).toStringAsFixed(2)}/kg',
                                         ),
                                         _buildDetailRow(
                                           'Auction Base Price',
-                                          '\₹${catchDetails['basePrice']}',
+                                          '₹${catchDetails['basePrice']}',
                                         ),
                                         if (_selectedStatus == 'available')
                                           _buildDetailRow(
                                             'Current Highest Bid',
-                                            '\₹${catchDetails['currentBid']}',
+                                            '₹${catchDetails['currentBid']}',
                                           ),
                                         if (_selectedStatus == 'sold')
                                           _buildDetailRow(
                                             'Winning Bid',
-                                            '\₹${catchDetails['currentBid']}',
+                                            '₹${catchDetails['currentBid']}',
                                           ),
                                         _buildDetailRow(
                                           'Start Time',

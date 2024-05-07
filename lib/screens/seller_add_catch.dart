@@ -239,9 +239,9 @@ class _AddCatchPageState extends State<AddCatchPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirm'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Are you sure you want to add this catch?'),
               ],
             ),
@@ -291,7 +291,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
     List<XFile>? imageFiles = await picker.pickMultiImage();
 
     setState(() {
-      images = imageFiles ?? []; // Set selected images
+      images = imageFiles; // Set selected images
     });
   }
 
