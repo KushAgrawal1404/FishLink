@@ -4,7 +4,7 @@ import 'package:fish_link/components/buyer_menu.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fish_link/screens/catch_details_page.dart';
+import 'package:fish_link/screens/buyer_catch_details_page.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -192,14 +192,19 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
-                              color: Colors.white, // Set the background color to white
-                              child: Material( // Wrap your content with Material widget
-                                color: Colors.blue.shade50, // Set the overlay color
-                                borderRadius: BorderRadius.circular(12.0), // Ensure the same corner radius
+                              color: Colors
+                                  .white, // Set the background color to white
+                              child: Material(
+                                // Wrap your content with Material widget
+                                color: Colors
+                                    .blue.shade50, // Set the overlay color
+                                borderRadius: BorderRadius.circular(
+                                    12.0), // Ensure the same corner radius
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       if (firstImageUrl.isNotEmpty)
                                         ClipRRect(

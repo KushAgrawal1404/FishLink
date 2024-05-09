@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 
 class MyCatchesPage extends StatefulWidget {
   const MyCatchesPage({Key? key}) : super(key: key);
@@ -69,16 +70,16 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Confirm Deletion'),
-            content: Text('Are you sure you want to delete this catch?'),
+            title: const Text('Confirm Deletion'),
+            content: const Text('Are you sure you want to delete this catch?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Delete'),
+                child: const Text('Delete'),
               ),
             ],
           );
@@ -193,8 +194,31 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                               if (catchDetails['status'] == 'sold') {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SoldBidPage(
+                                  PageRouteBuilder(
+                                    transitionDuration:
+                                        const Duration(milliseconds: 500),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      // Transition animation for page navigation
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: ScaleTransition(
+                                          scale: Tween<double>(
+                                            begin: 0.5,
+                                            end: 1.0,
+                                          ).animate(
+                                            CurvedAnimation(
+                                              parent: animation,
+                                              curve: Curves.easeInOut,
+                                            ),
+                                          ),
+                                          child: child,
+                                        ),
+                                      );
+                                    },
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        SoldBidPage(
                                       catchId: catchDetails['_id'],
                                       buyerId: catchDetails['highestBidder'],
                                       catchDetails: catchDetails,
@@ -212,6 +236,8 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Container(
+                                    width: 40, // Adjust the width as needed
+                                    height: 40, // Adjust the height as needed
                                     decoration: BoxDecoration(
                                       color: boxColor,
                                       borderRadius: const BorderRadius.only(
@@ -234,7 +260,9 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         if (catchDetails['status'] == 'sold')
                                           IconButton(
-                                            icon: Icon(Icons.arrow_forward),
+                                            icon: const Icon(
+                                                Icons.arrow_forward,
+                                                size: 20),
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
@@ -270,21 +298,21 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         _buildDetailRow(
                                           'Base Rate',
-                                          '\₹${(catchDetails['basePrice'] / catchDetails['quantity']).toStringAsFixed(2)}/kg',
+                                          '₹${(catchDetails['basePrice'] / catchDetails['quantity']).toStringAsFixed(2)}/kg',
                                         ),
                                         _buildDetailRow(
                                           'Auction Base Price',
-                                          '\₹${catchDetails['basePrice']}',
+                                          '₹${catchDetails['basePrice']}',
                                         ),
                                         if (_selectedStatus == 'available')
                                           _buildDetailRow(
                                             'Current Highest Bid',
-                                            '\₹${catchDetails['currentBid']}',
+                                            '₹${catchDetails['currentBid']}',
                                           ),
                                         if (_selectedStatus == 'sold')
                                           _buildDetailRow(
                                             'Winning Bid',
-                                            '\₹${catchDetails['currentBid']}',
+                                            '₹${catchDetails['currentBid']}',
                                           ),
                                         _buildDetailRow(
                                           'Start Time',
@@ -298,21 +326,21 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                         ),
                                         _buildDetailRow(
                                           'Status',
-                                            '${catchDetails['status'][0].toUpperCase()}${catchDetails['status'].substring(1)}',
+                                          '${catchDetails['status'][0].toUpperCase()}${catchDetails['status'].substring(1)}',
                                         ),
-                                        if (catchDetails['status'] == 'sold')
-                                          _buildDetailRow(
-                                            'Winner',
-                                            catchDetails['highestBidder'],
-                                          ),
                                       ],
                                     ),
                                   ),
                                   ButtonBar(
                                     alignment: MainAxisAlignment.end,
                                     children: [
-                                      if (catchDetails['status'] == 'available')
-                                        IconButton(
+                                      Visibility(
+                                        visible: catchDetails['status'] ==
+                                                'available' &&
+                                            DateTime.now().isBefore(
+                                                DateTime.parse(
+                                                    catchDetails['startTime'])),
+                                        child: IconButton(
                                           icon: const Icon(Icons.edit),
                                           onPressed: () {
                                             Navigator.pushNamed(
@@ -320,13 +348,20 @@ class _MyCatchesPageState extends State<MyCatchesPage> {
                                                 arguments: catchDetails);
                                           },
                                         ),
-                                      if (catchDetails['status'] == 'available')
-                                        IconButton(
+                                      ),
+                                      Visibility(
+                                        visible: catchDetails['status'] ==
+                                                'available' &&
+                                            DateTime.now().isBefore(
+                                                DateTime.parse(
+                                                    catchDetails['startTime'])),
+                                        child: IconButton(
                                           icon: const Icon(Icons.delete),
                                           onPressed: () {
                                             _deleteCatch(catchDetails['_id']);
                                           },
                                         ),
+                                      ),
                                     ],
                                   ),
                                 ],

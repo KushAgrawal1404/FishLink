@@ -1,5 +1,5 @@
-import 'package:fish_link/screens/buyer_rating.dart';
-import 'package:fish_link/screens/chat.dart';
+import 'package:fish_link/screens/buyer_rating_seller.dart';
+import 'package:fish_link/screens/common_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -29,12 +29,15 @@ class _SoldBidPageState extends State<SoldBidPage> {
   List<dynamic> buyerRatings = [];
   bool isLoadingRatings = false;
   String catchStatus = '';
+  List<dynamic> sellerRatings = [];
+  bool isLoadingSellerRatings = false;
 
   @override
   void initState() {
     super.initState();
     fetchUserProfile();
     _getBuyerRatings();
+    _getSellerRatings(); // Add this line
     fetchStatus();
   }
 
@@ -113,6 +116,47 @@ class _SoldBidPageState extends State<SoldBidPage> {
     }
   }
 
+  Future<void> _getSellerRatings() async {
+    setState(() {
+      isLoadingSellerRatings = true;
+    });
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+
+      if (userId != null) {
+        final response = await http.get(
+          Uri.parse('${Api.getSellerRatingsUrl}/${userId}/${widget.catchId}'),
+          headers: {'Content-Type': 'application/json'},
+        );
+
+        if (response.statusCode == 200) {
+          setState(() {
+            sellerRatings = jsonDecode(response.body);
+            isLoadingSellerRatings = false;
+          });
+        } else {
+          print('Failed to fetch seller ratings: ${response.statusCode}');
+          setState(() {
+            isLoadingSellerRatings = false;
+          });
+        }
+      } else {
+        print('User ID is null');
+        setState(() {
+          isLoadingSellerRatings = false;
+        });
+      }
+    } catch (error) {
+      print('Error fetching seller ratings: $error');
+      setState(() {
+        isLoadingSellerRatings = false;
+      });
+    }
+    //initState(); //remove this if any error comes
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,8 +181,9 @@ class _SoldBidPageState extends State<SoldBidPage> {
             children: <Widget>[
               _buildDetailsCard(),
               _buildProfileCard(),
-              _buildRatingsCard(),
               _buildStatusCard(),
+              _buildRatingsCard(),
+              _buildSellerRatingsCard(),
               _buildChatCard(),
               if (isLoadingRatings) _buildLoadingIndicator(),
             ],
@@ -346,9 +391,10 @@ class _SoldBidPageState extends State<SoldBidPage> {
       color: Colors.white, // Set background color to white
       child: ExpansionTile(
         leading: const Icon(Icons.star,
-            color: Colors.yellow), // Added color to the icon
+            color:
+                Color.fromARGB(2255, 234, 214, 40)), // Added color to the icon
         title: const Text(
-          'Buyer Rating',
+          'Rate the Buyer',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -403,43 +449,88 @@ class _SoldBidPageState extends State<SoldBidPage> {
     );
   }
 
+  Widget _buildSellerRatingsCard() {
+    return Card(
+      color: Colors.white,
+      child: ExpansionTile(
+        leading: const Icon(
+          Icons.star,
+          color: Color.fromARGB(255, 59, 137, 255),
+        ),
+        title: const Text(
+          'Ratings from the Buyer',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        children: <Widget>[
+          if (!isLoadingSellerRatings)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: sellerRatings.isEmpty
+                  ? const Text(
+                      'No ratings given',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: sellerRatings.map((rating) {
+                        return ListTile(
+                          title: Text(
+                            'Rating: ${rating['rating']}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            'Comment: ${rating['comment'] ?? 'No comment'}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+            )
+          else
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildStatusCard() {
-    List<String> statusOptions = ['payment', 'ready to collect', 'collected'];
+    List<String> statusOptions = ['Payment', 'Ready to collect', 'Collected'];
 
     // Define colors and icons based on completeness
     Map<String, Color> statusColors = {
-      'payment': Colors.red,
-      'ready to collect': Colors.red,
-      'collected': Colors.red,
+      'Payment': Colors.red,
+      'Ready to collect': Colors.red,
+      'Collected': Colors.red,
     };
 
     Map<String, IconData> statusIcons = {
-      'payment': Icons.payment,
-      'ready to collect': Icons.assignment_turned_in_outlined,
-      'collected': Icons.check_circle_outline,
+      'Payment': Icons.payment,
+      'Ready to collect': Icons.assignment_turned_in_outlined,
+      'Collected': Icons.check_circle_outline,
     };
 
     // Update colors and icons based on completeness
-    if (catchStatus == 'payment') {
-      statusColors['payment'] = Colors.green;
-    } else if (catchStatus == 'ready to collect') {
-      statusColors['payment'] = Colors.green;
-      statusColors['ready to collect'] = Colors.green;
-    } else if (catchStatus == 'collected') {
-      statusColors['payment'] = Colors.green;
-      statusColors['ready to collect'] = Colors.green;
-      statusColors['collected'] = Colors.green;
+    if (catchStatus == 'Payment') {
+      statusColors['Payment'] = Colors.green;
+    } else if (catchStatus == 'Ready to collect') {
+      statusColors['Payment'] = Colors.green;
+      statusColors['Ready to collect'] = Colors.green;
+    } else if (catchStatus == 'Collected') {
+      statusColors['Payment'] = Colors.green;
+      statusColors['Ready to collect'] = Colors.green;
+      statusColors['Collected'] = Colors.green;
     }
 
     return Card(
       color: Colors.white,
       child: ExpansionTile(
-        title: const ListTile(
-          leading: Icon(Icons.timeline, color: Colors.orange),
-          title: Text(
-            'Catch Status',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        leading: const Icon(Icons.timeline, color: Colors.orange),
+        title: const Text(
+          'Catch Status',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: [
           ListView.builder(
@@ -474,9 +565,9 @@ class _SoldBidPageState extends State<SoldBidPage> {
   Widget _buildStatusUpdateDropdown(String currentStatus) {
     List<String> statusOptions = [
       'initial',
-      'payment',
-      'ready to collect',
-      'collected',
+      'Payment',
+      'Ready to collect',
+      'Collected',
     ];
 
     // Ensure currentStatus is included in statusOptions

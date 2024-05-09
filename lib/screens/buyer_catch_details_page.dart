@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:fish_link/screens/view_profile.dart';
+import 'package:fish_link/screens/common_view_profile.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -181,14 +181,22 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
                 ),
                 const SizedBox(height: 16),
                 // Display other catch details
-                _buildCardItem(Icons.label, 'Catch Name:', catchDetails['name']),
-                _buildCardItem(Icons.location_on, 'Location:', catchDetails['location']),
-                _buildCardItem(Icons.format_list_numbered, 'Quantity:', '${catchDetails['quantity']}kg'),
-                _buildCardItem(Icons.attach_money, 'Base Price:', '₹${catchDetails['basePrice']}'),
-                _buildCardItem(Icons.attach_money, 'Current Price:', '₹${catchDetails['currentBid']}'),
-                _buildCardItem(Icons.person, 'Highest bidder:', catchDetails['highestBidder']),
-                _buildCardItem(Icons.access_time, 'Starts:', formatDateTime(catchDetails['startTime'])),
-                _buildCardItem(Icons.access_time, 'Ends:', formatDateTime(catchDetails['endTime'])),
+                _buildCardItem(
+                    Icons.label, 'Catch Name:', catchDetails['name']),
+                _buildCardItem(
+                    Icons.location_on, 'Location:', catchDetails['location']),
+                _buildCardItem(Icons.format_list_numbered, 'Quantity:',
+                    '${catchDetails['quantity']}kg'),
+                _buildCardItem(Icons.attach_money, 'Base Price:',
+                    '₹${catchDetails['basePrice']}'),
+                _buildCardItem(Icons.attach_money, 'Current Price:',
+                    '₹${catchDetails['currentBid']}'),
+                _buildCardItem(Icons.person, 'Highest bidder:',
+                    catchDetails['highestBidder']),
+                _buildCardItem(Icons.access_time, 'Starts:',
+                    formatDateTime(catchDetails['startTime'])),
+                _buildCardItem(Icons.access_time, 'Ends:',
+                    formatDateTime(catchDetails['endTime'])),
                 // Display the auction timer
                 _buildAuctionTimer(),
                 // Button to view seller details
@@ -242,7 +250,7 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
         iconColor = Colors.purple;
         break;
       case 'Starts:':
-      iconColor = Colors.blue;
+        iconColor = Colors.blue;
       case 'Ends:':
         iconColor = Colors.red;
         break;
@@ -295,7 +303,8 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
     DateTime currentTime = DateTime.now();
     DateTime bidStartTime = DateTime.parse(catchDetails['startTime']);
     bool isBiddingStarted = currentTime.isAfter(bidStartTime);
-    bool isBiddingEnded = catchDetails['endTime'] != null && DateTime.now().isAfter(DateTime.parse(catchDetails['endTime']));
+    bool isBiddingEnded = catchDetails['endTime'] != null &&
+        DateTime.now().isAfter(DateTime.parse(catchDetails['endTime']));
     bool isPlaceBidEnabled = isBiddingStarted && !isBiddingEnded;
 
     return ElevatedButton(
@@ -318,79 +327,78 @@ class _CatchDetailsPageState extends State<CatchDetailsPage> {
     );
   }
 
-Widget _buildAuctionTimer() {
-  DateTime currentTime = DateTime.now();
-  DateTime bidStartTime = DateTime.parse(catchDetails['startTime']);
-  DateTime bidEndTime = DateTime.parse(catchDetails['endTime']);
-  bool hasAuctionStarted = currentTime.isAfter(bidStartTime);
-  bool hasAuctionEnded = bidEndTime != null && currentTime.isAfter(bidEndTime);
-  
-  // Return an empty container if auction has ended
-  if (hasAuctionEnded) {
-    return Container();
-  }
-  
-  Duration remainingTime = Duration.zero;
-  String timerText = '';
-  if (!hasAuctionStarted) {
-    remainingTime = bidStartTime.difference(currentTime);
-    timerText = 'Auction Starts in:';
-  } else if (!hasAuctionEnded) {
-    remainingTime = bidEndTime.difference(currentTime);
-    timerText = 'Auction Ends in:';
-  }
-  String formattedTime = '${remainingTime.inHours}:${remainingTime.inMinutes.remainder(60)}:${remainingTime.inSeconds.remainder(60)}';
-  Color timerColor = hasAuctionStarted && !hasAuctionEnded
-      ? remainingTime.inMinutes < 2
-          ? Colors.black
-          : Colors.black
-      : Colors.black;
-  Color timerBackgroundColor = !hasAuctionStarted
-      ? Colors.blue.withOpacity(0.65)
-      : Colors.red.withOpacity(0.65);
+  Widget _buildAuctionTimer() {
+    DateTime currentTime = DateTime.now();
+    DateTime bidStartTime = DateTime.parse(catchDetails['startTime']);
+    DateTime bidEndTime = DateTime.parse(catchDetails['endTime']);
+    bool hasAuctionStarted = currentTime.isAfter(bidStartTime);
+    bool hasAuctionEnded = currentTime.isAfter(bidEndTime);
 
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 10.0),
-    child: Container(
-      decoration: BoxDecoration(
-        color: timerBackgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ListTile(
-        leading: const Icon(
-          Icons.timer,
-          color: Colors.black,
+    // Return an empty container if auction has ended
+    if (hasAuctionEnded) {
+      return Container();
+    }
+
+    Duration remainingTime = Duration.zero;
+    String timerText = '';
+    if (!hasAuctionStarted) {
+      remainingTime = bidStartTime.difference(currentTime);
+      timerText = 'Auction Starts in:';
+    } else if (!hasAuctionEnded) {
+      remainingTime = bidEndTime.difference(currentTime);
+      timerText = 'Auction Ends in:';
+    }
+    String formattedTime =
+        '${remainingTime.inHours}:${remainingTime.inMinutes.remainder(60)}:${remainingTime.inSeconds.remainder(60)}';
+    Color timerColor = hasAuctionStarted && !hasAuctionEnded
+        ? remainingTime.inMinutes < 2
+            ? Colors.black
+            : Colors.black
+        : Colors.black;
+    Color timerBackgroundColor = !hasAuctionStarted
+        ? Colors.blue.withOpacity(0.65)
+        : Colors.red.withOpacity(0.65);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: timerBackgroundColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
-        title: Text(
-          timerText,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
+        child: ListTile(
+          leading: const Icon(
+            Icons.timer,
             color: Colors.black,
-            fontSize: 16,
           ),
-        ),
-        subtitle: Text(
-          formattedTime,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: timerColor,
-            fontSize: 16,
+          title: Text(
+            timerText,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+          subtitle: Text(
+            formattedTime,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: timerColor,
+              fontSize: 16,
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
-
+    );
+  }
 
   String formatDateTime(String datetimeString) {
     DateFormat formatter = DateFormat('dd-MM-yyyy h:mma');

@@ -9,7 +9,7 @@ import 'dart:async';
 class ChatPage extends StatefulWidget {
   final String catchId;
 
-  ChatPage({Key? key, required this.catchId}) : super(key: key);
+  const ChatPage({Key? key, required this.catchId}) : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -33,7 +33,7 @@ class _ChatPageState extends State<ChatPage> {
     _textController = TextEditingController();
 
     //start the timer
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       fetchChatMessages();
     });
   }
@@ -104,7 +104,7 @@ class _ChatPageState extends State<ChatPage> {
           // Scroll to the bottom after updating messages
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
         });
@@ -169,7 +169,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
+        title: const Text('Chat'),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -210,15 +210,15 @@ class _ChatPageState extends State<ChatPage> {
                     if (showDateSeparator)
                       Center(
                         child: Container(
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          padding: EdgeInsets.all(8),
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 2, 2, 2),
+                            color: const Color.fromARGB(255, 2, 2, 2),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             DateFormat('dd/MM/yyyy').format(dateTime),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 12,
                                 color: Color.fromARGB(255, 255, 255, 255)),
                           ),
@@ -228,17 +228,22 @@ class _ChatPageState extends State<ChatPage> {
                       alignment:
                           isUser ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        padding: EdgeInsets.all(10),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: isUser ? Color(0xFFDCF8C6) : Colors.grey[200],
+                          color: isUser
+                              ? const Color(0xFFDCF8C6)
+                              : Colors.grey[200],
                           borderRadius: BorderRadius.only(
-                            topLeft: isUser ? Radius.circular(20) : Radius.zero,
-                            topRight:
-                                isUser ? Radius.zero : Radius.circular(20),
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
+                            topLeft: isUser
+                                ? const Radius.circular(20)
+                                : Radius.zero,
+                            topRight: isUser
+                                ? Radius.zero
+                                : const Radius.circular(20),
+                            bottomLeft: const Radius.circular(20),
+                            bottomRight: const Radius.circular(20),
                           ),
                         ),
                         child: Column(
@@ -251,11 +256,11 @@ class _ChatPageState extends State<ChatPage> {
                                 fontSize: 16,
                               ),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Text(
                               time,
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -269,7 +274,7 @@ class _ChatPageState extends State<ChatPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(color: Colors.teal),
@@ -279,7 +284,7 @@ class _ChatPageState extends State<ChatPage> {
                   Expanded(
                     child: TextField(
                       controller: _textController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Type a message...',
                         border: InputBorder.none,
                       ),
@@ -294,7 +299,7 @@ class _ChatPageState extends State<ChatPage> {
                     onPressed: () {
                       sendMessage();
                     },
-                    icon: Icon(Icons.send),
+                    icon: const Icon(Icons.send),
                     color: Colors.teal,
                   ),
                 ],

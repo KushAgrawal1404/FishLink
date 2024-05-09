@@ -1,11 +1,11 @@
-import 'package:fish_link/screens/chat.dart';
+import 'package:fish_link/screens/common_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
 import 'package:intl/intl.dart';
-import 'package:fish_link/screens/seller_rating.dart';
+import 'package:fish_link/screens/seller_rating_buyer.dart';
 
 class WinDetailsPage extends StatefulWidget {
   final String catchId;
@@ -26,6 +26,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
   List<dynamic> sellerRatings = [];
   bool isLoadingRatings = false;
   String catchStatus = '';
+  List<dynamic> buyerRatings = []; // New variable for buyer ratings
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     fetchUserProfile();
     _getSellerRatings();
     fetchStatus();
+    _getBuyerRatings(); // Call getBuyerRatings here
   }
 
   Future<void> _fetchCatchDetails() async {
@@ -143,6 +145,46 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     }
   }
 
+  Future<void> _getBuyerRatings() async {
+    setState(() {
+      isLoadingRatings = true;
+    });
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+
+      if (userId != null) {
+        final response = await http.get(
+          Uri.parse(
+              '${Api.getRatingsByCatchIdUrl}/${userId}/${widget.catchId}'),
+          headers: {'Content-Type': 'application/json'},
+        );
+        if (response.statusCode == 200) {
+          setState(() {
+            buyerRatings = jsonDecode(response.body);
+            isLoadingRatings = false;
+          });
+        } else {
+          print('Failed to fetch buyer ratings: ${response.statusCode}');
+          setState(() {
+            isLoadingRatings = false;
+          });
+        }
+      } else {
+        print('User ID is null');
+        setState(() {
+          isLoadingRatings = false;
+        });
+      }
+    } catch (error) {
+      print('Error fetching buyer ratings: $error');
+      setState(() {
+        isLoadingRatings = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,8 +209,9 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
             children: <Widget>[
               _buildDetailsCard(),
               _buildProfileCard(),
-              _buildRatingsCard(),
               _buildStatusCard(),
+              _buildRatingsCard(),
+              _buildBuyerRatingsCard(),
               _buildChatCard(),
               if (isLoadingRatings) _buildLoadingIndicator(),
             ],
@@ -375,9 +418,10 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
       color: Colors.white, // Set background color to white
       child: ExpansionTile(
         leading: const Icon(Icons.star,
-            color: Colors.yellow), // Added color to the icon
+            color:
+                Color.fromARGB(255, 234, 214, 40)), // Added color to the icon
         title: const Text(
-          'Seller Rating',
+          'Rate the Seller',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
@@ -432,43 +476,90 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
     );
   }
 
+  Widget _buildBuyerRatingsCard() {
+    return Card(
+      color: Colors.white,
+      child: ExpansionTile(
+        leading:
+            const Icon(Icons.star, color: Color.fromARGB(255, 59, 137, 255)),
+        title: const Text(
+          'Ratings from the Seller',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        children: <Widget>[
+          if (!isLoadingRatings)
+            if (buyerRatings.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: buyerRatings.map((rating) {
+                    return ListTile(
+                      title: Text(
+                        'Rating: ${rating['rating']}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        'Comment: ${rating['comment'] ?? 'No comment'}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              )
+            else
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'No rating given',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              )
+          else
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildStatusCard() {
-    List<String> statusOptions = ['payment', 'ready to collect', 'collected'];
+    List<String> statusOptions = ['Payment', 'Ready to collect', 'Collected'];
 
     // Define colors and icons based on completeness
     Map<String, Color> statusColors = {
-      'payment': Colors.red,
-      'ready to collect': Colors.red,
-      'collected': Colors.red,
+      'Payment': Colors.red,
+      'Ready to collect': Colors.red,
+      'Collected': Colors.red,
     };
 
     Map<String, IconData> statusIcons = {
-      'payment': Icons.payment,
-      'ready to collect': Icons.assignment_turned_in_outlined,
-      'collected': Icons.check_circle_outline,
+      'Payment': Icons.payment,
+      'Ready to collect': Icons.assignment_turned_in_outlined,
+      'Collected': Icons.check_circle_outline,
     };
 
     // Update colors and icons based on completeness
-    if (catchStatus == 'payment') {
-      statusColors['payment'] = Colors.green;
-    } else if (catchStatus == 'ready to collect') {
-      statusColors['payment'] = Colors.green;
-      statusColors['ready to collect'] = Colors.green;
-    } else if (catchStatus == 'collected') {
-      statusColors['payment'] = Colors.green;
-      statusColors['ready to collect'] = Colors.green;
-      statusColors['collected'] = Colors.green;
+    if (catchStatus == 'Payment') {
+      statusColors['Payment'] = Colors.green;
+    } else if (catchStatus == 'Ready to collect') {
+      statusColors['Payment'] = Colors.green;
+      statusColors['Ready to collect'] = Colors.green;
+    } else if (catchStatus == 'Collected') {
+      statusColors['Payment'] = Colors.green;
+      statusColors['Ready to collect'] = Colors.green;
+      statusColors['Collected'] = Colors.green;
     }
 
     return Card(
       color: Colors.white,
       child: ExpansionTile(
-        title: const ListTile(
-          leading: Icon(Icons.timeline, color: Colors.orange),
-          title: Text(
-            'Catch Status',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        leading: const Icon(Icons.timeline, color: Colors.orange),
+        title: const Text(
+          'Catch Status',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         children: [
           ListView.builder(
@@ -513,8 +604,8 @@ class _WinDetailsPageState extends State<WinDetailsPage> {
           Navigator.push(
             context,
             PageRouteBuilder(
-              transitionDuration:
-                  Duration(milliseconds: 400), // Adjust duration as needed
+              transitionDuration: const Duration(
+                  milliseconds: 400), // Adjust duration as needed
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return FadeTransition(

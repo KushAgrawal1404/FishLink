@@ -28,10 +28,10 @@ class _EditCatchPageState extends State<EditCatchPage> {
     _locationController.text = widget.catchDetails['location'];
     _basePriceController.text = widget.catchDetails['basePrice'].toString();
     _quantityController.text = widget.catchDetails['quantity'].toString();
-    _startTimeController.text =
-        DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.catchDetails['startTime']));
-    _endTimeController.text =
-        DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.catchDetails['endTime']));
+    _startTimeController.text = DateFormat('yyyy-MM-dd HH:mm')
+        .format(DateTime.parse(widget.catchDetails['startTime']));
+    _endTimeController.text = DateFormat('yyyy-MM-dd HH:mm')
+        .format(DateTime.parse(widget.catchDetails['endTime']));
   }
 
   Future<void> _selectStartTime(BuildContext context) async {
@@ -55,7 +55,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
           timePicked.minute,
         );
         setState(() {
-          _startTimeController.text = DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
+          _startTimeController.text =
+              DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
         });
       }
     }
@@ -81,8 +82,22 @@ class _EditCatchPageState extends State<EditCatchPage> {
           timePicked.hour,
           timePicked.minute,
         );
+
+        // Ensure end time is after start time
+        if (selectedDateTime
+            .isBefore(DateTime.parse(_startTimeController.text))) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("End time must be after start time"),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
         setState(() {
-          _endTimeController.text = DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
+          _endTimeController.text =
+              DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
         });
       }
     }
@@ -91,10 +106,45 @@ class _EditCatchPageState extends State<EditCatchPage> {
   Future<void> _saveChanges() async {
     final String updatedName = _nameController.text;
     final String updatedLocation = _locationController.text;
-    final double updatedBasePrice = double.parse(_basePriceController.text);
-    final int updatedQuantity = int.parse(_quantityController.text);
+    double? updatedBasePrice;
+    int? updatedQuantity;
+
+    // Validate base price and quantity
+    try {
+      updatedBasePrice = double.parse(_basePriceController.text);
+      updatedQuantity = int.parse(_quantityController.text);
+
+      if (updatedBasePrice <= 0) {
+        throw Exception('Base price must be greater than 0.');
+      }
+
+      if (updatedQuantity <= 0) {
+        throw Exception('Quantity must be greater than 0.');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     final String updatedStartTime = _startTimeController.text;
     final String updatedEndTime = _endTimeController.text;
+
+    // Ensure start time is less than end time
+    if (DateTime.parse(updatedStartTime)
+        .isAfter(DateTime.parse(updatedEndTime))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Start time must be before end time"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     final Map<String, dynamic> updatedCatchData = {
       'name': updatedName,
@@ -105,44 +155,73 @@ class _EditCatchPageState extends State<EditCatchPage> {
       'endTime': updatedEndTime,
     };
 
-    String apiUrl = '${Api.editCatchUrl}/${widget.catchDetails['_id']}';
+    // Show confirmation dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Changes"),
+          content: const Text("Are you sure you want to save the changes?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Save changes
+                String apiUrl =
+                    '${Api.editCatchUrl}/${widget.catchDetails['_id']}';
 
-    try {
-      final response = await http.put(
-        Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(updatedCatchData),
-      );
+                try {
+                  final response = await http.put(
+                    Uri.parse(apiUrl),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode(updatedCatchData),
+                  );
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Catch updated successfully'),
-            backgroundColor: Colors.green,
-          ),
+                  if (response.statusCode == 200) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Catch updated successfully'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    Navigator.pop(context); // Close the dialog
+                    Navigator.pop(context); // Close the edit page
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Failed to update catch'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('An error occurred'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text("Save Changes"),
+            ),
+          ],
         );
-
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to update catch'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isStartTimeSelectable = DateTime.now()
+        .isBefore(DateTime.parse(widget.catchDetails['startTime']));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Catch'),
@@ -174,7 +253,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 fillColor: Colors.grey[200],
                 hintText: 'Enter name',
                 hintStyle: const TextStyle(color: Colors.grey),
-                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
@@ -190,7 +270,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 fillColor: Colors.grey[200],
                 hintText: 'Enter location',
                 hintStyle: const TextStyle(color: Colors.grey),
-                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
@@ -207,7 +288,8 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 fillColor: Colors.grey[200],
                 hintText: 'Enter base price',
                 hintStyle: const TextStyle(color: Colors.grey),
-                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
@@ -224,27 +306,29 @@ class _EditCatchPageState extends State<EditCatchPage> {
                 fillColor: Colors.grey[200],
                 hintText: 'Enter quantity',
                 hintStyle: const TextStyle(color: Colors.grey),
-                contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14.0, horizontal: 18.0),
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => _selectStartTime(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            if (isStartTimeSelectable) // Render button conditionally
+              ElevatedButton(
+                onPressed: () => _selectStartTime(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Select Start Time',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-              child: const Text(
-                'Select Start Time',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ),
             TextFormField(
               controller: _startTimeController,
               enabled: false,
@@ -279,7 +363,7 @@ class _EditCatchPageState extends State<EditCatchPage> {
               child: ElevatedButton(
                 onPressed: _saveChanges,
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, 
+                  foregroundColor: Colors.white,
                   backgroundColor: Colors.green.shade500, // Text color
                   elevation: 5,
                   shape: RoundedRectangleBorder(

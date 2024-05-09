@@ -90,9 +90,11 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       color: Colors.white, // Set the background color to white
-                      child: Material( // Wrap your content with Material widget
+                      child: Material(
+                        // Wrap your content with Material widget
                         color: Colors.green.shade50, // Set the overlay color
-                        borderRadius: BorderRadius.circular(12.0), // Ensure the same corner radius
+                        borderRadius: BorderRadius.circular(
+                            12.0), // Ensure the same corner radius
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
@@ -122,7 +124,7 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                                     ),
                                     Row(
                                       children: [
-                                        Text(
+                                        const Text(
                                           'Location: ',
                                           style: TextStyle(
                                             fontSize: 14,
@@ -138,7 +140,7 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                                     ),
                                     Row(
                                       children: [
-                                        Text(
+                                        const Text(
                                           'Quantity: ',
                                           style: TextStyle(
                                             fontSize: 14,
@@ -154,7 +156,7 @@ class _BuyerWonCatchesPageState extends State<BuyerWonCatchesPage> {
                                     ),
                                     Row(
                                       children: [
-                                        Text(
+                                        const Text(
                                           'Winning Price: ',
                                           style: TextStyle(
                                             fontSize: 14,

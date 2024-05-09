@@ -1,14 +1,13 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:fish_link/utils/api.dart';
+import 'package:fish_link/utils/api.dart'; // Import your API file
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 
+// Create a StatefulWidget for the AddCatchPage
 class AddCatchPage extends StatefulWidget {
   const AddCatchPage({Key? key}) : super(key: key);
 
@@ -16,27 +15,80 @@ class AddCatchPage extends StatefulWidget {
   State<AddCatchPage> createState() => _AddCatchPageState();
 }
 
+// Create the state class for AddCatchPage
 class _AddCatchPageState extends State<AddCatchPage> {
+  // Controllers for text fields
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _basePriceController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
 
+  // Variables for start and end time, and images
   DateTime? _startTime;
   DateTime? _endTime;
   List<XFile> images = <XFile>[];
-  bool _isLoading = false;
+  bool _isLoading = false; // To track loading state
 
+  // Method to add catch
   Future<void> _addCatch(String email) async {
+    // Set loading state to true
     setState(() {
       _isLoading = true;
     });
+
+    // Check for empty fields
+    if (_nameController.text.trim().isEmpty ||
+        _locationController.text.trim().isEmpty ||
+        _basePriceController.text.trim().isEmpty ||
+        _quantityController.text.trim().isEmpty) {
+      // If any field is empty, show snackbar and return
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all fields'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Extract values from text fields
     String name = _nameController.text.trim();
     String location = _locationController.text.trim();
-    double basePrice = double.parse(_basePriceController.text.trim());
-    int quantity = int.parse(_quantityController.text.trim());
+    double? basePrice;
+    int? quantity;
 
-    // Check if start time and end time are selected
+    try {
+      // Parse base price and quantity
+      basePrice = double.parse(_basePriceController.text.trim());
+      quantity = int.parse(_quantityController.text.trim());
+
+      // Check if base price is non-negative
+      if (basePrice <= 0) {
+        throw Exception('Base price must be greater than 0.');
+      }
+
+      // Check if quantity is non-negative
+      if (quantity <= 0) {
+        throw Exception('Quantity must be greater than 0.');
+      }
+    } catch (e) {
+      // If parsing fails, show error message and return
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if start and end time are selected
     if (_startTime == null || _endTime == null) {
       setState(() {
         _isLoading = false;
@@ -98,7 +150,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
       );
 
       if (response.statusCode == 201) {
-        // Catch added successfully
+        // Catch added successfully, show success snackbar and navigate back
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Added catch'),
@@ -119,6 +171,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
         );
       }
     } catch (e) {
+      // If an error occurs during API call, show error message
       setState(() {
         _isLoading = false;
       });
@@ -131,11 +184,95 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
+  // Method to validate fields and show confirmation dialog
+  void _validateAndShowConfirmationDialog(String email) {
+    // Check for empty fields
+    if (_nameController.text.trim().isEmpty ||
+        _locationController.text.trim().isEmpty ||
+        _basePriceController.text.trim().isEmpty ||
+        _quantityController.text.trim().isEmpty ||
+        _startTime == null ||
+        _endTime == null ||
+        images.isEmpty) {
+      // If any field is empty, show snackbar and return
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Please fill in all fields, select dates, and pick images'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if end time is before start time
+    if (_endTime!.isBefore(_startTime!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('End date cannot be before start date'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if the difference between start time and end time is less than 1 minute
+    if (_endTime!.difference(_startTime!).inMinutes < 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Minimum auction duration is 1 min'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Show confirmation dialog
+    _showConfirmationDialog(email);
+  }
+
+  // Method to show confirmation dialog
+  Future<void> _showConfirmationDialog(String email) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to add this catch?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _addCatch(email);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to load email from SharedPreferences
   Future<String> _loadEmail() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('email') ?? '';
   }
 
+  // Method to convert selected images to base64 format
   Future<List<String>> _getImages() async {
     List<String> imageList = [];
 
@@ -148,15 +285,17 @@ class _AddCatchPageState extends State<AddCatchPage> {
     return imageList;
   }
 
+  // Method to select images using ImagePicker
   Future<void> _selectImages() async {
     final ImagePicker picker = ImagePicker();
     List<XFile>? imageFiles = await picker.pickMultiImage();
 
     setState(() {
-      images = imageFiles;
+      images = imageFiles; // Set selected images
     });
   }
 
+  // Method to remove selected image
   void _removeImage(int index) {
     setState(() {
       images.removeAt(index);
@@ -183,27 +322,62 @@ class _AddCatchPageState extends State<AddCatchPage> {
     }
   }
 
+  // Method to select start time
   Future<void> _selectStartTime() async {
+    final DateTime now = DateTime.now();
+    final DateTime maxStartDate = now.add(const Duration(days: 2));
+
+    DateTime initialDate = now;
+
+    // Check if the current time is in the past
+    if (_startTime != null && _startTime!.isAfter(now)) {
+      initialDate = _startTime!;
+    }
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
+      initialDate: initialDate,
+      firstDate: now,
+      // Limit the maximum selectable start date to 2 days in advance
+      lastDate: maxStartDate,
     );
+
     if (picked != null) {
       final TimeOfDay? timePicked = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.now(),
+        initialTime: TimeOfDay(
+            hour: now.hour, minute: now.minute), // Set initial time to now
       );
+
       if (timePicked != null) {
-        setState(() {
-          _startTime = DateTime(picked.year, picked.month, picked.day,
-              timePicked.hour, timePicked.minute);
-        });
+        final DateTime selectedDateTime = DateTime(picked.year, picked.month,
+            picked.day, timePicked.hour, timePicked.minute);
+
+        if (selectedDateTime.isBefore(now)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select a future date and time'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (selectedDateTime.isAfter(maxStartDate)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content:
+                  Text('You can only place catches up to 2 days in advance'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          setState(() {
+            _startTime = selectedDateTime;
+          });
+        }
       }
     }
   }
 
+  // Method to select end time
   Future<void> _selectEndTime() async {
     if (_startTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -215,26 +389,58 @@ class _AddCatchPageState extends State<AddCatchPage> {
       return;
     }
 
+    final DateTime maxEndDate = _startTime!.add(const Duration(days: 3));
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _startTime ?? DateTime.now(),
       firstDate: _startTime ?? DateTime.now(),
-      lastDate: DateTime(2101),
+      // Limit the maximum selectable end date to 3 days after the start date
+      lastDate: maxEndDate,
     );
+
     if (picked != null) {
       final TimeOfDay? timePicked = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
       );
+
       if (timePicked != null) {
-        setState(() {
-          _endTime = DateTime(picked.year, picked.month, picked.day,
-              timePicked.hour, timePicked.minute);
-        });
+        final DateTime selectedDateTime = DateTime(picked.year, picked.month,
+            picked.day, timePicked.hour, timePicked.minute);
+
+        if (selectedDateTime.isBefore(_startTime!)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('End date cannot be before start date'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (selectedDateTime.isAfter(maxEndDate)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'The difference between start and end dates must not exceed 3 days'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (selectedDateTime.isBefore(DateTime.now())) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select a future date and time'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          setState(() {
+            _endTime = selectedDateTime;
+          });
+        }
       }
     }
   }
 
+  // Method to format DateTime to a readable string
   String? formatDateTime(DateTime? datetime) {
     if (datetime == null) {
       return null; // Return null if datetime is null
@@ -266,6 +472,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Text field for Name
               TextField(
                 controller: _nameController,
                 decoration: InputDecoration(
@@ -282,7 +489,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                       vertical: 14.0, horizontal: 18.0),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16), // Spacer
+              // Text field for Location
               TextField(
                 controller: _locationController,
                 decoration: InputDecoration(
@@ -299,7 +507,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                       vertical: 14.0, horizontal: 18.0),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16), // Spacer
+              // Text field for Base Price
               TextField(
                 controller: _basePriceController,
                 keyboardType: TextInputType.number,
@@ -317,7 +526,8 @@ class _AddCatchPageState extends State<AddCatchPage> {
                       vertical: 14.0, horizontal: 18.0),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16), // Spacer
+              // Text field for Quantity
               TextField(
                 controller: _quantityController,
                 keyboardType: TextInputType.number,
@@ -335,11 +545,11 @@ class _AddCatchPageState extends State<AddCatchPage> {
                       vertical: 14.0, horizontal: 18.0),
                 ),
               ),
-
-              const SizedBox(height: 16),
+              const SizedBox(height: 16), // Spacer
+              // Button to select start date
               SizedBox(
-                width: 400, // <-- Your width
-                height: 50, // <-- Your height
+                width: 400,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _selectStartTime,
                   style: ElevatedButton.styleFrom(
@@ -358,12 +568,14 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   ),
                 ),
               ),
+              // Show start date if selected
               if (_startTime != null)
                 Text('Start Date: ${formatDateTime(_startTime)}'),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16), // Spacer
+              // Button to select end date
               SizedBox(
-                width: 400, // <-- Your width
-                height: 50, // <-- Your height
+                width: 400,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _selectEndTime,
                   style: ElevatedButton.styleFrom(
@@ -382,12 +594,14 @@ class _AddCatchPageState extends State<AddCatchPage> {
                   ),
                 ),
               ),
+              // Show end date if selected
               if (_endTime != null)
                 Text('End Date: ${formatDateTime(_endTime)}'),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16), // Spacer
+              // Button to pick images
               SizedBox(
-                width: 400, // <-- Your width
-                height: 50, // <-- Your height
+                width: 400,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _selectImages,
                   style: ElevatedButton.styleFrom(
@@ -417,6 +631,7 @@ class _AddCatchPageState extends State<AddCatchPage> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
+                    // List view to display selected images
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: images.length,
@@ -426,18 +641,21 @@ class _AddCatchPageState extends State<AddCatchPage> {
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              // Button to move image up
                               IconButton(
                                 icon: const Icon(Icons.arrow_upward),
                                 onPressed: () {
                                   _moveImageUp(index);
                                 },
                               ),
+                              // Button to move image down
                               IconButton(
                                 icon: const Icon(Icons.arrow_downward),
                                 onPressed: () {
                                   _moveImageDown(index);
                                 },
                               ),
+                              // Button to remove image
                               IconButton(
                                 icon: const Icon(Icons.remove_circle),
                                 onPressed: () {
@@ -451,33 +669,41 @@ class _AddCatchPageState extends State<AddCatchPage> {
                     ),
                   ],
                 ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16), // Spacer
+              // Button to add catch
               FutureBuilder<String>(
                 future: _loadEmail(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasData) {
                     return SizedBox(
-                      width: 400, // <-- Your width
-                      height: 50, // <-- Your height
+                      width: 400,
+                      height: 50,
                       child: ElevatedButton(
-                        onPressed:
-                            _isLoading ? null : () => _addCatch(snapshot.data!),
+                        onPressed: () {
+                          _validateAndShowConfirmationDialog(snapshot.data!);
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade500,
+                          backgroundColor: Colors.green,
                           elevation: 3,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: const Text(
-                          'Add Catch',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
+                                'Add Catch',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
                       ),
                     );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
                   } else {
                     return const CircularProgressIndicator();
                   }

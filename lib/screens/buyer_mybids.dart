@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fish_link/utils/api.dart';
-import 'package:fish_link/screens/catch_details_page.dart';
+import 'package:fish_link/screens/buyer_catch_details_page.dart';
 import 'dart:async';
 
 class MyBidsPage extends StatefulWidget {
@@ -100,7 +100,6 @@ class _MyBidsPageState extends State<MyBidsPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold( //a widget that provides the basic visual layout structure of Material Design.
@@ -120,40 +119,43 @@ class _MyBidsPageState extends State<MyBidsPage> {
       body: myBids.isEmpty
           ? const Center(child: Text('No bids found'))
           : Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: myBids.length,
-                itemBuilder: (context, index) {
-                  var bid = myBids[index];
-                  var catchDetails = bid['catchDetails'];
-                  List<dynamic> images = catchDetails['images'];
-                  String firstImageUrl =
-                  images.isNotEmpty ? Api.baseUrl + images[0] : '';
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: myBids.length,
+                      itemBuilder: (context, index) {
+                        var bid = myBids[index];
+                        var catchDetails = bid['catchDetails'];
+                        List<dynamic> images = catchDetails['images'];
+                        String firstImageUrl =
+                            images.isNotEmpty ? Api.baseUrl + images[0] : '';
 
-                  // Determine color based on bid status
-                  Color bidColor;
-                  if (catchDetails['status'] == 'won') {
-                    bidColor = Colors.green.shade50; // Green for won bids
-                  } else if (catchDetails['status'] == 'available') {
-                    bidColor = Colors.blue.shade50; // Blue for bids not won
-                  } else {
-                    bidColor = Colors.red.shade50; // Red for ongoing bids
-                  }
+                        // Determine color based on bid status
+                        Color bidColor;
+                        if (catchDetails['status'] == 'won') {
+                          bidColor = Colors.green.shade50; // Green for won bids
+                        } else if (catchDetails['status'] == 'available') {
+                          bidColor =
+                              Colors.blue.shade50; // Blue for bids not won
+                        } else {
+                          bidColor = Colors.red.shade50; // Red for ongoing bids
+                        }
 
-                  // Calculate remaining time
-                  DateTime bidEndTime =
-                  DateTime.parse(catchDetails['endTime']);
-                  Duration remainingTime =
-                  bidEndTime.difference(_currentTime);
+                        // Calculate remaining time
+                        DateTime bidEndTime =
+                            DateTime.parse(catchDetails['endTime']);
+                        Duration remainingTime =
+                            bidEndTime.difference(_currentTime);
 
-                  // Determine color for timer text
-                  Color timerColor = remainingTime <= Duration(minutes: 2)
-                      ? Colors.red // Less than or equal to 2 minutes, red color
-                      : Colors.green; // Otherwise, green color
+                        // Determine color for timer text
+                        Color timerColor = remainingTime <=
+                                const Duration(minutes: 2)
+                            ? Colors
+                                .red // Less than or equal to 2 minutes, red color
+                            : Colors.green; // Otherwise, green color
 
                   return GestureDetector(
                     onTap: () {
