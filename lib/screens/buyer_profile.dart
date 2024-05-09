@@ -22,7 +22,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
   bool _isChanged = false;
 
   @override
-  void initState() {
+  void initState() { // when page is loaded it is called
     super.initState();
     fetchUserProfile();
   }
@@ -33,6 +33,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
     try {
       final response =
           await http.get(Uri.parse('${Api.userProfileUrl}/user/$userId'));
+          //Uri.parse() is used to convert the string into a Uri object, which is required by the http.get() method.
       if (response.statusCode == 200) {
         await prefs.remove('userProfile');
         setState(() {
@@ -198,7 +199,7 @@ class _BuyerProfilePageState extends State<BuyerProfilePage> {
                 ),
                 Text(
                   value,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
                   ),

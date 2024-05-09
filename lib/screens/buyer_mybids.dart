@@ -15,11 +15,12 @@ class MyBidsPage extends StatefulWidget {
 
 class _MyBidsPageState extends State<MyBidsPage> {
   List<dynamic> myBids = [];
-  late Timer _timer;
+  late Timer _timer; // This variable holds the reference to the timer object.
+  // It's declared with the late keyword, indicating that its value will be assigned later.
   late DateTime _currentTime = DateTime.now();
 
   @override
-  void initState() {
+  void initState() { // when page is loaded it is called
     super.initState();
     _fetchMyBids();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -102,7 +103,7 @@ class _MyBidsPageState extends State<MyBidsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold( //a widget that provides the basic visual layout structure of Material Design.
       appBar: AppBar(
         title: const Text('My Bids'),
         backgroundColor: Colors.transparent,
@@ -224,7 +225,7 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                       ),
                                       Row(
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Highest Current Bid: ',
                                             style: TextStyle(
                                               fontSize: 14,
@@ -243,7 +244,7 @@ class _MyBidsPageState extends State<MyBidsPage> {
                                           Duration.zero) // Only display timer if remaining time is positive
                                         Row(
                                           children: [
-                                            Text(
+                                            const Text(
                                               'Time Left: ',
                                               style: TextStyle(
                                                 fontSize: 14,
